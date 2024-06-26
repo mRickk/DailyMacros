@@ -16,6 +16,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dailymacros.ui.composables.AppBar
 import com.example.dailymacros.ui.theme.DailyMacrosTheme
 import com.example.dailymacros.ui.NavGraph
+import com.example.dailymacros.ui.NavigationRoute
+import com.example.dailymacros.ui.composables.NavBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     Scaffold(
-                        topBar = { AppBar("FitFuel", navController)}
+                        topBar = { NavBar(navController) }
                     ) {contentPadding ->
                         NavGraph(navController = navController, Modifier.padding(contentPadding))
                     }
