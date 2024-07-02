@@ -1,4 +1,4 @@
-package com.example.dailymacros.ui.viewmodels
+package com.example.dailymacros.ui.screens.settings
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
