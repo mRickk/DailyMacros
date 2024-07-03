@@ -22,12 +22,13 @@ import com.example.dailymacros.ui.theme.DailyMacrosTheme
 import com.example.dailymacros.ui.NavGraph
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.settings.Theme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val settingsViewModel = viewModel<SettingsViewModel>()
+            val settingsViewModel = koinViewModel<SettingsViewModel>()
             val themeState by settingsViewModel.state.collectAsStateWithLifecycle()
             DailyMacrosTheme(
                 darkTheme = when (themeState.theme) {
