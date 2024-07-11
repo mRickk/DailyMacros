@@ -33,7 +33,7 @@ fun NavBar(navController: NavHostController) {
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.tertiary,
-        contentColor = MaterialTheme.colorScheme.onTertiary,
+        contentColor = MaterialTheme.colorScheme.onTertiary, //TODO: put right MaterialTheme colorScheme
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(

@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     Scaffold(
-                        topBar = { NavBar(navController) }
+                        bottomBar = { NavBar(navController) }
                     ) {contentPadding ->
                         NavGraph(navController = navController, Modifier.padding(contentPadding))
                     }
