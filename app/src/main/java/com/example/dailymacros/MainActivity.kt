@@ -17,6 +17,7 @@ import com.example.dailymacros.ui.composables.AppBar
 import com.example.dailymacros.ui.theme.DailyMacrosTheme
 import com.example.dailymacros.ui.NavGraph
 import com.example.dailymacros.ui.NavigationRoute
+import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.NavBar
 
 class MainActivity : ComponentActivity() {
