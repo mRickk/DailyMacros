@@ -1,7 +1,10 @@
 package com.example.dailymacros.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,17 +15,20 @@ import com.example.dailymacros.ui.screens.overview.Overview
 import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
+import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    settingsViewModel: SettingsViewModel
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.Diary.route,
+        startDestination = NavigationRoute.Settings.route,
         modifier = modifier
     ) {
+
         composable(NavigationRoute.Diary.route) {
             Login(navController)
         }
@@ -42,7 +48,8 @@ fun NavGraph(
             Overview(navController)
         }
         composable(NavigationRoute.Settings.route) {
-            Settings(navController)
+            val themeState by settingsViewModel.state.collectAsStateWithLifecycle()
+            Settings(navController, themeState, settingsViewModel::changeTheme)
         }
         // AddFood inside SelectFood screen?
         // SelectAll and Add singular items?
