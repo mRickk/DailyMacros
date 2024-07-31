@@ -14,11 +14,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +39,7 @@ import java.util.Locale
 @Composable
 fun datePickerWithDialog(
     modifier: Modifier = Modifier
-) : DatePickerState {
+): DatePickerState {
     var selectedDateMillis by remember { mutableStateOf<Long?>(Date().time) }
     val dateState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
     Log.v("DiaryScreen", dateState.selectedDateMillis.toString())
@@ -76,9 +78,7 @@ fun datePickerWithDialog(
                     style = MaterialTheme.typography.headlineMedium)
             }
             Text(
-                text = selectedDateMillis?.let { dateFormat.format(Date(it)) } ?: dateFormat.format(
-                    Date()
-                ),
+                text = selectedDateMillis?.let { dateFormat.format(Date(it)) } ?: dateFormat.format(Date()),
                 color = MaterialTheme.colorScheme.onTertiary,
                 modifier = Modifier
                     .clickable(onClick = {
@@ -113,22 +113,73 @@ fun datePickerWithDialog(
                         onClick = {
                             selectedDateMillis = dateState.selectedDateMillis
                             showDialog = false
-                        }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        )
                     ) {
                         Text(text = "OK")
                     }
                 },
                 dismissButton = {
                     Button(
-                        onClick = { showDialog = false }
+                        onClick = { showDialog = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        )
                     ) {
                         Text(text = "Cancel")
                     }
-                }
+                },
+                colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    titleContentColor = MaterialTheme.colorScheme.onSecondary,
+                    headlineContentColor = MaterialTheme.colorScheme.onSecondary,
+                    weekdayContentColor = MaterialTheme.colorScheme.onSecondary,
+                    subheadContentColor = MaterialTheme.colorScheme.onSecondary,
+                    yearContentColor = MaterialTheme.colorScheme.onSecondary,
+                    currentYearContentColor = MaterialTheme.colorScheme.onSecondary,
+                    selectedYearContentColor = MaterialTheme.colorScheme.onSecondary,
+                    selectedYearContainerColor = MaterialTheme.colorScheme.secondary,
+                    dayContentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledDayContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f),
+                    selectedDayContentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledSelectedDayContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f),
+                    selectedDayContainerColor = MaterialTheme.colorScheme.secondary,
+                    disabledSelectedDayContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.38f),
+                    todayContentColor = MaterialTheme.colorScheme.onSecondary,
+                    todayDateBorderColor = MaterialTheme.colorScheme.onSecondary,
+                    dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f),
+                    dayInSelectionRangeContentColor = MaterialTheme.colorScheme.onSecondary
+                )
             ) {
                 DatePicker(
                     state = dateState,
-                    showModeToggle = true
+                    showModeToggle = true,
+                    modifier = Modifier.background(MaterialTheme.colorScheme.secondary),
+                    colors = DatePickerDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        titleContentColor = MaterialTheme.colorScheme.onSecondary,
+                        headlineContentColor = MaterialTheme.colorScheme.onSecondary,
+                        weekdayContentColor = MaterialTheme.colorScheme.onSecondary,
+                        subheadContentColor = MaterialTheme.colorScheme.onSecondary,
+                        yearContentColor = MaterialTheme.colorScheme.onSecondary,
+                        currentYearContentColor = MaterialTheme.colorScheme.onSecondary,
+                        selectedYearContentColor = MaterialTheme.colorScheme.onSecondary,
+                        selectedYearContainerColor = MaterialTheme.colorScheme.secondary,
+                        dayContentColor = MaterialTheme.colorScheme.onSecondary,
+                        disabledDayContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f),
+                        selectedDayContentColor = MaterialTheme.colorScheme.onBackground,
+                        disabledSelectedDayContentColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f),
+                        selectedDayContainerColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.38f),
+                        disabledSelectedDayContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.38f),
+                        todayContentColor = MaterialTheme.colorScheme.onSecondary,
+                        todayDateBorderColor = MaterialTheme.colorScheme.onSecondary,
+                        dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f),
+                        dayInSelectionRangeContentColor = MaterialTheme.colorScheme.onSecondary
+                    )
                 )
             }
         }
