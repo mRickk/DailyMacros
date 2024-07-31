@@ -20,14 +20,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dailymacros.ui.composables.AppBar
 import com.example.dailymacros.ui.theme.DailyMacrosTheme
 import com.example.dailymacros.ui.NavGraph
-<<<<<<< HEAD
+
 import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.NavBar
-=======
+
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.settings.Theme
 import org.koin.androidx.compose.koinViewModel
->>>>>>> settings
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
