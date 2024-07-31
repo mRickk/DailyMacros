@@ -22,8 +22,8 @@ import com.example.dailymacros.ui.NavigationRoute
 fun DMTopAppBar(navController: NavHostController) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            titleContentColor = MaterialTheme.colorScheme.onTertiary,
         ),
         title = {
             Text(

@@ -34,6 +34,7 @@ fun NavBar(navController: NavHostController) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.tertiary,
         contentColor = MaterialTheme.colorScheme.onTertiary, //TODO: put right MaterialTheme colorScheme
+
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
@@ -44,6 +45,7 @@ fun NavBar(navController: NavHostController) {
                     selectedItem = index
                     navController.navigate(routes[index])
                 }
+
             )
         }
     }

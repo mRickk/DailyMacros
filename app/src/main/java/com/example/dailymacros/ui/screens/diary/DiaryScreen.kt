@@ -2,13 +2,17 @@ package com.example.dailymacros.ui.screens.diary
 
 import android.text.format.DateUtils
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerFormatter
@@ -29,8 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,30 +57,80 @@ fun Diary(navController: NavHostController) {
 fun DatePickerWithDialog(
     modifier: Modifier = Modifier
 ) {
-    val dateState = rememberDatePickerState()
+    var selectedDateMillis by remember { mutableStateOf<Long?>(Date().time) }
+    val dateState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
     Log.v("DiaryScreen", dateState.selectedDateMillis.toString())
     var showDialog by remember { mutableStateOf(false) }
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = dateState.selectedDateMillis.toString(),
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = {
-                    showDialog = true
-                }),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineMedium
-        )
+                .background(
+                    color = MaterialTheme.colorScheme.tertiary,
+                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                )
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                onClick = {
+                    selectedDateMillis?.let {
+                        selectedDateMillis = it - DateUtils.DAY_IN_MILLIS
+                    }
+                },
+                enabled = selectedDateMillis != null,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                )
+            ) {
+                Text("<",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineMedium)
+            }
+            Text(
+                text = selectedDateMillis?.let { dateFormat.format(Date(it)) } ?: dateFormat.format(Date()),
+                color = MaterialTheme.colorScheme.onTertiary,
+                modifier = Modifier
+                    .clickable(onClick = {
+                        showDialog = true
+                    })
+                    .padding(horizontal = 16.dp),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Button(
+                onClick = {
+                    selectedDateMillis?.let {
+                        selectedDateMillis = it + DateUtils.DAY_IN_MILLIS
+                    }
+                },
+                enabled = selectedDateMillis != null,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                )
+            ) {
+                Text(">",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineMedium)
+            }
+        }
         if (showDialog) {
             DatePickerDialog(
                 onDismissRequest = { showDialog = false },
                 confirmButton = {
                     Button(
-                        onClick = { showDialog = false }
+                        onClick = {
+                            selectedDateMillis = dateState.selectedDateMillis
+                            showDialog = false
+                        }
                     ) {
                         Text(text = "OK")
                     }
