@@ -16,7 +16,6 @@ import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
-
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -25,7 +24,7 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.Login.route,
+        startDestination = NavigationRoute.Diary.route,
         modifier = modifier
     ) {
 
