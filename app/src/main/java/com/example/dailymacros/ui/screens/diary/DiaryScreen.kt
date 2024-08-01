@@ -23,6 +23,9 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import com.example.dailymacros.ui.composables.FoodInfo
+import com.example.dailymacros.ui.composables.FoodInfoData
+import com.example.dailymacros.ui.composables.MealInfo
 import com.example.dailymacros.ui.composables.datePickerWithDialog
 import com.example.dailymacros.ui.theme.Cal
 import com.example.dailymacros.ui.theme.Carbs
@@ -51,7 +54,33 @@ fun Diary(navController: NavHostController) {
                     MacrosBar(label = "Protein", count = 75, total = 150, color = Protein) // Example values
                 }
             }
-
+            val food1 = FoodInfoData(
+                food = "Chicken Breast",
+                quantity = "100g",
+                carbsQty = 0,
+                fatQty = 1,
+                protQty = 30
+            )
+            val food2 = FoodInfoData(
+                food = "Rice",
+                quantity = "100g",
+                carbsQty = 30,
+                fatQty = 1,
+                protQty = 3
+            )
+            val food3 = FoodInfoData(
+                food = "Broccoli",
+                quantity = "100g",
+                carbsQty = 7,
+                fatQty = 0,
+                protQty = 3
+            )
+            MealInfo(
+                meal = "Lunch",
+                kcal = 500,
+                foodInfoList = listOf(food1, food2, food3),
+                navController = navController
+            )
 
         }
     }
@@ -73,9 +102,9 @@ fun MacrosBar(label: String, count: Int, total: Int, color: Color, modifier: Mod
         Box(
             modifier = Modifier
                 .width(120.dp)
-                .height(20.dp)
+                .height(12.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
         ) {
             Box(
                 modifier = Modifier
@@ -107,7 +136,7 @@ fun CaloriesBar(countCal: Int, totCal: Int, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .height(20.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
         ) {
             Box(
                 modifier = Modifier
