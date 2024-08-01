@@ -16,6 +16,8 @@ import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
+import com.example.dailymacros.ui.screens.signin.Signin
+
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -24,12 +26,15 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.Login.route,
+        startDestination = NavigationRoute.Signin.route,
         modifier = modifier
     ) {
 
         composable(NavigationRoute.Login.route) {
             Login(navController)
+        }
+        composable(NavigationRoute.Signin.route) {
+            Signin(navController)
         }
         composable(NavigationRoute.Diary.route) {
             Diary(navController)
@@ -79,6 +84,7 @@ sealed class NavigationRoute(
     val route: String
 ) {
     data object Login : NavigationRoute("Login")
+    data object Signin : NavigationRoute("Signin")
     data object Diary : NavigationRoute("Diary")
     data object Search : NavigationRoute("Search")
     data object Profile : NavigationRoute("Profile")
