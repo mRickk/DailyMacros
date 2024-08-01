@@ -15,6 +15,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavHostController
@@ -41,7 +43,10 @@ fun Login(navController: NavHostController
                 label = { Text("Email") },
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = TextStyle(
+                    color = Color.Black
+                )
             )
             TextField(
                 value = password.value,
@@ -50,7 +55,10 @@ fun Login(navController: NavHostController
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                textStyle = TextStyle(
+                    color = Color.Black
+                )
             )
             Button(
                 onClick = { /* Handle login logic */ },
