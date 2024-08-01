@@ -16,7 +16,6 @@ import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
-
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -29,7 +28,7 @@ fun NavGraph(
         modifier = modifier
     ) {
 
-        composable(NavigationRoute.Diary.route) {
+        composable(NavigationRoute.Login.route) {
             Login(navController)
         }
         composable(NavigationRoute.Diary.route) {
@@ -79,6 +78,7 @@ fun NavGraph(
 sealed class NavigationRoute(
     val route: String
 ) {
+    data object Login : NavigationRoute("Login")
     data object Diary : NavigationRoute("Diary")
     data object Search : NavigationRoute("Search")
     data object Profile : NavigationRoute("Profile")
