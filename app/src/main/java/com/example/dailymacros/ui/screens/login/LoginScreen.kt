@@ -21,9 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavHostController
 
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import com.example.dailymacros.ui.NavigationRoute
+
 @Composable
-fun Login(navController: NavHostController
-) {
+fun Login(navController: NavHostController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
@@ -66,6 +74,33 @@ fun Login(navController: NavHostController
             ) {
                 Text("Login")
             }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            val annotatedText = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = Color.White)) {
+                    append("New to our app? ")
+                }
+                pushStringAnnotation(tag = "SIGNIN", annotation = "Sign in")
+                withStyle(style = SpanStyle(color = Color.Blue)) {
+                    append("Sign in")
+                }
+                pop()
+            }
+            ClickableText(
+                text = annotatedText,
+                onClick = { offset ->
+                    annotatedText.getStringAnnotations(tag = "SIGNIN", start = offset, end = offset)
+                        .firstOrNull()?.let {
+                            navController.navigate(NavigationRoute.Signin.route)
+                        }
+                },
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
     }
 }
