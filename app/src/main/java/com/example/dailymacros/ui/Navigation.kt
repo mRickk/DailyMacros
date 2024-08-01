@@ -25,11 +25,11 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.Settings.route,
+        startDestination = NavigationRoute.Login.route,
         modifier = modifier
     ) {
 
-        composable(NavigationRoute.Diary.route) {
+        composable(NavigationRoute.Login.route) {
             Login(navController)
         }
         composable(NavigationRoute.Diary.route) {
@@ -79,6 +79,7 @@ fun NavGraph(
 sealed class NavigationRoute(
     val route: String
 ) {
+    data object Login : NavigationRoute("Login")
     data object Diary : NavigationRoute("Diary")
     data object Search : NavigationRoute("Search")
     data object Profile : NavigationRoute("Profile")
