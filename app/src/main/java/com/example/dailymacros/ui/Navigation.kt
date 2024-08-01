@@ -24,7 +24,7 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.Diary.route,
+        startDestination = NavigationRoute.Login.route,
         modifier = modifier
     ) {
 
