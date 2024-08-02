@@ -24,11 +24,13 @@ import androidx.navigation.NavHostController
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.example.dailymacros.ui.NavigationRoute
+import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 
 @Composable
 fun Login(navController: NavHostController) {
@@ -82,7 +84,7 @@ fun Login(navController: NavHostController) {
             contentAlignment = Alignment.BottomCenter
         ) {
             val annotatedText = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Color.White)) {
+                withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
                     append("New to our app? ")
                 }
                 pushStringAnnotation(tag = "SIGNIN", annotation = "Sign in")
