@@ -46,7 +46,6 @@ fun datePickerWithDialog(
     var showDialog by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     Column(
-        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
