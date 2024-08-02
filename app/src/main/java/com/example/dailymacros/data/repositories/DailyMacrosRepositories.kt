@@ -4,7 +4,7 @@ import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.database.UserDAO
 import kotlinx.coroutines.flow.Flow
 
-class PokExploreRepository(
+class DailyMacrosRepository(
     private val userDAO: UserDAO,
 ) {
 
