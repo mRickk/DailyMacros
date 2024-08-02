@@ -39,14 +39,16 @@ fun MealInfo(
     var expanded by remember { mutableStateOf(false) }
 
     // Calculate total grams and kcal for each macronutrient
-    val totalCarbs = foodInfoList.sumOf { it.carbsQty }
-    val totalFat = foodInfoList.sumOf { it.fatQty }
-    val totalProtein = foodInfoList.sumOf { it.protQty }
+    val totalCarbs = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.carbsQty } else 0
+    val totalFat = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.fatQty } else 0
+    val totalProtein = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.protQty } else 0
     val totalCarbsKcal = totalCarbs * 4
     val totalFatKcal = totalFat * 9
     val totalProteinKcal = totalProtein * 4
-    val totalKcal = totalCarbsKcal + totalFatKcal + totalProteinKcal
-
+    var totalKcal = totalCarbsKcal + totalFatKcal + totalProteinKcal
+    if (totalKcal == 0) {
+        totalKcal = 1
+    }
     // Calculate percentage of total kcal for each macronutrient
     val carbsPercentage = (totalCarbsKcal.toFloat() / totalKcal) * 100
     val fatPercentage = (totalFatKcal.toFloat() / totalKcal) * 100
@@ -91,26 +93,32 @@ fun MealInfo(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(carbsPercentage)
-                        .background(Carbs)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(fatPercentage)
-                        .background(Fat)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(proteinPercentage)
-                        .background(Protein)
-                )
+                if (carbsPercentage != 0f) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(carbsPercentage)
+                            .background(Carbs)
+                    )
+                }
+                if (fatPercentage != 0f) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(fatPercentage)
+                            .background(Fat)
+                    )
+                }
+                if (proteinPercentage != 0f) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(proteinPercentage)
+                            .background(Protein)
+                    )
+                }
             }
             // Second row: text information
             Row(

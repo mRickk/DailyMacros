@@ -1,14 +1,18 @@
 package com.example.dailymacros.ui.screens.diary
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -46,14 +50,6 @@ fun Diary(navController: NavHostController) {
             Row() {
                 val dateState = datePickerWithDialog()
             }
-            Column {
-                CaloriesBar(countCal = 1000, totCal = 2000) // Example values
-                Row() {
-                    MacrosBar(label = "Carbs", count = 150, total = 300, color = Carbs) // Example values
-                    MacrosBar(label = "Fat", count = 50, total = 100, color = Fat) // Example values
-                    MacrosBar(label = "Protein", count = 75, total = 150, color = Protein) // Example values
-                }
-            }
             val food1 = FoodInfoData(
                 food = "Chicken Breast",
                 quantity = "100g",
@@ -75,16 +71,52 @@ fun Diary(navController: NavHostController) {
                 fatQty = 0,
                 protQty = 3
             )
-            MealInfo(
-                meal = "Lunch",
-                kcal = 500,
-                foodInfoList = listOf(food1, food2, food3),
-                navController = navController
-            )
+            LazyColumn(
+                    modifier = Modifier.fillMaxSize() // Fills the available space
+                    ) {
+                item {
+                    // Header section with calories and macros
+                    Column(
+                        modifier = Modifier.padding(8.dp) // Add padding to your content
+                    ) {
+                        CaloriesBar(countCal = 1000, totCal = 2000) // Example values
 
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                        ) {
+                            MacrosBar(label = "Carbs", count = 150, total = 300, color = Carbs) // Example values
+                            MacrosBar(label = "Fat", count = 50, total = 100, color = Fat) // Example values
+                            MacrosBar(label = "Protein", count = 75, total = 150, color = Protein) // Example values
+                        }
+                    }
+                }
+
+                // Meals section
+                items(listOf<MealInfoData>(
+                    MealInfoData("Breakfast", 181, listOf(food3, food2)),
+                    MealInfoData("Lunch", 310, listOf(food1, food2, food3)),
+                    MealInfoData("Snack", 0, listOf()),
+                    MealInfoData("Dinner", 141, listOf(food2))
+                )
+                ) { mealData ->
+                    MealInfo(
+                        meal = mealData.meal,
+                        kcal = mealData.kcal,
+                        foodInfoList = mealData.foodInfoList,
+                        navController = navController
+                    )
+                }
+            }
         }
     }
 }
+
+data class MealInfoData(
+    val meal: String,
+    val kcal: Int,
+    val foodInfoList: List<FoodInfoData>
+)
 
 @Composable
 fun MacrosBar(label: String, count: Int, total: Int, color: Color, modifier: Modifier = Modifier) {
@@ -101,7 +133,7 @@ fun MacrosBar(label: String, count: Int, total: Int, color: Color, modifier: Mod
         )
         Box(
             modifier = Modifier
-                .width(120.dp)
+                .width(110.dp)
                 .height(12.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
