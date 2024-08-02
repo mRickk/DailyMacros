@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,7 +16,7 @@ import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
-import com.example.dailymacros.ui.screens.signin.Signin
+import com.example.dailymacros.ui.screens.signup.Signup
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -37,7 +36,7 @@ fun NavGraph(
             Login(navController)
         }
         composable(NavigationRoute.Signin.route) {
-            Signin(navController)
+            Signup(navController)
         }
         composable(NavigationRoute.Diary.route) {
             Diary(navController)

@@ -1,4 +1,4 @@
-package com.example.dailymacros.ui.screens.signin
+package com.example.dailymacros.ui.screens.signup
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,7 @@ import androidx.navigation.NavHostController
 import com.example.dailymacros.ui.NavigationRoute
 
 @Composable
-fun Signin(navController: NavHostController) {
+fun Signup(navController: NavHostController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
