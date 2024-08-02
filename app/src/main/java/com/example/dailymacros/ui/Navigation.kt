@@ -11,12 +11,14 @@ import androidx.navigation.compose.composable
 import com.example.dailymacros.ui.screens.diary.Diary
 import com.example.dailymacros.ui.screens.diet.Diet
 import com.example.dailymacros.ui.screens.login.Login
+import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.overview.Overview
 import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.signin.Signin
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NavGraph(
@@ -31,6 +33,7 @@ fun NavGraph(
     ) {
 
         composable(NavigationRoute.Login.route) {
+            val loginViewModel = koinViewModel<LoginViewModel>()
             Login(navController)
         }
         composable(NavigationRoute.Signin.route) {
