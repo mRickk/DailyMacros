@@ -6,6 +6,7 @@ import androidx.room.Room
 import com.example.dailymacros.data.database.DailyMacrosDatabase
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.ThemeRepository
+import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -26,7 +27,12 @@ val appModule = module {
     single { get<Context>().dataStore }
     single { ThemeRepository(get()) }
     single { DailyMacrosRepository(
-        get<DailyMacrosDatabase>().userDAO()) }
+        get<DailyMacrosDatabase>().userDAO(),
+        get<DailyMacrosDatabase>().foodDAO(),
+        get<DailyMacrosDatabase>().foodInsideMealDAO(),
+        get<DailyMacrosDatabase>().mealDAO())
+    }
     viewModel { SettingsViewModel(get()) }
     viewModel { LoginViewModel(get()) }
+    viewModel { DiaryViewModel(get()) }
 }

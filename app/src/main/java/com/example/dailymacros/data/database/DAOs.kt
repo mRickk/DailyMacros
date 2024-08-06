@@ -39,14 +39,14 @@ interface FoodDAO {
 @Dao
 interface FoodInsideMealDAO {
 
-    @Query("SELECT * FROM FoodInsideMeal WHERE meal = :meal")
-    fun getFoodsInsideMeal(meal: Meal): Flow<List<FoodInsideMeal>>
+    @Query("SELECT * FROM FoodInsideMeal WHERE mealDate = :mealDate AND mealType = :mealType")
+    fun getFoodInsideMeal(mealDate: String, mealType: MealType): Flow<List<FoodInsideMeal>>
 
     @Upsert
     suspend fun upsert(foodInsideMeal: FoodInsideMeal)
 
-    @Query("DELETE FROM FoodInsideMeal WHERE meal = :meal")
-    suspend fun deleteFoodsInsideMeal(meal: Meal, food: Food)
+    @Query("DELETE FROM FoodInsideMeal WHERE mealDate = :mealDate AND mealType = :mealType AND foodName = :foodName")
+    suspend fun removeFoodInsideMeal(mealDate: String, mealType: MealType, foodName: String)
 }
 
 @Dao
@@ -59,7 +59,7 @@ interface MealDAO {
     suspend fun upsert(meal: Meal)
 
     // Delete a meal if is empty (with no food inside)
-    @Query("DELETE FROM Meal WHERE date = :date")
-    suspend fun deleteMeals(date: String)
+    @Query("DELETE FROM Meal WHERE date = :date AND type = :mealType")
+    suspend fun deleteMeal(date: String, mealType: MealType)
 
 }

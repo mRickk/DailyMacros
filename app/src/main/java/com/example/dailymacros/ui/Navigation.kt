@@ -7,7 +7,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.dailymacros.ui.screens.diary.Diary
+import com.example.dailymacros.ui.screens.diary.DiaryScreen
+import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.diet.Diet
 import com.example.dailymacros.ui.screens.login.Login
 import com.example.dailymacros.ui.screens.login.LoginViewModel
@@ -39,7 +40,7 @@ fun NavGraph(
             Signup(navController)
         }
         composable(NavigationRoute.Diary.route) {
-            Diary(navController)
+            DiaryScreen(navController, koinViewModel<DiaryViewModel>().actions)
         }
         composable(NavigationRoute.Search.route) {
             Search(navController)
@@ -57,15 +58,16 @@ fun NavGraph(
             val themeState by settingsViewModel.state.collectAsStateWithLifecycle()
             Settings(navController, themeState, settingsViewModel::changeTheme)
         }
+        composable(NavigationRoute.SelectFood.route) {
+            //SelectFood(navController)
+        }
         // AddFood inside SelectFood screen?
         // SelectAll and Add singular items?
         /*
         composable(NavigationRoute.AddFood.route) {
             AddFood(navController)
         }
-        composable(NavigationRoute.SelectFood.route) {
-            SelectFood(navController)
-        }
+
         composable(NavigationRoute.AddExercise.route) {
             AddExercise(navController)
         }

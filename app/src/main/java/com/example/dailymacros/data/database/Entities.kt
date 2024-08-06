@@ -29,13 +29,15 @@ data class Food(
     val kcalPerc: Float,
     val carbsPerc: Float,
     val fatPerc: Float,
-    val proteinPerc: Float
+    val proteinPerc: Float,
+    val unit: FoodUnit
 )
 
-@Entity(primaryKeys = ["food", "meal"])
+@Entity(primaryKeys = ["foodName", "mealDate", "mealType"])
 data class FoodInsideMeal(
-    val food: Food,
-    val meal: Meal,
+    val foodName: String,
+    val mealDate: String,
+    val mealType: MealType,
     val quantity: Int
 )
 
@@ -73,4 +75,9 @@ enum class GoalType(val string: String) {
     LOSE_WEIGHT("Lose Weight"),
     MAINTAIN_WEIGHT("Maintain Weight"),
     GAIN_WEIGHT("Gain Weight")
+}
+
+enum class FoodUnit(val string: String) {
+    GRAMS("g"),
+    MILLILITERS("ml")
 }
