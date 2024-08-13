@@ -89,7 +89,7 @@ fun Login(navController: NavHostController) {
                 }
                 pushStringAnnotation(tag = "SIGNIN", annotation = "Sign in")
                 withStyle(style = SpanStyle(color = Color.Blue)) {
-                    append("Sign in")
+                    append("Sign up")
                 }
                 pop()
             }

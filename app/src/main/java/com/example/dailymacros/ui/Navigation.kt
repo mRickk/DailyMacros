@@ -17,7 +17,7 @@ import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
-import com.example.dailymacros.ui.screens.signin.Signin
+import com.example.dailymacros.ui.screens.signup.Signup
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -37,7 +37,7 @@ fun NavGraph(
             Login(navController)
         }
         composable(NavigationRoute.Signin.route) {
-            Signin(navController)
+            Signup(navController)
         }
         composable(NavigationRoute.Diary.route) {
             DiaryScreen(navController,
