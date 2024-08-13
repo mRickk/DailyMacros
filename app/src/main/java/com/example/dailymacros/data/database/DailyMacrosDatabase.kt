@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.dailymacros.utilities.DateConverter
 
-@Database(entities = [User::class, Food::class, Meal::class, FoodInsideMeal::class], version = 8)
+@Database(entities = [User::class, Food::class, Meal::class, FoodInsideMeal::class], version = 2)
 @TypeConverters(DateConverter::class)
 abstract class DailyMacrosDatabase : RoomDatabase() {
     abstract fun userDAO(): UserDAO

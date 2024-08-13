@@ -21,9 +21,9 @@ import com.example.dailymacros.ui.theme.Protein
 fun FoodInfo(
     food: String,
     quantity: String,
-    carbsQty: Int,
-    fatQty: Int,
-    protQty: Int,
+    carbsQty: Float,
+    fatQty: Float,
+    protQty: Float,
     modifier: Modifier = Modifier
 ) {
     return Column(modifier = modifier.padding(8.dp)) {

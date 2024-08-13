@@ -40,7 +40,9 @@ fun NavGraph(
             Signin(navController)
         }
         composable(NavigationRoute.Diary.route) {
-            DiaryScreen(navController, koinViewModel<DiaryViewModel>().actions)
+            DiaryScreen(navController,
+                koinViewModel<DiaryViewModel>().actions,
+                koinViewModel<DiaryViewModel>().state.collectAsStateWithLifecycle().value)
         }
         composable(NavigationRoute.Search.route) {
             Search(navController)
@@ -63,24 +65,24 @@ fun NavGraph(
         }
         // AddFood inside SelectFood screen?
         // SelectAll and Add singular items?
-        /*
+
         composable(NavigationRoute.AddFood.route) {
-            AddFood(navController)
+            //AddFood(navController)
         }
 
         composable(NavigationRoute.AddExercise.route) {
-            AddExercise(navController)
+            //AddExercise(navController)
         }
         composable(NavigationRoute.SelectExercise.route) {
-            SelectExercise(navController)
+            //SelectExercise(navController)
         }
         composable(NavigationRoute.AddRecipe.route) {
-            AddRecipe(navController)
+            //AddRecipe(navController)
         }
         composable(NavigationRoute.SelectRecipe.route) {
-            SelectRecipe(navController)
+            //SelectRecipe(navController)
         }
-        */
+
     }
 }
 

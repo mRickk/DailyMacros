@@ -38,17 +38,13 @@ data class FoodInsideMeal(
     val foodName: String,
     val mealDate: String,
     val mealType: MealType,
-    val quantity: Int
+    val quantity: Float
 )
 
 @Entity(primaryKeys = ["type", "date"])
 data class Meal(
     val type: MealType,
-    val date: String,
-    val kcal: Float,
-    val carbs: Float,
-    val fat: Float,
-    val protein: Float
+    val date: String
 )
 
 enum class MealType(val string: String) {
