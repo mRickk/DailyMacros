@@ -8,6 +8,7 @@ import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.ThemeRepository
 import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.login.LoginViewModel
+import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseViewModel
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -30,9 +31,12 @@ val appModule = module {
         get<DailyMacrosDatabase>().userDAO(),
         get<DailyMacrosDatabase>().foodDAO(),
         get<DailyMacrosDatabase>().foodInsideMealDAO(),
-        get<DailyMacrosDatabase>().mealDAO())
+        get<DailyMacrosDatabase>().mealDAO(),
+        get<DailyMacrosDatabase>().exerciseDAO(),
+        get<DailyMacrosDatabase>().exerciseInsideDayDAO())
     }
     viewModel { SettingsViewModel(get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { DiaryViewModel(get()) }
+    viewModel { SelectExerciseViewModel(get()) }
 }

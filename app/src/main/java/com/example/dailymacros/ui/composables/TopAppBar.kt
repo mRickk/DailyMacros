@@ -36,7 +36,7 @@ fun DMTopAppBar(navController: NavHostController) {
             IconButton(onClick = {navController.navigate(NavigationRoute.Profile.route)}) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Localized description"
+                    contentDescription = "Profile button"
                 )
             }
         }

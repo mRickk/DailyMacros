@@ -30,6 +30,8 @@ import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.Meal
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import com.example.dailymacros.ui.composables.ExerciseInfo
+import com.example.dailymacros.ui.composables.ExerciseInfoData
 import com.example.dailymacros.ui.composables.FoodInfoData
 import com.example.dailymacros.ui.composables.MealInfo
 import com.example.dailymacros.ui.composables.datePickerWithDialog
@@ -65,19 +67,20 @@ fun DiaryScreen(
             } else {
                 val dateStamp = dateState!!.selectedDateMillis.toString()
                 actions.getMealsMap(dateStamp)
-                val mealsMap = state.mealsMap
+                val diaryPair = state.diaryPair
 
                 val mealTypes = MealType.entries.toMutableList()
-                for (meal in mealsMap.keys) {
+                for (meal in diaryPair.first.keys) {
                     if (mealTypes.contains(meal.type)) {
                         mealTypes.remove(meal.type)
                     }
                 }
                 mealTypes.forEach { mT ->
-                    mealsMap[Meal(mT, dateStamp)] = emptyList()
+                    diaryPair.first[Meal(mT, dateStamp)] = emptyList()
                 }
 
-                val allFoodList = mealsMap.values.flatten()
+                val allFoodList = diaryPair.first.values.flatten()
+                val allExercisesList = diaryPair.second
                 // Calculate total grams and kcal for each macronutrient
                 val countCarbs = if (allFoodList.isNotEmpty()) allFoodList.sumOf { it.first.carbsPerc * it.second.toDouble() } else 0.0
                 val countFat = if (allFoodList.isNotEmpty()) allFoodList.sumOf { it.first.fatPerc * it.second.toDouble() } else 0.0
@@ -85,7 +88,8 @@ fun DiaryScreen(
                 val countCarbsKcal = countCarbs * MacrosKcal.CARBS.kcal
                 val countFatKcal = countFat * MacrosKcal.FAT.kcal
                 val countProteinKcal = countProtein * MacrosKcal.PROTEIN.kcal
-                val countKcal = countCarbsKcal + countFatKcal + countProteinKcal
+                val countExerciseKcal = if (allExercisesList.isNotEmpty()) allExercisesList.sumOf { it.first.kcalBurnedSec * it.second.toDouble() } else 0.0
+                val countKcal = countCarbsKcal + countFatKcal + countProteinKcal - countExerciseKcal
 
                 LazyColumn(
                         modifier = Modifier.fillMaxSize() // Fills the available space
@@ -104,19 +108,19 @@ fun DiaryScreen(
                                 MacrosBar(
                                     label = "Carbs",
                                     count = countCarbs.toFloat(),
-                                    total = 300f,
+                                    total = 300f, //TODO: get from user
                                     color = Carbs
                                 ) // Example values
                                 MacrosBar(
                                     label = "Fat",
                                     count = countFat.toFloat(),
-                                    total = 100f,
+                                    total = 100f, //TODO: get from user
                                     color = Fat
                                 ) // Example values
                                 MacrosBar(
                                     label = "Protein",
                                     count = countProtein.toFloat(),
-                                    total = 150f,
+                                    total = 150f, //TODO: get from user
                                     color = Protein
                                 ) // Example values
                             }
@@ -125,9 +129,8 @@ fun DiaryScreen(
 
                     // Meals section
                     items(
-                        mealsMap.toList()
+                        diaryPair.first.toList()
                     ) { mealData ->
-                        val foodInfoList =
                         MealInfo(
                             meal = mealData.first.type.string,
                             foodInfoList = mealData.second.map { foodInsideMeal ->
@@ -142,6 +145,21 @@ fun DiaryScreen(
                             navController = navController
                         )
                     }
+
+                    // Exercise section
+                    item {
+                        ExerciseInfo(
+                            exerciseInfoList = allExercisesList.map { exerciseInsideDay ->
+                                ExerciseInfoData(
+                                    exercise = exerciseInsideDay.first.name,
+                                    caloriesBurned = exerciseInsideDay.first.kcalBurnedSec * exerciseInsideDay.second,
+                                    duration = exerciseInsideDay.second
+                                )
+                            },
+                            navController = navController
+                        )
+                    }
+
                 }
             }
         }
@@ -159,7 +177,7 @@ fun MacrosBar(label: String, count: Float, total: Float, color: Color, modifier:
     val total = total.roundToInt()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val barWidth = screenWidth / 3 * 0.75f // Slightly less than 1/3 of the screen width
+    val barWidth = screenWidth / 3 * 0.8f // Slightly less than 1/3 of the screen width
     val progress = (count / total).coerceIn(0f, 1f)
 
     Column(

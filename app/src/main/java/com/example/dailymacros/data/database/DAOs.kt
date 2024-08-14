@@ -63,3 +63,32 @@ interface MealDAO {
     suspend fun deleteMeal(date: String, mealType: MealType)
 
 }
+
+@Dao
+interface ExerciseDAO {
+
+        @Query("SELECT * FROM Exercise")
+        fun getAllExercises(): Flow<List<Exercise>>
+
+        @Upsert
+        suspend fun upsert(exercise: Exercise)
+
+        @Query("SELECT * FROM Exercise WHERE name = :name")
+        suspend fun getExercise(name: String): Exercise
+
+        @Query("DELETE FROM Exercise WHERE name = :name")
+        suspend fun deleteExercise(name: String)
+}
+
+@Dao
+interface ExerciseInsideDayDAO {
+
+        @Query("SELECT * FROM ExerciseInsideDay WHERE date = :date")
+        fun getExercisesInsideDay(date: String): Flow<List<ExerciseInsideDay>>
+
+        @Upsert
+        suspend fun upsert(exerciseInsideDay: ExerciseInsideDay)
+
+        @Query("DELETE FROM ExerciseInsideDay WHERE id = :id")
+        suspend fun removeExerciseInsideDay(id: Long)
+}

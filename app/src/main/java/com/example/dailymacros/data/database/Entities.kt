@@ -1,10 +1,7 @@
 package com.example.dailymacros.data.database
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.example.dailymacros.utilities.DateConverter
 
 @Entity
 data class User(
@@ -45,6 +42,21 @@ data class FoodInsideMeal(
 data class Meal(
     val type: MealType,
     val date: String
+)
+
+@Entity
+data class Exercise(
+    @PrimaryKey val name: String,
+    val description: String?,
+    val kcalBurnedSec: Float
+)
+
+@Entity
+data class ExerciseInsideDay(
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val exerciseName: String,
+    val date: String,
+    val duration: Int
 )
 
 enum class MealType(val string: String) {
