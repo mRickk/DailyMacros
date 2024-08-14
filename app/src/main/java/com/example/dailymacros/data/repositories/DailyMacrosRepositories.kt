@@ -51,7 +51,7 @@ class DailyMacrosRepository(
     val exercises: Flow<List<Exercise>> = ExerciseDAO.getAllExercises()
     suspend fun upsertExercise(exercise: Exercise) = ExerciseDAO.upsert(exercise)
     suspend fun getExercise(name: String) = ExerciseDAO.getExercise(name)
-    suspend fun deleteSport(name: String) = ExerciseDAO.deleteExercise(name)
+    suspend fun deleteExercise(name: String) = ExerciseDAO.deleteExercise(name)
 
     /* ExerciseInsideDay */
     suspend fun getExercisesInsideDay(date: String) = ExerciseInsideDayDAO.getExercisesInsideDay(date)

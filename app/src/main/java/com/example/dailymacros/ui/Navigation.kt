@@ -7,6 +7,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dailymacros.ui.screens.addexercise.AddExerciseScreen
+import com.example.dailymacros.ui.screens.addexercise.AddExerciseViewModel
 import com.example.dailymacros.ui.screens.diary.DiaryScreen
 import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.diet.Diet
@@ -68,7 +70,8 @@ fun NavGraph(
                 koinViewModel<SelectExerciseViewModel>().state.collectAsStateWithLifecycle().value)
         }
         composable(NavigationRoute.AddExercise.route) {
-            //AddExercise(navController)
+            AddExerciseScreen(navController,
+                koinViewModel<AddExerciseViewModel>().actions)
         }
         // AddFood inside SelectFood screen?
         // SelectAll and Add singular items?

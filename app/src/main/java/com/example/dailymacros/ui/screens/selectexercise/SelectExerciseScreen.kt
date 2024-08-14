@@ -19,7 +19,6 @@ import com.example.dailymacros.ui.composables.ExerciseInfoBar
 import com.example.dailymacros.ui.NavigationRoute
 import androidx.compose.material3.MaterialTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectExerciseScreen(
     navController: NavHostController,
@@ -28,7 +27,6 @@ fun SelectExerciseScreen(
 ) {
     Scaffold(
         topBar = { DMTopAppBar(navController) },
-        bottomBar = { /* Add your bottom navigation bar here */ },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate(NavigationRoute.AddExercise.route) },
@@ -44,6 +42,7 @@ fun SelectExerciseScreen(
         }
     ) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
+            actions.getExerciseList()
             items(state.exerciseList) { sport ->
                 ExerciseInfoBar(
                     exercise = sport.name,

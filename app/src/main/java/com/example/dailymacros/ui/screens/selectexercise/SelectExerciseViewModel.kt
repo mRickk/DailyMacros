@@ -30,14 +30,14 @@ class SelectExerciseViewModel(
 
     val actions = object : SelectExerciseActions {
         override fun getExerciseList() = viewModelScope.launch {
-            val selectTabList = dailyMacrosRepository.exercises.toList().flatten()
-            changeState(SelectExerciseState(selectTabList))
+            val exerciseList = dailyMacrosRepository.exercises.toList().flatten()
+            changeState(SelectExerciseState(exerciseList))
         }
         override fun insertExerciseInsideDay(id: Long?, exercise: Exercise, date:String, duration: Int) = viewModelScope.launch {
             dailyMacrosRepository.upsertExerciseInsideDay(ExerciseInsideDay(id?:0L, exercise.name, date, duration))
         }
         override fun deleteExercise(exercise: Exercise) = viewModelScope.launch {
-            dailyMacrosRepository.deleteSport(exercise.name)
+            dailyMacrosRepository.deleteExercise(exercise.name)
         }
     }
 }
