@@ -35,17 +35,28 @@ data class FoodInsideMeal(
     val foodName: String,
     val mealDate: String,
     val mealType: MealType,
-    val quantity: Int
+    val quantity: Float
 )
 
 @Entity(primaryKeys = ["type", "date"])
 data class Meal(
     val type: MealType,
+    val date: String
+)
+
+@Entity
+data class Exercise(
+    @PrimaryKey val name: String,
+    val description: String?,
+    val kcalBurnedSec: Float
+)
+
+@Entity
+data class ExerciseInsideDay(
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val exerciseName: String,
     val date: String,
-    val kcal: Float,
-    val carbs: Float,
-    val fat: Float,
-    val protein: Float
+    val duration: Int
 )
 
 enum class MealType(val string: String) {

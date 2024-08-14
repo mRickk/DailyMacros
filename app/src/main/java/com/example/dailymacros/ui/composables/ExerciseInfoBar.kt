@@ -9,26 +9,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.example.dailymacros.ui.theme.Carbs
-import com.example.dailymacros.ui.theme.Fat
-import com.example.dailymacros.ui.theme.Protein
+import kotlin.math.roundToInt
 
 @Composable
-fun FoodInfo(
-    food: String,
-    quantity: String,
-    carbsQty: Float,
-    fatQty: Float,
-    protQty: Float,
+fun ExerciseInfoBar(
+    exercise: String,
+    caloriesBurned: Float,
+    duration: Int,
     modifier: Modifier = Modifier
 ) {
-    return Column(modifier = modifier.padding(8.dp)) {
+    Column(modifier = modifier.padding(8.dp)) {
         Text(
-            text = food,
+            text = exercise,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyLarge
         )
@@ -37,25 +30,12 @@ fun FoodInfo(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = quantity,
+                text = "Duration: ${(duration / 60)}min" + if (duration % 60 != 0) "${duration % 60.0}s" else "", // Display duration in min and s
                 color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = buildAnnotatedString {
-                    append("C:")
-                    withStyle(style = SpanStyle(color = Carbs)) {
-                        append(carbsQty.toString() + "g")
-                    }
-                    append(" F:")
-                    withStyle(style = SpanStyle(color = Fat)) {
-                        append(fatQty.toString() + "g")
-                    }
-                    append(" P:")
-                    withStyle(style = SpanStyle(color = Protein)) {
-                        append(protQty.toString() + "g")
-                    }
-                },
+                text = "Calories: ${caloriesBurned.roundToInt()} kcal",
                 color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.bodyMedium
             )

@@ -26,12 +26,13 @@ import com.example.dailymacros.ui.composables.FoodInfo
 import com.example.dailymacros.ui.theme.Carbs
 import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
+import com.example.dailymacros.utilities.MacrosKcal
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealInfo(
     meal: String,
-    kcal: Int,
     foodInfoList: List<FoodInfoData>,
     navController: NavHostController,
     modifier: Modifier = Modifier
@@ -39,20 +40,18 @@ fun MealInfo(
     var expanded by remember { mutableStateOf(false) }
 
     // Calculate total grams and kcal for each macronutrient
-    val totalCarbs = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.carbsQty } else 0
-    val totalFat = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.fatQty } else 0
-    val totalProtein = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.protQty } else 0
-    val totalCarbsKcal = totalCarbs * 4
-    val totalFatKcal = totalFat * 9
-    val totalProteinKcal = totalProtein * 4
-    var totalKcal = totalCarbsKcal + totalFatKcal + totalProteinKcal
-    if (totalKcal == 0) {
-        totalKcal = 1
-    }
+    val totalCarbs = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.carbsQty.toDouble() } else 0.0
+    val totalFat = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.fatQty.toDouble() } else 0.0
+    val totalProtein = if (foodInfoList.isNotEmpty()) foodInfoList.sumOf { it.protQty.toDouble() } else 0.0
+    val totalCarbsKcal = totalCarbs * MacrosKcal.CARBS.kcal
+    val totalFatKcal = totalFat * MacrosKcal.FAT.kcal
+    val totalProteinKcal = totalProtein * MacrosKcal.PROTEIN.kcal
+    val totalKcal = totalCarbsKcal + totalFatKcal + totalProteinKcal
+
     // Calculate percentage of total kcal for each macronutrient
-    val carbsPercentage = (totalCarbsKcal.toFloat() / totalKcal) * 100
-    val fatPercentage = (totalFatKcal.toFloat() / totalKcal) * 100
-    val proteinPercentage = (totalProteinKcal.toFloat() / totalKcal) * 100
+    val carbsPercentage = if (totalKcal > 0) (totalCarbsKcal.toFloat() / totalKcal)*100 else 0.0
+    val fatPercentage = if (totalKcal > 0) (totalFatKcal.toFloat() / totalKcal)*100 else 0.0
+    val proteinPercentage = if (totalKcal > 0) (totalProteinKcal.toFloat() / totalKcal)*100 else 0.0
 
     Column(modifier = modifier.padding(horizontal = 12.dp, vertical = 20.dp).clip(RoundedCornerShape(12.dp))) {
         Box(
@@ -72,7 +71,7 @@ fun MealInfo(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = "${kcal}kcal",
+                    text = "${totalKcal.roundToInt()}kcal",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -95,27 +94,27 @@ fun MealInfo(
                     .height(4.dp)
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
             ) {
-                if (carbsPercentage != 0f) {
+                if (carbsPercentage != 0.0) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(carbsPercentage)
+                            .weight(carbsPercentage.toFloat())
                             .background(Carbs)
                     )
                 }
-                if (fatPercentage != 0f) {
+                if (fatPercentage != 0.0) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(fatPercentage)
+                            .weight(fatPercentage.toFloat())
                             .background(Fat)
                     )
                 }
-                if (proteinPercentage != 0f) {
+                if (proteinPercentage != 0.0) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(proteinPercentage)
+                            .weight(proteinPercentage.toFloat())
                             .background(Protein)
                     )
                 }
@@ -158,7 +157,7 @@ fun MealInfo(
                 foodInfoList.forEach { foodInfo ->
                     FoodInfo(
                         food = foodInfo.food,
-                        quantity = foodInfo.quantity,
+                        quantity = foodInfo.quantity.toString(),
                         carbsQty = foodInfo.carbsQty,
                         fatQty = foodInfo.fatQty,
                         protQty = foodInfo.protQty,
@@ -183,8 +182,8 @@ fun MealInfo(
 
 data class FoodInfoData(
     val food: String,
-    val quantity: String,
-    val carbsQty: Int,
-    val fatQty: Int,
-    val protQty: Int
+    val quantity: Float,
+    val carbsQty: Float,
+    val fatQty: Float,
+    val protQty: Float
 )

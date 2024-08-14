@@ -15,6 +15,8 @@ import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.overview.Overview
 import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.search.Search
+import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseScreen
+import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseViewModel
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.signup.Signup
@@ -42,7 +44,9 @@ fun NavGraph(
             Signup(navController, signupViewModel, signupViewModel.userState, signupViewModel.actions)
         }
         composable(NavigationRoute.Diary.route) {
-            DiaryScreen(navController, koinViewModel<DiaryViewModel>().actions)
+            DiaryScreen(navController,
+                koinViewModel<DiaryViewModel>().actions,
+                koinViewModel<DiaryViewModel>().state.collectAsStateWithLifecycle().value)
         }
         composable(NavigationRoute.Search.route) {
             Search(navController)
@@ -60,29 +64,29 @@ fun NavGraph(
             val themeState by settingsViewModel.state.collectAsStateWithLifecycle()
             Settings(navController, themeState, settingsViewModel::changeTheme)
         }
-        composable(NavigationRoute.SelectFood.route) {
-            //SelectFood(navController)
+        composable(NavigationRoute.SelectExercise.route) {
+            SelectExerciseScreen(navController,
+                koinViewModel<SelectExerciseViewModel>().actions,
+                koinViewModel<SelectExerciseViewModel>().state.collectAsStateWithLifecycle().value)
+        }
+        composable(NavigationRoute.AddExercise.route) {
+            //AddExercise(navController)
         }
         // AddFood inside SelectFood screen?
         // SelectAll and Add singular items?
-        /*
+
         composable(NavigationRoute.AddFood.route) {
-            AddFood(navController)
+            //AddFood(navController)
         }
 
-        composable(NavigationRoute.AddExercise.route) {
-            AddExercise(navController)
-        }
-        composable(NavigationRoute.SelectExercise.route) {
-            SelectExercise(navController)
-        }
+
         composable(NavigationRoute.AddRecipe.route) {
-            AddRecipe(navController)
+            //AddRecipe(navController)
         }
         composable(NavigationRoute.SelectRecipe.route) {
-            SelectRecipe(navController)
+            //SelectRecipe(navController)
         }
-        */
+
     }
 }
 
