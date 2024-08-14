@@ -40,10 +40,10 @@ class DatastoreRepository (
                     pictureUrl = preferences[PICTURE_URL_KEY]?.takeIf { it.isNotBlank() },
                     height = preferences[HEIGHT_KEY]?.toFloat() ?: 0f,
                     weight = preferences[WEIGHT_KEY]?.toFloat() ?: 0f,
-                    gender = preferences[GENDER_KEY] ?: "Other",
+                    gender = Gender.valueOf(preferences[GENDER_KEY] ?: "Other"),
                     age = preferences[AGE_KEY]?.toInt() ?: 0,
-                    activity = ActivityType.valueOf(preferences[ACTIVITY_KEY] ?: "SEDENTARY"),
-                    goal = GoalType.valueOf(preferences[GOAL_KEY] ?: "MAINTAIN_WEIGHT"),
+                    activity = ActivityType.valueOf(preferences[ACTIVITY_KEY] ?: "Sedentary"),
+                    goal = GoalType.valueOf(preferences[GOAL_KEY] ?: "Maintain Weight"),
                     bmr = preferences[BMR_KEY]?.toInt() ?: 0,
                     dailyKcal = preferences[DAILY_KCAL_KEY]?.toInt() ?: 0
                 )
@@ -64,7 +64,7 @@ class DatastoreRepository (
             it[PICTURE_URL_KEY] = user.pictureUrl ?: ""
             it[HEIGHT_KEY] = user.height.toString()
             it[WEIGHT_KEY] = user.weight.toString()
-            it[GENDER_KEY] = user.gender
+            it[GENDER_KEY] = user.gender.name
             it[AGE_KEY] = user.age.toString()
             it[ACTIVITY_KEY] = user.activity.name
             it[GOAL_KEY] = user.goal.name

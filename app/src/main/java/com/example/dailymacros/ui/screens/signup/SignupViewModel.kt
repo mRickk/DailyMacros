@@ -24,7 +24,7 @@ class SignupViewModel(
     private val repository: DatastoreRepository
 ) : ViewModel() {
 
-    var loggedUser = mutableListOf<User?>(null)
+    var loggedUser = mutableStateOf<User?>(null)
         private  set
 
     var userState by mutableStateOf(UserState(listOf()))
@@ -36,7 +36,7 @@ class SignupViewModel(
         }
 
         override fun signupUser(user: User, onFinished: () -> Unit) = viewModelScope.launch {
-            loggedUser = mutableListOf(user)
+            loggedUser = mutableStateOf(user)
             databaseRepository.insertUser(user)
             repository.saveUser(user)
             onFinished()
@@ -45,7 +45,7 @@ class SignupViewModel(
 
     init {
         viewModelScope.launch {
-            loggedUser = mutableListOf(repository.user.first())
+            loggedUser = mutableStateOf(repository.user.first())
             userState = UserState(databaseRepository.users.first())
         }
     }

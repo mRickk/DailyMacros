@@ -11,7 +11,7 @@ data class User(
     val pictureUrl: String?,
     val height: Float,
     val weight: Float,
-    val gender: String,
+    val gender: Gender,
     val age: Int,
     val activity: ActivityType,
     val goal: GoalType,
