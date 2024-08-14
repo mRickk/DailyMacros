@@ -68,7 +68,8 @@ enum class MealType(val string: String) {
 
 enum class Gender(val string: String) {
     MALE("Male"),
-    FEMALE("Female")
+    FEMALE("Female"),
+    OTHER("Other")
 }
 
 enum class ActivityType(val string: String) {

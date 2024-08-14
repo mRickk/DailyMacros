@@ -22,6 +22,7 @@ import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseViewModel
 import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.signup.Signup
+import com.example.dailymacros.ui.screens.signup.SignupViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,7 +42,8 @@ fun NavGraph(
             Login(navController)
         }
         composable(NavigationRoute.Signin.route) {
-            Signup(navController)
+            val signupViewModel = koinViewModel<SignupViewModel>()
+            Signup(navController, signupViewModel, signupViewModel.userState, signupViewModel.actions)
         }
         composable(NavigationRoute.Diary.route) {
             DiaryScreen(navController,
