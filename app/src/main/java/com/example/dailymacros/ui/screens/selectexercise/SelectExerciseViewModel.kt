@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.selectexercise
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dailymacros.data.database.Exercise
@@ -7,14 +8,16 @@ import com.example.dailymacros.data.database.ExerciseInsideDay
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 
 data class SelectExerciseState(val exerciseList: List<Exercise>)
 
 interface SelectExerciseActions {
-    fun getExerciseList(): Job
     fun insertExerciseInsideDay(id: Long?, exercise: Exercise, date:String, duration: Int): Job
     fun deleteExercise(exercise: Exercise): Job
 }
@@ -22,17 +25,13 @@ interface SelectExerciseActions {
 class SelectExerciseViewModel(
     private val dailyMacrosRepository: DailyMacrosRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SelectExerciseState(emptyList()))
-    val state = _state.asStateFlow()
-    fun changeState(newState: SelectExerciseState) {
-        _state.value = newState
-    }
+    val state = dailyMacrosRepository.exercises.map { SelectExerciseState(it) }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = SelectExerciseState(emptyList())
+    )
 
     val actions = object : SelectExerciseActions {
-        override fun getExerciseList() = viewModelScope.launch {
-            val exerciseList = dailyMacrosRepository.exercises.toList().flatten()
-            changeState(SelectExerciseState(exerciseList))
-        }
         override fun insertExerciseInsideDay(id: Long?, exercise: Exercise, date:String, duration: Int) = viewModelScope.launch {
             dailyMacrosRepository.upsertExerciseInsideDay(ExerciseInsideDay(id?:0L, exercise.name, date, duration))
         }

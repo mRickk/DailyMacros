@@ -67,9 +67,9 @@ fun NavGraph(
             Settings(navController, themeState, settingsViewModel::changeTheme)
         }
         composable(NavigationRoute.SelectExercise.route) {
-            SelectExerciseScreen(navController,
-                koinViewModel<SelectExerciseViewModel>().actions,
-                koinViewModel<SelectExerciseViewModel>().state.collectAsStateWithLifecycle().value)
+            val selectExerciseVM = koinViewModel<SelectExerciseViewModel>()
+            val state by selectExerciseVM.state.collectAsStateWithLifecycle()
+            SelectExerciseScreen(navController, selectExerciseVM, state)
         }
         composable(NavigationRoute.AddExercise.route) {
             AddExerciseScreen(navController,

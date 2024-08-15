@@ -80,7 +80,7 @@ fun AddExerciseScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Add Exercise")
+                Text("Add exercise")
             }
         }
     }
