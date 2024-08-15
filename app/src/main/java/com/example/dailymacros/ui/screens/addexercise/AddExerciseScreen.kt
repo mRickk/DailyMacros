@@ -21,20 +21,32 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.Exercise
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExerciseScreen(
     navController: NavHostController,
-    actions: AddExerciseActions
+    addExerciseVM: AddExerciseViewModel,
+    exerciseNullName: String?
 ) {
+    if (exerciseNullName != null) {
+        addExerciseVM.actions.getExercise(exerciseNullName)
+    }
+    val exercise = addExerciseVM.state.exercise
     val exerciseName = remember { mutableStateOf("") }
     val exerciseDescription = remember { mutableStateOf("") }
     val kcalBurnedPerHour = remember { mutableStateOf("") }
     val isFormValid = remember {
         derivedStateOf {
-            exerciseName.value.isNotBlank() && kcalBurnedPerHour.value.isNotBlank() && kcalBurnedPerHour.value.toFloatOrNull() != null
+            exerciseName.value.isNotBlank() && kcalBurnedPerHour.value.isNotBlank() && kcalBurnedPerHour.value.toIntOrNull() != null
         }
+    }
+
+    if (exercise != null) {
+        exerciseName.value = exercise.name
+        exerciseDescription.value = exercise.description ?: ""
+        kcalBurnedPerHour.value = exercise.kcalBurnedSec.times(3600).toString()
     }
 
     Scaffold(
@@ -54,16 +66,16 @@ fun AddExerciseScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = kcalBurnedPerHour.value,
+                value = if (kcalBurnedPerHour.value.isNotBlank()) kcalBurnedPerHour.value.toFloat().roundToInt().toString() else kcalBurnedPerHour.value,
                 onValueChange = { kcalBurnedPerHour.value = it },
-                label = { Text("Kcal Burned per Hour") },
+                label = { Text("Kcal/hour") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
                 onClick = {
                     if (isFormValid.value) {
-                        actions.upsertExercise(
+                        addExerciseVM.actions.upsertExercise(
                             Exercise(
                                 name = exerciseName.value,
                                 description = exerciseDescription.value.takeIf { it.isNotBlank() },
@@ -80,7 +92,7 @@ fun AddExerciseScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Add exercise")
+                Text(if (exercise != null) "Modify exercise" else "Add exercise")
             }
         }
     }

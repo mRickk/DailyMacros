@@ -71,9 +71,10 @@ fun NavGraph(
             val state by selectExerciseVM.state.collectAsStateWithLifecycle()
             SelectExerciseScreen(navController, selectExerciseVM, state)
         }
-        composable(NavigationRoute.AddExercise.route) {
+        composable(NavigationRoute.AddExercise.route + "?exerciseName={exerciseName}") {backStackEntry ->
             AddExerciseScreen(navController,
-                koinViewModel<AddExerciseViewModel>().actions)
+                koinViewModel<AddExerciseViewModel>(),
+                backStackEntry.arguments?.getString("exerciseName"))
         }
         // AddFood inside SelectFood screen?
         // SelectAll and Add singular items?
