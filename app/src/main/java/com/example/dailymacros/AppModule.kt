@@ -7,6 +7,7 @@ import com.example.dailymacros.data.database.DailyMacrosDatabase
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.DatastoreRepository
 import com.example.dailymacros.data.repositories.ThemeRepository
+import com.example.dailymacros.ui.screens.addexercise.AddExerciseViewModel
 import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseViewModel
@@ -44,4 +45,5 @@ val appModule = module {
     viewModel { SignupViewModel(get(), get()) }
     viewModel { DiaryViewModel(get()) }
     viewModel { SelectExerciseViewModel(get()) }
+    viewModel { AddExerciseViewModel(get()) }
 }
