@@ -24,6 +24,7 @@ import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.ExerciseInfoBar
 import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.data.database.Exercise
+import kotlin.math.roundToInt
 
 @Composable
 fun SelectExerciseScreen(
@@ -34,6 +35,7 @@ fun SelectExerciseScreen(
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
     var durationMinutes by remember { mutableStateOf("") }
     var durationSeconds by remember { mutableStateOf("") }
+    var duration by remember { mutableIntStateOf(0)}
 
     val isDurationValid by remember {
         derivedStateOf {
@@ -108,11 +110,14 @@ fun SelectExerciseScreen(
 
                         Text(text = "Name: ${exercise.name}", fontSize = 20.sp)
                         Text(text = "Description: ${exercise.description ?: "No description"}", fontSize = 16.sp)
-                        Text(text = "Kcal: ${exercise.kcalBurnedSec * 3600}", fontSize = 16.sp)
+                        Text(text = "Kcal: ${(exercise.kcalBurnedSec * duration).roundToInt()}", fontSize = 16.sp)
 
                         OutlinedTextField(
                             value = durationMinutes,
-                            onValueChange = { durationMinutes = it },
+                            onValueChange = {
+                                duration = (it.toIntOrNull() ?: 0) * 60 + (durationSeconds.toIntOrNull() ?: 0)
+                                durationMinutes = it
+                            },
                             label = { Text("Minutes") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
@@ -120,7 +125,10 @@ fun SelectExerciseScreen(
 
                         OutlinedTextField(
                             value = durationSeconds,
-                            onValueChange = { durationSeconds = it },
+                            onValueChange = {
+                                duration = (durationMinutes.toIntOrNull() ?: 0) * 60 + (it.toIntOrNull() ?: 0)
+                                durationSeconds = it
+                            },
                             label = { Text("Seconds") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
@@ -132,7 +140,7 @@ fun SelectExerciseScreen(
                                     id = null,
                                     exercise = exercise,
                                     date = "2023-10-01", // Replace with actual date
-                                    duration = (durationMinutes.toIntOrNull() ?: 0) * 60 + (durationSeconds.toIntOrNull() ?: 0)
+                                    duration = duration
                                 )
                                 navController.navigate(NavigationRoute.Diary.route)
                             },
