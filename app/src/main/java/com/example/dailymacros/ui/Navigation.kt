@@ -37,7 +37,7 @@ fun NavGraph(
 
         composable(NavigationRoute.Login.route) {
             val loginViewModel = koinViewModel<LoginViewModel>()
-            Login(navController)
+            Login(navController, loginViewModel)
         }
         composable(NavigationRoute.Signin.route) {
             val signupViewModel = koinViewModel<SignupViewModel>()

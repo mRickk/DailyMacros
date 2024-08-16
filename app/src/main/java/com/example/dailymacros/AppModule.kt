@@ -40,7 +40,7 @@ val appModule = module {
     single { DatastoreRepository(get()) }
 
     viewModel { SettingsViewModel(get()) }
-    viewModel { LoginViewModel(get()) }
+    viewModel { LoginViewModel(get(), get()) }
     viewModel { SignupViewModel(get(), get()) }
     viewModel { DiaryViewModel(get()) }
     viewModel { SelectExerciseViewModel(get()) }

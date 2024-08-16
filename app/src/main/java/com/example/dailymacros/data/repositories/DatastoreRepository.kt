@@ -58,6 +58,7 @@ class DatastoreRepository (
 
     suspend fun saveUser(user: User) =
         dataStore.edit {
+            Log.v("DatastoreRepository", "Saving user from DataStore")
             it[EMAIL_KEY] = user.email
             it[PASSWORD_KEY] = user.password
             it[USERNAME_KEY] = user.username

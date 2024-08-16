@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,18 +25,41 @@ import androidx.navigation.NavHostController
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.DialogHost
 import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 
 @Composable
-fun Login(navController: NavHostController) {
+fun Login(navController: NavHostController,
+          loginViewModel: LoginViewModel) {
+    Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.value}")
+    
+
+    val content = LocalContext.current
     val email = remember { mutableStateOf("") }
+    val emailError = remember { mutableStateOf(false) }
     val password = remember { mutableStateOf("") }
+    val passwordError = remember { mutableStateOf(false) }
+    val loginError = remember { mutableStateOf(false) }
+
+    fun validateEmail(email: String): Boolean {
+        val regex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\$")
+        return !regex.matches(email)
+    }
+
+    fun validatePassword(password: String): Boolean {
+        return password.length < 8
+    }
+
+    //TODO: Add Biometric authentication
 
     Box(
         modifier = Modifier
@@ -58,6 +82,14 @@ fun Login(navController: NavHostController) {
                     color = Color.Black
                 )
             )
+            if(emailError.value) {
+                Text(
+                    text = "Invalid mail",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                )
+            }
             TextField(
                 value = password.value,
                 onValueChange = { password.value = it },
@@ -65,17 +97,57 @@ fun Login(navController: NavHostController) {
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 textStyle = TextStyle(
                     color = Color.Black
                 )
             )
+            if(passwordError.value) {
+                Text(
+                    text = "Invalid password",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                )
+            }
             Button(
-                onClick = { /* Handle login logic */ },
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                onClick = {
+                    if(validateEmail(email.value) || email.value.isEmpty()) {
+                        emailError.value = true
+                    }
+                    else if(validatePassword(password.value) || password.value.isEmpty()) {
+                        passwordError.value = true
+                    }
+                    else {
+                        Log.v("LoginScreen", "Email: ${email.value}, Password: ${password.value}, Sono dentro")
+                        loginViewModel.actions.login(email.value, password.value) {
+                            if(loginViewModel.loggedUser.value != null) {
+                                loginViewModel.actions.setUser(loginViewModel.loggedUser.value!!)
+                                navController.navigate(NavigationRoute.Diary.route)
+                            } else {
+                                loginError.value = true
+                            }
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
             ) {
                 Text("Login")
             }
+        }
+        if(loginError.value) {
+            Text(
+                text = "Invalid credentials",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .padding(start = 16.dp, bottom = 8.dp)
+                    .align(Alignment.BottomStart)
+            )
         }
         Box(
             modifier = Modifier
