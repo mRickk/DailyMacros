@@ -13,6 +13,7 @@ import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseViewModel
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.signup.SignupViewModel
+import com.example.dailymacros.ui.screens.profile.ProfileViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -46,4 +47,5 @@ val appModule = module {
     viewModel { DiaryViewModel(get()) }
     viewModel { SelectExerciseViewModel(get()) }
     viewModel { AddExerciseViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
 }

@@ -28,7 +28,7 @@ class DailyMacrosRepository(
 
     /* User */
     suspend fun insertUser(user: User) = userDAO.insert(user)
-
+    suspend fun setProfilePicUrl(email: String, pictureUrl: String) = userDAO.setProfilePicUrl(email, pictureUrl)
     suspend fun login(email: String, password: String) = userDAO.login(email, password)
 
     /* Food */

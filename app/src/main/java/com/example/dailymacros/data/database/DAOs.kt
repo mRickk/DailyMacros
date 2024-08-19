@@ -16,6 +16,9 @@ interface UserDAO {
     @Query("SELECT * FROM User WHERE email = :email AND password = :password")
     suspend fun login(email: String, password: String): User
 
+    @Query("UPDATE User SET pictureUrl = :pictureUrl WHERE email = :email")
+    suspend fun setProfilePicUrl(email: String, pictureUrl: String)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(user: User)
 }
