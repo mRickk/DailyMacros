@@ -68,7 +68,7 @@ fun Signup(navController: NavHostController,
     }
 
     fun validateNumber(number: String): Boolean {
-        return number.isNotEmpty() && number.any { !it.isDigit() }
+        return number.isNotEmpty() && number.toFloatOrNull() == null
     }
 
     Box(
@@ -135,7 +135,7 @@ fun Signup(navController: NavHostController,
             )
             if (passwordError.value) {
                 Text(
-                    text = "Invalid password",
+                    text = "Password must be at least 8 characters long",
                     color = Color.Red,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
