@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.diary
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.dailymacros.data.database.Meal
+import com.example.dailymacros.data.database.Food
+import com.example.dailymacros.data.database.FoodInsideMeal
+import com.example.dailymacros.data.database.FoodInsideMealWithFood
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.ExerciseInfo
@@ -49,7 +56,7 @@ fun DiaryScreen(
     actions: DiaryActions,
     state: DiaryState
 ) {
-    var dateState : DatePickerState? = null
+    val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
     Scaffold(
         topBar = { DMTopAppBar(navController) }
     ) { paddingValues ->
@@ -59,41 +66,36 @@ fun DiaryScreen(
             .fillMaxHeight()
         ) {
             Row() {
-                dateState = datePickerWithDialog()
+                selectedDateMillis.value = datePickerWithDialog()
             }
 
-            if (dateState == null) {
+            if (selectedDateMillis.value == null) {
                 Text("Please select a date.")
             } else {
-                val dateStamp = dateState!!.selectedDateMillis.toString()
-                actions.getMealsMap(dateStamp)
-                val diaryPair = state.diaryPair
+                Log.v("DiaryScreen", selectedDateMillis.value.toString())
+                val dateStamp = selectedDateMillis.value.toString()
 
-                val mealTypes = MealType.entries.toMutableList()
-                for (meal in diaryPair.first.keys) {
-                    if (mealTypes.contains(meal.type)) {
-                        mealTypes.remove(meal.type)
-                    }
-                }
-                mealTypes.forEach { mT ->
-                    diaryPair.first[Meal(mT, dateStamp)] = emptyList()
+                val foodInsideDate = state.foodInsideAllMeals.filter { it.foodInsideMeal.date == dateStamp }
+                val exercisesInsideDate = state.exercisesInsideAllDays.filter { it.exerciseInsideDay.date == dateStamp }
+
+                // Organize food data by meal type
+                val foodInsideMealsDate = MealType.entries.associateWith { meal ->
+                    foodInsideDate.filter { it.foodInsideMeal.mealType == meal }
                 }
 
-                val allFoodList = diaryPair.first.values.flatten()
-                val allExercisesList = diaryPair.second
                 // Calculate total grams and kcal for each macronutrient
-                val countCarbs = if (allFoodList.isNotEmpty()) allFoodList.sumOf { it.first.carbsPerc * it.second.toDouble() } else 0.0
-                val countFat = if (allFoodList.isNotEmpty()) allFoodList.sumOf { it.first.fatPerc * it.second.toDouble() } else 0.0
-                val countProtein = if (allFoodList.isNotEmpty()) allFoodList.sumOf { it.first.proteinPerc * it.second.toDouble() } else 0.0
+                val countCarbs = if (foodInsideDate.isNotEmpty()) foodInsideDate.sumOf { it.food.carbsPerc * it.foodInsideMeal.quantity.toDouble() } else 0.0
+                val countFat = if (foodInsideDate.isNotEmpty()) foodInsideDate.sumOf { it.food.fatPerc * it.foodInsideMeal.quantity.toDouble() } else 0.0
+                val countProtein = if (foodInsideDate.isNotEmpty()) foodInsideDate.sumOf { it.food.proteinPerc * it.foodInsideMeal.quantity.toDouble() } else 0.0
                 val countCarbsKcal = countCarbs * MacrosKcal.CARBS.kcal
                 val countFatKcal = countFat * MacrosKcal.FAT.kcal
                 val countProteinKcal = countProtein * MacrosKcal.PROTEIN.kcal
-                val countExerciseKcal = if (allExercisesList.isNotEmpty()) allExercisesList.sumOf { it.first.kcalBurnedSec * it.second.toDouble() } else 0.0
+                val countExerciseKcal = if (exercisesInsideDate.isNotEmpty()) exercisesInsideDate.sumOf { it.exercise.kcalBurnedSec * it.exerciseInsideDay.duration.toDouble() } else 0.0
                 val countKcal = countCarbsKcal + countFatKcal + countProteinKcal - countExerciseKcal
 
                 LazyColumn(
                         modifier = Modifier.fillMaxSize() // Fills the available space
-                        ) {
+                ) {
                     item {
                         // Header section with calories and macros
                         Column(
@@ -129,17 +131,18 @@ fun DiaryScreen(
 
                     // Meals section
                     items(
-                        diaryPair.first.toList()
-                    ) { mealData ->
+                        foodInsideMealsDate.toList()
+                    ) { (mealType, p) ->
                         MealInfo(
-                            meal = mealData.first.type.string,
-                            foodInfoList = mealData.second.map { foodInsideMeal ->
+                            meal = mealType.string,
+                            foodInfoList = p.map { (fim, f) ->
                                 FoodInfoData(
-                                    food = foodInsideMeal.first.name,
-                                    quantity = foodInsideMeal.second.toFloat(),
-                                    carbsQty = 0f,
-                                    fatQty = 0f,
-                                    protQty = 0f
+                                    food = f.name,
+                                    quantity = fim.quantity,
+                                    carbsQty = f.carbsPerc * fim.quantity,
+                                    fatQty = f.fatPerc * fim.quantity,
+                                    protQty = f.proteinPerc * fim.quantity,
+                                    kcal = f.kcalPerc * fim.quantity
                                 )
                             },
                             navController = navController
@@ -149,14 +152,15 @@ fun DiaryScreen(
                     // Exercise section
                     item {
                         ExerciseInfo(
-                            exerciseInfoList = allExercisesList.map { exerciseInsideDay ->
+                            exerciseInfoList = exercisesInsideDate.map { (eid, e) ->
                                 ExerciseInfoData(
-                                    exercise = exerciseInsideDay.first.name,
-                                    caloriesBurned = exerciseInsideDay.first.kcalBurnedSec * exerciseInsideDay.second,
-                                    duration = exerciseInsideDay.second
+                                    exercise = e.name,
+                                    caloriesBurned = e.kcalBurnedSec * eid.duration,
+                                    duration = eid.duration
                                 )
                             },
-                            navController = navController
+                            navController = navController,
+                            dateStamp
                         )
                     }
 

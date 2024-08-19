@@ -30,7 +30,8 @@ import kotlin.math.roundToInt
 fun SelectExerciseScreen(
     navController: NavHostController,
     viewModel: SelectExerciseViewModel,
-    state: SelectExerciseState
+    state: SelectExerciseState,
+    date: String?
 ) {
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
     var durationMinutes by remember { mutableStateOf("") }
@@ -139,7 +140,7 @@ fun SelectExerciseScreen(
                                 viewModel.actions.insertExerciseInsideDay(
                                     id = null,
                                     exercise = exercise,
-                                    date = "2023-10-01", // Replace with actual date
+                                    date = date!!,
                                     duration = duration
                                 )
                                 navController.navigate(NavigationRoute.Diary.route)
@@ -149,7 +150,7 @@ fun SelectExerciseScreen(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             ),
-                            enabled = isDurationValid
+                            enabled = isDurationValid && date != null
                         ) {
                             Text("Insert exercise")
                         }

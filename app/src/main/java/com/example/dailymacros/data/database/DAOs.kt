@@ -38,30 +38,17 @@ interface FoodDAO {
 
 @Dao
 interface FoodInsideMealDAO {
+    @Query("SELECT FoodInsideMeal.* , Food.* FROM FoodInsideMeal INNER JOIN Food ON FoodInsideMeal.foodName = Food.name WHERE date = :date AND mealType = :mealType")
+    fun getFoodInsideMeal(date: String, mealType: MealType): Flow<List<FoodInsideMealWithFood>>
 
-    @Query("SELECT * FROM FoodInsideMeal WHERE mealDate = :mealDate AND mealType = :mealType")
-    fun getFoodInsideMeal(mealDate: String, mealType: MealType): Flow<List<FoodInsideMeal>>
+    @Query("SELECT FoodInsideMeal.* , Food.* FROM FoodInsideMeal INNER JOIN Food ON FoodInsideMeal.foodName = Food.name")
+    fun getFoodInsideAllMeals(): Flow<List<FoodInsideMealWithFood>>
 
     @Upsert
     suspend fun upsert(foodInsideMeal: FoodInsideMeal)
 
-    @Query("DELETE FROM FoodInsideMeal WHERE mealDate = :mealDate AND mealType = :mealType AND foodName = :foodName")
-    suspend fun removeFoodInsideMeal(mealDate: String, mealType: MealType, foodName: String)
-}
-
-@Dao
-interface MealDAO {
-
-    @Query("SELECT * FROM Meal WHERE date = :date")
-    fun getMeals(date: String): Flow<List<Meal>>
-
-    @Upsert
-    suspend fun upsert(meal: Meal)
-
-    // Delete a meal if is empty (with no food inside)
-    @Query("DELETE FROM Meal WHERE date = :date AND type = :mealType")
-    suspend fun deleteMeal(date: String, mealType: MealType)
-
+    @Query("DELETE FROM FoodInsideMeal WHERE date = :date AND mealType = :mealType AND foodName = :foodName")
+    suspend fun removeFoodInsideMeal(date: String, mealType: MealType, foodName: String)
 }
 
 @Dao
@@ -85,6 +72,9 @@ interface ExerciseInsideDayDAO {
 
         @Query("SELECT * FROM ExerciseInsideDay WHERE date = :date")
         fun getExercisesInsideDay(date: String): Flow<List<ExerciseInsideDay>>
+
+        @Query("SELECT ExerciseInsideDay.*, Exercise.* FROM ExerciseInsideDay INNER JOIN Exercise ON ExerciseInsideDay.exerciseName = Exercise.name")
+        fun getExercisesInsideAllDays(): Flow<List<ExerciseInsideDayWithExercise>>
 
         @Upsert
         suspend fun upsert(exerciseInsideDay: ExerciseInsideDay)

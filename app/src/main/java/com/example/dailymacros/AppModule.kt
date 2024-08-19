@@ -34,7 +34,6 @@ val appModule = module {
         get<DailyMacrosDatabase>().userDAO(),
         get<DailyMacrosDatabase>().foodDAO(),
         get<DailyMacrosDatabase>().foodInsideMealDAO(),
-        get<DailyMacrosDatabase>().mealDAO(),
         get<DailyMacrosDatabase>().exerciseDAO(),
         get<DailyMacrosDatabase>().exerciseInsideDayDAO())
     }

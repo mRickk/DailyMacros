@@ -20,25 +20,25 @@ fun ExerciseInfoBar(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(8.dp)) {
-        Text(
-            text = exercise,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge
-        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${(duration / 60)}min" + if (duration % 60 != 0) "${duration % 60.0}s" else "", // Display duration in min and s
-                color = MaterialTheme.colorScheme.onSecondary,
-                style = MaterialTheme.typography.bodyMedium
+                text = exercise,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                text = "${caloriesBurned.roundToInt()} kcal",
+                text = "-${caloriesBurned.roundToInt()} kcal",
                 color = MaterialTheme.colorScheme.onSecondary,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
         }
+        Text(
+            text = "${(duration / 60)}min" + if (duration % 60 != 0) "${duration % 60.0}s" else "", // Display duration in min and s
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }

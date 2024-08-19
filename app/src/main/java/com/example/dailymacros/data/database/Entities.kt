@@ -1,5 +1,6 @@
 package com.example.dailymacros.data.database
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -30,18 +31,12 @@ data class Food(
     val unit: FoodUnit
 )
 
-@Entity(primaryKeys = ["foodName", "mealDate", "mealType"])
+@Entity(primaryKeys = ["foodName", "date", "mealType"])
 data class FoodInsideMeal(
     val foodName: String,
-    val mealDate: String,
+    val date: String,
     val mealType: MealType,
     val quantity: Float
-)
-
-@Entity(primaryKeys = ["type", "date"])
-data class Meal(
-    val type: MealType,
-    val date: String
 )
 
 @Entity
@@ -57,6 +52,16 @@ data class ExerciseInsideDay(
     val exerciseName: String,
     val date: String,
     val duration: Int
+)
+
+data class FoodInsideMealWithFood(
+    @Embedded val foodInsideMeal: FoodInsideMeal,
+    @Embedded val food: Food
+)
+
+data class ExerciseInsideDayWithExercise(
+    @Embedded val exerciseInsideDay: ExerciseInsideDay,
+    @Embedded val exercise: Exercise
 )
 
 enum class MealType(val string: String) {

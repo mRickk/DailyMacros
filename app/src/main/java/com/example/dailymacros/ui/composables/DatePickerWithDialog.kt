@@ -32,6 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
 
@@ -39,10 +42,13 @@ import java.util.Locale
 @Composable
 fun datePickerWithDialog(
     modifier: Modifier = Modifier
-): DatePickerState {
-    var selectedDateMillis by remember { mutableStateOf<Long?>(Date().time) }
+): Long? {
+    val startOfDayMillis = LocalDate.now()
+        .atStartOfDay(ZoneOffset.UTC)
+        .toInstant()
+        .toEpochMilli()
+    var selectedDateMillis by remember { mutableStateOf<Long?>(startOfDayMillis) }
     val dateState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
-    Log.v("DiaryScreen", dateState.selectedDateMillis.toString())
     var showDialog by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     Column(
@@ -62,9 +68,7 @@ fun datePickerWithDialog(
         ) {
             Button(
                 onClick = {
-                    selectedDateMillis?.let {
-                        selectedDateMillis = it - DateUtils.DAY_IN_MILLIS
-                    }
+                    selectedDateMillis = selectedDateMillis!! - DateUtils.DAY_IN_MILLIS
                 },
                 enabled = selectedDateMillis != null,
                 colors = ButtonDefaults.buttonColors(
@@ -89,9 +93,7 @@ fun datePickerWithDialog(
             )
             Button(
                 onClick = {
-                    selectedDateMillis?.let {
-                        selectedDateMillis = it + DateUtils.DAY_IN_MILLIS
-                    }
+                    selectedDateMillis = selectedDateMillis!! + DateUtils.DAY_IN_MILLIS
                 },
                 enabled = selectedDateMillis != null,
                 colors = ButtonDefaults.buttonColors(
@@ -183,5 +185,5 @@ fun datePickerWithDialog(
             }
         }
     }
-    return dateState
+    return selectedDateMillis
 }

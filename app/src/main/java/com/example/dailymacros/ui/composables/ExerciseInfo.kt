@@ -28,14 +28,14 @@ import kotlin.math.roundToInt
 fun ExerciseInfo(
     exerciseInfoList: List<ExerciseInfoData>,
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    date : String
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     // Calculate total calories burned
     val totalCalories = if (exerciseInfoList.isNotEmpty()) exerciseInfoList.sumOf { it.caloriesBurned.toDouble() } else 0.0
 
-    Column(modifier = modifier.padding(horizontal = 12.dp, vertical = 20.dp).clip(RoundedCornerShape(12.dp))) {
+    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp).clip(RoundedCornerShape(12.dp))) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +55,7 @@ fun ExerciseInfo(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = "${totalCalories.roundToInt()} kcal",
+                    text = "-${totalCalories.roundToInt()} kcal",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -91,7 +91,7 @@ fun ExerciseInfo(
                     Divider(color = MaterialTheme.colorScheme.surface, thickness = 1.dp)
                 }
                 Button(
-                    onClick = { navController.navigate(NavigationRoute.SelectExercise.route) },
+                    onClick = { navController.navigate(NavigationRoute.SelectExercise.route + "?date=${date}") },
                     modifier = Modifier
                         .width(180.dp)
                         .padding(top = 8.dp)

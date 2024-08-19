@@ -74,7 +74,7 @@ fun MealInfo(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = "${totalKcal.roundToInt()}kcal",
+                    text = "${totalKcal.roundToInt()} kcal",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -164,6 +164,7 @@ fun MealInfo(
                         carbsQty = foodInfo.carbsQty,
                         fatQty = foodInfo.fatQty,
                         protQty = foodInfo.protQty,
+                        kcal = foodInfo.kcal,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Divider(color = MaterialTheme.colorScheme.surface, thickness = 1.dp)
@@ -188,5 +189,6 @@ data class FoodInfoData(
     val quantity: Float,
     val carbsQty: Float,
     val fatQty: Float,
-    val protQty: Float
+    val protQty: Float,
+    val kcal: Float
 )

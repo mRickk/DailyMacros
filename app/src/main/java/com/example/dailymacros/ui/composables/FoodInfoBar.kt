@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.dailymacros.ui.theme.Carbs
 import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
+import kotlin.math.roundToInt
 
 @Composable
 fun FoodInfo(
@@ -24,14 +25,25 @@ fun FoodInfo(
     carbsQty: Float,
     fatQty: Float,
     protQty: Float,
+    kcal: Float,
     modifier: Modifier = Modifier
 ) {
     return Column(modifier = modifier.padding(8.dp)) {
-        Text(
-            text = food,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = food,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "${kcal.roundToInt()} kcal",
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween

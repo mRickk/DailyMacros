@@ -4,22 +4,22 @@ import com.example.dailymacros.data.database.Food
 import com.example.dailymacros.data.database.FoodDAO
 import com.example.dailymacros.data.database.FoodInsideMeal
 import com.example.dailymacros.data.database.FoodInsideMealDAO
-import com.example.dailymacros.data.database.Meal
-import com.example.dailymacros.data.database.MealDAO
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.data.database.Exercise
 import com.example.dailymacros.data.database.ExerciseDAO
 import com.example.dailymacros.data.database.ExerciseInsideDay
 import com.example.dailymacros.data.database.ExerciseInsideDayDAO
+import com.example.dailymacros.data.database.ExerciseInsideDayWithExercise
+import com.example.dailymacros.data.database.FoodInsideMealWithFood
 import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.database.UserDAO
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 class DailyMacrosRepository(
     private val userDAO: UserDAO,
     private val foodDAO: FoodDAO,
     private val foodInsideMealDAO: FoodInsideMealDAO,
-    private val MealDAO: MealDAO,
     private val ExerciseDAO: ExerciseDAO,
     private val ExerciseInsideDayDAO: ExerciseInsideDayDAO
 ) {
@@ -37,15 +37,11 @@ class DailyMacrosRepository(
     suspend fun getFood(name: String) = foodDAO.getFood(name)
     suspend fun deleteFood(name: String) = foodDAO.deleteFood(name)
 
-    /* Meal */
-    suspend fun getMeals(date: String) = MealDAO.getMeals(date)
-    suspend fun upsertMeal(meal: Meal) = MealDAO.upsert(meal)
-    suspend fun deleteMeal(date: String, mealType: MealType) = MealDAO.deleteMeal(date, mealType)
-
     /* FoodInsideMeal */
-    suspend fun getFoodsInsideMeal(meal: Meal) = foodInsideMealDAO.getFoodInsideMeal(meal.date, meal.type)
+    var foodInsideAllMeals: Flow<List<FoodInsideMealWithFood>> = foodInsideMealDAO.getFoodInsideAllMeals()
+    suspend fun getFoodsInsideMeal(date: String, mealType: MealType) = foodInsideMealDAO.getFoodInsideMeal(date, mealType)
     suspend fun upsertFoodInsideMeal(foodInsideMeal: FoodInsideMeal) = foodInsideMealDAO.upsert(foodInsideMeal)
-    suspend fun deleteFoodsInsideMeal(meal: Meal, food: Food) = foodInsideMealDAO.removeFoodInsideMeal(meal.date, meal.type, food.name)
+    suspend fun deleteFoodsInsideMeal(date: String, mealType: MealType, foodName: String) = foodInsideMealDAO.removeFoodInsideMeal(date, mealType, foodName)
 
     /* Exercise */
     val exercises: Flow<List<Exercise>> = ExerciseDAO.getAllExercises()
@@ -54,6 +50,7 @@ class DailyMacrosRepository(
     suspend fun deleteExercise(name: String) = ExerciseDAO.deleteExercise(name)
 
     /* ExerciseInsideDay */
+    val exercisesInsideAllDays: Flow<List<ExerciseInsideDayWithExercise>> = ExerciseInsideDayDAO.getExercisesInsideAllDays()
     suspend fun getExercisesInsideDay(date: String) = ExerciseInsideDayDAO.getExercisesInsideDay(date)
     suspend fun upsertExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.upsert(exerciseInsideDay)
     suspend fun deleteExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.removeExerciseInsideDay(exerciseInsideDay.id)
