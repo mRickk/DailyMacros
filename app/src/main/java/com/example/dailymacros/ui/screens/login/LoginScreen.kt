@@ -40,8 +40,11 @@ import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 @Composable
 fun Login(navController: NavHostController,
           loginViewModel: LoginViewModel) {
-    Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.value}")
-    
+    Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.user}")
+    if(loginViewModel.loggedUser.user != null) {
+        loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
+        navController.navigate(NavigationRoute.Diary.route)
+    }
 
     val content = LocalContext.current
     val email = remember { mutableStateOf("") }
@@ -123,8 +126,8 @@ fun Login(navController: NavHostController,
                     else {
                         Log.v("LoginScreen", "Email: ${email.value}, Password: ${password.value}, Sono dentro")
                         loginViewModel.actions.login(email.value, password.value) {
-                            if(loginViewModel.loggedUser.value != null) {
-                                loginViewModel.actions.setUser(loginViewModel.loggedUser.value!!)
+                            if(loginViewModel.loggedUser.user != null) {
+                                loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
                                 navController.navigate(NavigationRoute.Diary.route)
                             } else {
                                 loginError.value = true

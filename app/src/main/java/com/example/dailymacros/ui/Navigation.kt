@@ -16,6 +16,7 @@ import com.example.dailymacros.ui.screens.login.Login
 import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.overview.Overview
 import com.example.dailymacros.ui.screens.profile.Profile
+import com.example.dailymacros.ui.screens.profile.ProfileViewModel
 import com.example.dailymacros.ui.screens.search.Search
 import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseScreen
 import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseViewModel
@@ -54,7 +55,8 @@ fun NavGraph(
             Search(navController)
         }
         composable(NavigationRoute.Profile.route) {
-            Profile(navController)
+            val profileViewModel = koinViewModel<ProfileViewModel>()
+            Profile(navController, profileViewModel.loggedUser, profileViewModel.actions)
         }
         composable(NavigationRoute.Diet.route) {
             Diet(navController)
