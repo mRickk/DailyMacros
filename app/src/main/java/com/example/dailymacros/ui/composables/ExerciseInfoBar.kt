@@ -36,7 +36,7 @@ fun ExerciseInfoBar(
             )
         }
         Text(
-            text = "${(duration / 60)}min" + if (duration % 60 != 0) "${duration % 60.0}s" else "", // Display duration in min and s
+            text = "${(duration / 60)}min" + if (duration % 60 != 0) " ${(duration % 60.0).roundToInt()}s" else "", // Display duration in min and s
             color = MaterialTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.bodyMedium
         )
