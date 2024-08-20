@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.profile
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,6 +14,7 @@ import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.DatastoreRepository
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -54,7 +56,8 @@ class ProfileViewModel(
     }
     init {
         viewModelScope.launch {
-            loggedUser = UserState(datastoreRepository.user.firstOrNull())
+            loggedUser = UserState(datastoreRepository.user.first())
+            Log.v("profileViewModel", "Sono init: ${loggedUser.user}")
         }
     }
 }

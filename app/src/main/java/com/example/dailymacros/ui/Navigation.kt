@@ -62,7 +62,7 @@ fun NavGraph(
         }
         composable(NavigationRoute.Profile.route) {
             val profileViewModel = koinViewModel<ProfileViewModel>()
-            Profile(navController, profileViewModel.loggedUser, profileViewModel.actions)
+            Profile(navController, profileViewModel)
         }
         composable(NavigationRoute.Diet.route) {
             Diet(navController)
