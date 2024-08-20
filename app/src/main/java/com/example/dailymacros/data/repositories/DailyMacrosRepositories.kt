@@ -14,7 +14,6 @@ import com.example.dailymacros.data.database.FoodInsideMealWithFood
 import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.database.UserDAO
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 class DailyMacrosRepository(
     private val userDAO: UserDAO,
@@ -53,6 +52,6 @@ class DailyMacrosRepository(
     val exercisesInsideAllDays: Flow<List<ExerciseInsideDayWithExercise>> = ExerciseInsideDayDAO.getExercisesInsideAllDays()
     suspend fun getExercisesInsideDay(date: String) = ExerciseInsideDayDAO.getExercisesInsideDay(date)
     suspend fun upsertExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.upsert(exerciseInsideDay)
-    suspend fun deleteExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.removeExerciseInsideDay(exerciseInsideDay.id)
+    suspend fun deleteExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.removeExerciseInsideDay(exerciseInsideDay.exerciseName, exerciseInsideDay.date)
 
 }

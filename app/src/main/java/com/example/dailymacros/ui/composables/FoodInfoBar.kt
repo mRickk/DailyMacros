@@ -13,6 +13,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.example.dailymacros.data.database.FoodUnit
 import com.example.dailymacros.ui.theme.Carbs
 import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
@@ -21,11 +22,12 @@ import kotlin.math.roundToInt
 @Composable
 fun FoodInfo(
     food: String,
-    quantity: String,
+    quantity: Float,
     carbsQty: Float,
     fatQty: Float,
     protQty: Float,
     kcal: Float,
+    unit: String,
     modifier: Modifier = Modifier
 ) {
     return Column(modifier = modifier.padding(8.dp)) {
@@ -49,7 +51,7 @@ fun FoodInfo(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = quantity,
+                text = "%.1f".format(quantity) + unit,
                 color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -57,15 +59,15 @@ fun FoodInfo(
                 text = buildAnnotatedString {
                     append("C:")
                     withStyle(style = SpanStyle(color = Carbs)) {
-                        append(carbsQty.toString() + "g")
+                        append("%.1f".format(carbsQty) + "g")
                     }
                     append(" F:")
                     withStyle(style = SpanStyle(color = Fat)) {
-                        append(fatQty.toString() + "g")
+                        append("%.1f".format(fatQty) + "g")
                     }
                     append(" P:")
                     withStyle(style = SpanStyle(color = Protein)) {
-                        append(protQty.toString() + "g")
+                        append("%.1f".format(protQty) + "g")
                     }
                 },
                 color = MaterialTheme.colorScheme.onSecondary,

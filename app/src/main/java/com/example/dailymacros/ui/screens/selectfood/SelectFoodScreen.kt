@@ -1,15 +1,15 @@
-package com.example.dailymacros.ui.screens.selectexercise
+package com.example.dailymacros.ui.screens.selectfood
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,62 +21,66 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.ui.composables.DMTopAppBar
-import com.example.dailymacros.ui.composables.ExerciseInfoBar
 import com.example.dailymacros.ui.NavigationRoute
-import com.example.dailymacros.data.database.Exercise
+import com.example.dailymacros.data.database.Food
+import com.example.dailymacros.data.database.MealType
+import com.example.dailymacros.ui.composables.FoodInfo
 import kotlin.math.roundToInt
 
 @Composable
-fun SelectExerciseScreen(
+fun SelectFoodScreen(
     navController: NavHostController,
-    viewModel: SelectExerciseViewModel,
-    state: SelectExerciseState,
+    viewModel: SelectFoodViewModel,
+    state: SelectFoodState,
     date: String?,
-    exerciseName: String?,
-    selectedDuration: Int?
+    mealType: MealType?,
+    selectedFoodNameNull: String?,
+    selectedQuantity: Float?
 ) {
-    var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
-    var durationMinutes by remember { mutableStateOf((selectedDuration?.div(60).toString()) ?: "") }
-    var durationSeconds by remember { mutableStateOf((selectedDuration?.mod(60).toString()) ?: "") }
-    var duration by remember { mutableIntStateOf(selectedDuration ?: 0)}
+    val defaultQty = 100f
+    var selectedFood by remember { mutableStateOf<Food?>(null) }
+    var quantity by remember { mutableFloatStateOf(selectedQuantity ?: 100f) }
 
-    val isDurationValid by remember {
-        derivedStateOf {
-            (durationMinutes.toIntOrNull() ?: 0) * 60 + (durationSeconds.toIntOrNull() ?: 0) > 0
-        }
+    val isQuantityValid by remember {
+        derivedStateOf { quantity > 0f }
     }
-    selectedExercise = state.exerciseList.firstOrNull { it.name == exerciseName }
+    selectedFood = state.foodList.firstOrNull { it.name == selectedFoodNameNull }
     Scaffold(
         topBar = { DMTopAppBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(NavigationRoute.AddExercise.route) },
+                onClick = { navController.navigate(NavigationRoute.AddFood.route) },
                 modifier = Modifier.padding(8.dp),
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add new Exercise",
+                    contentDescription = "Add new Food",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
     ) { paddingValues ->
+
         Box(modifier = Modifier.padding(paddingValues)) {
             LazyColumn {
-                items(state.exerciseList) { exercise ->
-                    ExerciseInfoBar(
-                        exercise = exercise.name,
-                        caloriesBurned = exercise.kcalBurnedSec * 3600,
-                        duration = 3600,
+                items(state.foodList) { food ->
+                    FoodInfo(
+                        food = food.name,
+                        quantity = defaultQty,
+                        carbsQty = food.carbsPerc * defaultQty,
+                        fatQty = food.fatPerc * defaultQty,
+                        protQty = food.proteinPerc * defaultQty,
+                        kcal = food.kcalPerc * defaultQty,
+                        unit = food.unit.string,
                         modifier = Modifier.clickable {
-                            selectedExercise = exercise
+                            selectedFood = food
                         }
                     )
                 }
             }
 
-            selectedExercise?.let { exercise ->
+            selectedFood?.let { food ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -95,66 +99,61 @@ fun SelectExerciseScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            IconButton(onClick = { selectedExercise = null }) {
+                            IconButton(onClick = { selectedFood = null }) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = "Close"
                                 )
                             }
                             IconButton(onClick = {
-                                navController.navigate(NavigationRoute.AddExercise.route + "?exerciseName=${exercise.name}")
+                                navController.navigate(NavigationRoute.AddFood.route + "?foodName=${food.name}")
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
-                                    contentDescription = "Modify Exercise"
+                                    contentDescription = "Modify Food"
                                 )
                             }
                         }
 
-                        Text(text = "Name: ${exercise.name}", fontSize = 20.sp)
-                        Text(text = "Description: ${exercise.description ?: "-"}", fontSize = 16.sp)
-                        Text(text = "Calories: ${(exercise.kcalBurnedSec * duration).roundToInt()} kcal", fontSize = 16.sp)
+                        Text(text = "Name: ${food.name}", fontSize = 20.sp)
+                        Text(text = "Description: ${food.description ?: "-"}", fontSize = 16.sp)
+                        Text(text = "Calories: ${(food.kcalPerc * quantity).roundToInt()} kcal", fontSize = 16.sp)
+                        Text(text = "Carbs: ${"%.1f".format(food.carbsPerc * quantity)}g", fontSize = 16.sp)
+                        Text(text = "Fat: ${"%.1f".format(food.fatPerc * quantity)}g", fontSize = 16.sp)
+                        Text(text = "Protein: ${"%.1f".format(food.proteinPerc * quantity)}g", fontSize = 16.sp)
 
                         OutlinedTextField(
-                            value = durationMinutes,
+                            value = quantity.toString(),
                             onValueChange = {
-                                duration = (it.toIntOrNull() ?: 0) * 60 + (durationSeconds.toIntOrNull() ?: 0)
-                                durationMinutes = it
+                                quantity = (it.toFloatOrNull() ?: 0f)
                             },
-                            label = { Text("Minutes") },
+                            label = { Text("Quantity (${food.unit.string})") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                        )
-
-                        OutlinedTextField(
-                            value = durationSeconds,
-                            onValueChange = {
-                                duration = (durationMinutes.toIntOrNull() ?: 0) * 60 + (it.toIntOrNull() ?: 0)
-                                durationSeconds = it
-                            },
-                            label = { Text("Seconds") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp)
                         )
 
                         Button(
                             onClick = {
-                                viewModel.actions.insertExerciseInsideDay(
-                                    id = null,
-                                    exercise = exercise,
+                                viewModel.actions.insertFoodInsideMeal(
+                                    food = food,
                                     date = date!!,
-                                    duration = duration
+                                    mealType = mealType!!,
+                                    quantity = quantity
                                 )
                                 navController.navigate(NavigationRoute.Diary.route)
                             },
-                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             ),
-                            enabled = isDurationValid && date != null
+                            enabled = isQuantityValid && date != null && mealType != null
                         ) {
-                            Text("Insert exercise")
+                            Text("Insert food")
                         }
                     }
                 }

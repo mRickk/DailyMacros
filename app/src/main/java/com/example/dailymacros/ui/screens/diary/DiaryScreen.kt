@@ -15,14 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,9 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.dailymacros.data.database.Food
-import com.example.dailymacros.data.database.FoodInsideMeal
-import com.example.dailymacros.data.database.FoodInsideMealWithFood
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.ExerciseInfo
@@ -134,7 +128,6 @@ fun DiaryScreen(
                         foodInsideMealsDate.toList()
                     ) { (mealType, p) ->
                         MealInfo(
-                            meal = mealType.string,
                             foodInfoList = p.map { (fim, f) ->
                                 FoodInfoData(
                                     food = f.name,
@@ -142,10 +135,14 @@ fun DiaryScreen(
                                     carbsQty = f.carbsPerc * fim.quantity,
                                     fatQty = f.fatPerc * fim.quantity,
                                     protQty = f.proteinPerc * fim.quantity,
-                                    kcal = f.kcalPerc * fim.quantity
+                                    kcal = f.kcalPerc * fim.quantity,
+                                    unit = f.unit.string
                                 )
                             },
-                            navController = navController
+                            navController = navController,
+                            mealType = mealType,
+                            date = dateStamp,
+                            actions
                         )
                     }
 
@@ -160,7 +157,8 @@ fun DiaryScreen(
                                 )
                             },
                             navController = navController,
-                            dateStamp
+                            date = dateStamp,
+                            actions
                         )
                     }
 
@@ -178,7 +176,6 @@ data class MealInfoData(
 
 @Composable
 fun MacrosBar(label: String, count: Float, total: Float, color: Color, modifier: Modifier = Modifier) {
-    val total = total.roundToInt()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val barWidth = screenWidth / 3 * 0.8f // Slightly less than 1/3 of the screen width
@@ -190,7 +187,7 @@ fun MacrosBar(label: String, count: Float, total: Float, color: Color, modifier:
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "$label: ${count}/${total} g",
+            text = "$label: ${count.roundToInt()}/${total.roundToInt()} g",
             color = color,
             style = MaterialTheme.typography.bodyMedium
         )
