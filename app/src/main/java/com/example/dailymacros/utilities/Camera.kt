@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.SystemClock
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -29,28 +30,29 @@ interface Camera {
 @Composable
 fun rememberCamera(onPhotoTaken: (uri: Uri) -> Unit): Camera {
     val context = LocalContext.current
-    val uri = remember {
-        val imageFile = File.createTempFile("profile_image", ".jpg", context.cacheDir)
-        FileProvider.getUriForFile(context, context.packageName + ".fileprovider", imageFile)
+    val imageUri = remember {
+        val imageFile = File.createTempFile("profile_image", ".jpg", context.externalCacheDir)
+        Log.v("Camera", "Image file: ${imageFile.absolutePath}")
+        FileProvider.getUriForFile(context, context.packageName + ".provider", imageFile)
     }
     var capturedImageUri by remember { mutableStateOf(Uri.EMPTY) }
 
     val cameraActivityLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { pictureTaken ->
             if (pictureTaken) {
-                capturedImageUri = uri
+                capturedImageUri = imageUri
                 saveImageToStorage(capturedImageUri, context.applicationContext.contentResolver)
-                onPhotoTaken(uri)
+                onPhotoTaken(imageUri)
             }
         }
     val cameraLauncher by remember {
         derivedStateOf {
             object : Camera {
                 override val imageURI: Uri
-                    get() = uri
+                    get() = imageUri
 
                 override fun takePicture() {
-                    cameraActivityLauncher.launch(uri)
+                    cameraActivityLauncher.launch(imageUri)
                 }
             }
         }
