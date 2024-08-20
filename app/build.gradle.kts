@@ -67,6 +67,9 @@ dependencies {
 
     implementation("androidx.room:room-common:$roomVersion")
 
+    //AsyncImage
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
     implementation("androidx.activity:activity-compose:1.9.1")
