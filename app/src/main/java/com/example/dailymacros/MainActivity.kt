@@ -15,14 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.dailymacros.ui.composables.AppBar
 import com.example.dailymacros.ui.theme.DailyMacrosTheme
 import com.example.dailymacros.ui.NavGraph
-
-import com.example.dailymacros.ui.NavigationRoute
-import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.NavBar
 
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
@@ -50,9 +45,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-                    Scaffold(
-                        bottomBar = { NavBar(navController) }
-                    ) {contentPadding ->
+                    Scaffold {contentPadding ->
                         NavGraph(navController = navController, Modifier.padding(contentPadding), settingsViewModel)
                     }
                 }

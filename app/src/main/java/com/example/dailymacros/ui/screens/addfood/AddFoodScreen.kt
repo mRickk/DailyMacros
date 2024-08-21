@@ -78,7 +78,7 @@ fun AddFoodScreen(
     }
 
     Scaffold(
-        topBar = { DMTopAppBar(navController) }
+        topBar = { DMTopAppBar(navController, showBackArrow = true) }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
             OutlinedTextField(
@@ -182,7 +182,7 @@ fun AddFoodScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text(if (food != null) "Modify food" else "Add food")
+                Text(if (food != null) "Modify food" else "Add new food")
             }
         }
     }

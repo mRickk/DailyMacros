@@ -35,6 +35,7 @@ import com.example.dailymacros.ui.composables.ExerciseInfo
 import com.example.dailymacros.ui.composables.ExerciseInfoData
 import com.example.dailymacros.ui.composables.FoodInfoData
 import com.example.dailymacros.ui.composables.MealInfo
+import com.example.dailymacros.ui.composables.NavBar
 import com.example.dailymacros.ui.composables.datePickerWithDialog
 import com.example.dailymacros.ui.theme.Cal
 import com.example.dailymacros.ui.theme.Carbs
@@ -52,7 +53,8 @@ fun DiaryScreen(
 ) {
     val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
     Scaffold(
-        topBar = { DMTopAppBar(navController) }
+        topBar = { DMTopAppBar(navController) },
+        bottomBar = { NavBar(navController, selectedIndex = 0) }
     ) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)

@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.profile
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.utilities.rememberCamera
 import com.example.dailymacros.utilities.rememberPermission
 import com.example.dailymacros.utilities.saveImageToStorage
@@ -104,77 +106,82 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
         }
     }
 
+    Scaffold (
+        topBar = { DMTopAppBar(navController = navController, showBackArrow = true, showProfile = false) }
+    ){ paddingValues ->
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Column(
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Profile Picture
-            ProfileImage(profileImage = profileViewModel.loggedUser.user?.pictureUrl?.toUri())
+                // Profile Picture
+                ProfileImage(profileImage = profileViewModel.loggedUser.user?.pictureUrl?.toUri())
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // User Information
-            profileViewModel.loggedUser.user?.let { user ->
-                UserInfoRow(title = "Email", value = user.email)
-                Divider()
-                UserInfoRow(title = "Username", value = user.username)
-                Divider()
-                UserInfoRow(title = "Height", value = user.height.toString(), unit = "cm")
-                Divider()
-                UserInfoRow(title = "Weight", value = user.weight.toString(), unit = "kg")
-                Divider()
-                UserInfoRow(title = "Gender", value = user.gender.string)
-                Divider()
-                UserInfoRow(title = "Age", value = user.age.toString())
-                Divider()
-                UserInfoRow(title = "Activity Level", value = user.activity.string)
-                Divider()
-                UserInfoRow(title = "Goal", value = user.goal.string)
+                // User Information
+                profileViewModel.loggedUser.user?.let { user ->
+                    UserInfoRow(title = "Email", value = user.email)
+                    Divider()
+                    UserInfoRow(title = "Username", value = user.username)
+                    Divider()
+                    UserInfoRow(title = "Height", value = user.height.toString(), unit = "cm")
+                    Divider()
+                    UserInfoRow(title = "Weight", value = user.weight.toString(), unit = "kg")
+                    Divider()
+                    UserInfoRow(title = "Gender", value = user.gender.string)
+                    Divider()
+                    UserInfoRow(title = "Age", value = user.age.toString())
+                    Divider()
+                    UserInfoRow(title = "Activity Level", value = user.activity.string)
+                    Divider()
+                    UserInfoRow(title = "Goal", value = user.goal.string)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Edit Profile Button
+                Button(onClick = {
+                    // Handle edit profile
+                }) {
+                    Text("Edit Profile")
+                }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Edit Profile Button
-            Button(onClick = {
-                // Handle edit profile
-            }) {
-                Text("Edit Profile")
-            }
-        }
-
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("Change Profile Picture") },
-                text = { Text("Choose an option") },
-                confirmButton = {
-                    Column {
-                        Button(onClick = {
-                            showDialog = false
-                            galleryLauncher.launch("image/*")
-                        }) {
-                            Text("Select from Gallery")
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = {
-                            showDialog = false
-                            cameraLauncher.takePicture()
-                        }) {
-                            Text("Take a Photo")
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text("Change Profile Picture") },
+                    text = { Text("Choose an option") },
+                    confirmButton = {
+                        Column {
+                            Button(onClick = {
+                                showDialog = false
+                                galleryLauncher.launch("image/*")
+                            }) {
+                                Text("Select from Gallery")
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(onClick = {
+                                showDialog = false
+                                cameraLauncher.takePicture()
+                            }) {
+                                Text("Take a Photo")
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

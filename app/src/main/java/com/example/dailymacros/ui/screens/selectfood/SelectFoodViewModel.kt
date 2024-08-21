@@ -20,7 +20,7 @@ data class SelectFoodState(val foodList: List<Food>)
 
 interface SelectFoodActions {
     fun insertFoodInsideMeal(food : Food, date : String, mealType: MealType, quantity: Float): Job
-    fun deleteFood(exercise: Exercise): Job
+    fun deleteFood(food: Food): Job
 }
 
 class SelectFoodViewModel(
@@ -37,8 +37,8 @@ class SelectFoodViewModel(
         override fun insertFoodInsideMeal(food : Food, date : String, mealType: MealType, quantity: Float) = viewModelScope.launch {
             dailyMacrosRepository.upsertFoodInsideMeal(FoodInsideMeal(food.name, date, mealType, quantity))
         }
-        override fun deleteFood(exercise: Exercise) = viewModelScope.launch {
-            dailyMacrosRepository.deleteExercise(exercise.name)
+        override fun deleteFood(food: Food) = viewModelScope.launch {
+            dailyMacrosRepository.deleteFood(food.name)
         }
     }
 }

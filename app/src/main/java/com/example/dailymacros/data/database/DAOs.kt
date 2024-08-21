@@ -52,6 +52,9 @@ interface FoodInsideMealDAO {
 
     @Query("DELETE FROM FoodInsideMeal WHERE date = :date AND mealType = :mealType AND foodName = :foodName")
     suspend fun removeFoodInsideMeal(date: String, mealType: MealType, foodName: String)
+
+    @Query("DELETE FROM FoodInsideMeal WHERE foodName = :foodName")
+    suspend fun removeFoodInsideAllMeals(foodName: String)
 }
 
 @Dao
@@ -84,4 +87,7 @@ interface ExerciseInsideDayDAO {
 
         @Query("DELETE FROM ExerciseInsideDay WHERE exerciseName = :exerciseName AND date = :date")
         suspend fun removeExerciseInsideDay(exerciseName: String, date: String)
+
+        @Query("DELETE FROM ExerciseInsideDay WHERE exerciseName = :exerciseName")
+        suspend fun removeExerciseInsideAllDays(exerciseName: String)
 }

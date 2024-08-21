@@ -10,12 +10,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,13 +42,14 @@ fun SelectFoodScreen(
     val defaultQty = 100f
     var selectedFood by remember { mutableStateOf<Food?>(null) }
     var quantity by remember { mutableFloatStateOf(selectedQuantity ?: 100f) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val isQuantityValid by remember {
         derivedStateOf { quantity > 0f }
     }
     selectedFood = state.foodList.firstOrNull { it.name == selectedFoodNameNull }
     Scaffold(
-        topBar = { DMTopAppBar(navController) },
+        topBar = { DMTopAppBar(navController, showBackArrow = true) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate(NavigationRoute.AddFood.route) },
@@ -113,6 +116,12 @@ fun SelectFoodScreen(
                                     contentDescription = "Modify Food"
                                 )
                             }
+                            IconButton(onClick = { showDialog = true }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete Food"
+                                )
+                            }
                         }
 
                         Text(text = "Name: ${food.name}", fontSize = 20.sp)
@@ -158,6 +167,37 @@ fun SelectFoodScreen(
                     }
                 }
             }
+        }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Delete ${selectedFood?.name}") },
+                text = {
+                    Text("Are you sure to permanently delete this food?", fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                    Text("\nWARNING: every record of this food inside the diary will be removed!", fontWeight = FontWeight.Bold)
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.actions.deleteFood(selectedFood!!)
+                            showDialog = false
+                            selectedFood = null
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        )
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { showDialog = false }) {
+                        Text("Cancel", color = MaterialTheme.colorScheme.onBackground)
+                    }
+                }
+            )
         }
     }
 }

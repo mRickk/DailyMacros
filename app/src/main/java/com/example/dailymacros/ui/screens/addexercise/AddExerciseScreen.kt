@@ -50,7 +50,7 @@ fun AddExerciseScreen(
     }
 
     Scaffold(
-        topBar = { DMTopAppBar(navController) }
+        topBar = { DMTopAppBar(navController, showBackArrow = true) }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
             OutlinedTextField(
@@ -92,7 +92,7 @@ fun AddExerciseScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text(if (exercise != null) "Modify exercise" else "Add exercise")
+                Text(if (exercise != null) "Modify exercise" else "Add new exercise")
             }
         }
     }

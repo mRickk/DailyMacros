@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import com.example.dailymacros.ui.composables.NavBar
 
 @Composable
 fun Overview(navController: NavHostController) {
     Scaffold (
-        topBar = { DMTopAppBar(navController) }
+        topBar = { DMTopAppBar(navController) },
+        bottomBar = { NavBar(navController, selectedIndex = 2) }
     ){paddingValues ->
         Text("Overview", modifier = Modifier.padding(paddingValues))
     }

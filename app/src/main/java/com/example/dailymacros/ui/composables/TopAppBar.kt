@@ -2,6 +2,7 @@ package com.example.dailymacros.ui.composables
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,7 +20,11 @@ import com.example.dailymacros.ui.NavigationRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DMTopAppBar(navController: NavHostController) {
+fun DMTopAppBar(
+    navController: NavHostController,
+    showBackArrow : Boolean = false,
+    showProfile: Boolean = true
+) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -32,12 +37,26 @@ fun DMTopAppBar(navController: NavHostController) {
                 overflow = TextOverflow.Ellipsis
             )
         },
+        navigationIcon = {
+            if (showBackArrow) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back button",
+                        tint = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
+            }
+        },
         actions = {
-            IconButton(onClick = {navController.navigate(NavigationRoute.Profile.route)}) {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Profile button"
-                )
+            if (showProfile) {
+                IconButton(onClick = { navController.navigate(NavigationRoute.Profile.route) }) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Profile button",
+                        tint = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
             }
         }
     )

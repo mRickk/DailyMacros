@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +40,8 @@ fun SelectExerciseScreen(
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
     var durationMinutes by remember { mutableStateOf(if (selectedDuration != null) (selectedDuration / 60).toString() else "") }
     var durationSeconds by remember { mutableStateOf(if (selectedDuration != null) (selectedDuration % 60).toString() else "") }
-    var duration by remember { mutableIntStateOf(selectedDuration ?: 0)}
+    var duration by remember { mutableIntStateOf(selectedDuration ?: 0) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val isDurationValid by remember {
         derivedStateOf {
@@ -47,7 +50,7 @@ fun SelectExerciseScreen(
     }
     selectedExercise = state.exerciseList.firstOrNull { it.name == exerciseName }
     Scaffold(
-        topBar = { DMTopAppBar(navController) },
+        topBar = { DMTopAppBar(navController, showBackArrow = true) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate(NavigationRoute.AddExercise.route) },
@@ -109,6 +112,12 @@ fun SelectExerciseScreen(
                                     contentDescription = "Modify Exercise"
                                 )
                             }
+                            IconButton(onClick = { showDialog = true }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete Exercise"
+                                )
+                            }
                         }
 
                         Text(text = "Name: ${exercise.name}", fontSize = 20.sp)
@@ -159,6 +168,37 @@ fun SelectExerciseScreen(
                     }
                 }
             }
+        }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Delete ${selectedExercise?.name}") },
+                text = {
+                    Text("Are you sure to permanently delete this exercise?", fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                    Text("\nWARNING: every record of this exercise inside the diary will be removed!", fontWeight = FontWeight.Bold)
+               },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.actions.deleteExercise(selectedExercise!!)
+                            showDialog = false
+                            selectedExercise = null
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        )
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { showDialog = false }) {
+                        Text("Cancel", color = MaterialTheme.colorScheme.onBackground)
+                    }
+                }
+            )
         }
     }
 }
