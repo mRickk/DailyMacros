@@ -84,7 +84,7 @@ fun MealInfo(
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         imageVector = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                        contentDescription = null,
+                        contentDescription = (if (expanded) "shrink" else "expand") + "${mealType.string} info",
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                 }

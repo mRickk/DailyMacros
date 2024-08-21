@@ -36,8 +36,8 @@ fun SelectExerciseScreen(
     selectedDuration: Int?
 ) {
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
-    var durationMinutes by remember { mutableStateOf((selectedDuration?.div(60).toString()) ?: "") }
-    var durationSeconds by remember { mutableStateOf((selectedDuration?.mod(60).toString()) ?: "") }
+    var durationMinutes by remember { mutableStateOf(if (selectedDuration != null) (selectedDuration / 60).toString() else "") }
+    var durationSeconds by remember { mutableStateOf(if (selectedDuration != null) (selectedDuration % 60).toString() else "") }
     var duration by remember { mutableIntStateOf(selectedDuration ?: 0)}
 
     val isDurationValid by remember {
