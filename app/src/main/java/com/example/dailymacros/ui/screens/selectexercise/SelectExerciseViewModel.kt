@@ -33,7 +33,7 @@ class SelectExerciseViewModel(
 
     val actions = object : SelectExerciseActions {
         override fun insertExerciseInsideDay(id: Long?, exercise: Exercise, date:String, duration: Int) = viewModelScope.launch {
-            dailyMacrosRepository.upsertExerciseInsideDay(ExerciseInsideDay(id?:0L, exercise.name, date, duration))
+            dailyMacrosRepository.upsertExerciseInsideDay(ExerciseInsideDay(exercise.name, date, duration))
         }
         override fun deleteExercise(exercise: Exercise) = viewModelScope.launch {
             dailyMacrosRepository.deleteExercise(exercise.name)

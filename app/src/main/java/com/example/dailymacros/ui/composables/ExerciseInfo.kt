@@ -19,16 +19,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.dailymacros.data.database.ExerciseInsideDay
 import com.example.dailymacros.ui.NavigationRoute
+import com.example.dailymacros.ui.screens.diary.DiaryActions
 import kotlin.math.roundToInt
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseInfo(
     exerciseInfoList: List<ExerciseInfoData>,
     navController: NavHostController,
-    date : String
+    date: String,
+    diaryActions: DiaryActions
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -62,13 +66,12 @@ fun ExerciseInfo(
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         imageVector = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                        contentDescription = null,
+                        contentDescription = (if (expanded) "shrink" else "expand") + "exercise info",
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
         }
-
         AnimatedVisibility(
             visible = expanded,
             enter = slideInVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
@@ -82,11 +85,39 @@ fun ExerciseInfo(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 exerciseInfoList.forEach { exerciseInfo ->
-                    ExerciseInfoBar(
-                        exercise = exerciseInfo.exercise,
-                        caloriesBurned = exerciseInfo.caloriesBurned,
-                        duration = exerciseInfo.duration, // Pass duration to ExerciseInfoBar
-                        modifier = Modifier.fillMaxWidth()
+                    val dismissState = rememberDismissState(
+                        confirmValueChange = {
+                            if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
+                                diaryActions.removeExerciseInsideDay(
+                                    ExerciseInsideDay(
+                                        exerciseName = exerciseInfo.exercise,
+                                        date = date,
+                                        duration = exerciseInfo.duration
+                                    )
+                                )
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                    )
+                    SwipeToDismiss(
+                        state = dismissState,
+                        background = { Color.Transparent },
+                        dismissContent = {
+                            ExerciseInfoBar(
+                                exercise = exerciseInfo.exercise,
+                                caloriesBurned = exerciseInfo.caloriesBurned,
+                                duration = exerciseInfo.duration,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate(
+                                            NavigationRoute.SelectExercise.route + "?date=${date}&exerciseName=${exerciseInfo.exercise}&selDur=${exerciseInfo.duration}"
+                                        )
+                                    }
+                            )
+                        }
                     )
                     Divider(color = MaterialTheme.colorScheme.surface, thickness = 1.dp)
                 }
@@ -96,8 +127,12 @@ fun ExerciseInfo(
                         .width(180.dp)
                         .padding(top = 8.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Select exercise", color = MaterialTheme.colorScheme.onPrimary)
                 }
             }

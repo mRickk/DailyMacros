@@ -46,9 +46,8 @@ data class Exercise(
     val kcalBurnedSec: Float
 )
 
-@Entity
+@Entity(primaryKeys = ["exerciseName", "date"])
 data class ExerciseInsideDay(
-    @PrimaryKey(autoGenerate = true) val id: Long,
     val exerciseName: String,
     val date: String,
     val duration: Int

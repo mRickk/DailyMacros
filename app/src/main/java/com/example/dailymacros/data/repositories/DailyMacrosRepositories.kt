@@ -15,7 +15,6 @@ import com.example.dailymacros.data.database.Gender
 import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.database.UserDAO
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 class DailyMacrosRepository(
     private val userDAO: UserDAO,
@@ -40,7 +39,10 @@ class DailyMacrosRepository(
     val foods: Flow<List<Food>> = foodDAO.getAllFoods()
     suspend fun upsertFood(food: Food) = foodDAO.upsert(food)
     suspend fun getFood(name: String) = foodDAO.getFood(name)
-    suspend fun deleteFood(name: String) = foodDAO.deleteFood(name)
+    suspend fun deleteFood(name: String) {
+        foodDAO.deleteFood(name)
+        foodInsideMealDAO.removeFoodInsideAllMeals(name)
+    }
 
     /* FoodInsideMeal */
     var foodInsideAllMeals: Flow<List<FoodInsideMealWithFood>> = foodInsideMealDAO.getFoodInsideAllMeals()
@@ -52,12 +54,15 @@ class DailyMacrosRepository(
     val exercises: Flow<List<Exercise>> = ExerciseDAO.getAllExercises()
     suspend fun upsertExercise(exercise: Exercise) = ExerciseDAO.upsert(exercise)
     suspend fun getExercise(name: String) = ExerciseDAO.getExercise(name)
-    suspend fun deleteExercise(name: String) = ExerciseDAO.deleteExercise(name)
+    suspend fun deleteExercise(name: String) {
+        ExerciseDAO.deleteExercise(name)
+        ExerciseInsideDayDAO.removeExerciseInsideAllDays(name)
+    }
 
     /* ExerciseInsideDay */
     val exercisesInsideAllDays: Flow<List<ExerciseInsideDayWithExercise>> = ExerciseInsideDayDAO.getExercisesInsideAllDays()
     suspend fun getExercisesInsideDay(date: String) = ExerciseInsideDayDAO.getExercisesInsideDay(date)
     suspend fun upsertExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.upsert(exerciseInsideDay)
-    suspend fun deleteExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.removeExerciseInsideDay(exerciseInsideDay.id)
+    suspend fun deleteExerciseInsideDay(exerciseInsideDay: ExerciseInsideDay) = ExerciseInsideDayDAO.removeExerciseInsideDay(exerciseInsideDay.exerciseName, exerciseInsideDay.date)
 
 }

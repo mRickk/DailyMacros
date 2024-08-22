@@ -22,8 +22,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.dailymacros.data.database.FoodInsideMeal
+import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.ui.NavigationRoute
-import com.example.dailymacros.ui.composables.FoodInfo
+import com.example.dailymacros.ui.screens.diary.DiaryActions
 import com.example.dailymacros.ui.theme.Carbs
 import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
@@ -33,10 +35,11 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealInfo(
-    meal: String,
     foodInfoList: List<FoodInfoData>,
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    mealType: MealType,
+    date: String,
+    diaryActions: DiaryActions
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -50,11 +53,11 @@ fun MealInfo(
     val totalKcal = totalCarbsKcal + totalFatKcal + totalProteinKcal
 
     // Calculate percentage of total kcal for each macronutrient
-    val carbsPercentage = if (totalKcal > 0) (totalCarbsKcal.toFloat() / totalKcal)*100 else 0.0
-    val fatPercentage = if (totalKcal > 0) (totalFatKcal.toFloat() / totalKcal)*100 else 0.0
-    val proteinPercentage = if (totalKcal > 0) (totalProteinKcal.toFloat() / totalKcal)*100 else 0.0
+    val carbsPercentage = if (totalKcal > 0) (totalCarbsKcal.toFloat() / totalKcal) * 100 else 0.0
+    val fatPercentage = if (totalKcal > 0) (totalFatKcal.toFloat() / totalKcal) * 100 else 0.0
+    val proteinPercentage = if (totalKcal > 0) (totalProteinKcal.toFloat() / totalKcal) * 100 else 0.0
 
-    Column(modifier = modifier.padding(horizontal = 12.dp, vertical = 20.dp).clip(RoundedCornerShape(12.dp))) {
+    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp).clip(RoundedCornerShape(12.dp))) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,7 +72,7 @@ fun MealInfo(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = meal,
+                    text = mealType.string,
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -81,7 +84,7 @@ fun MealInfo(
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         imageVector = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                        contentDescription = null,
+                        contentDescription = (if (expanded) "shrink" else "expand") + "${mealType.string} info",
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -94,7 +97,7 @@ fun MealInfo(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(4.dp)
+                    .height(3.dp)
                     .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
             ) {
                 if (carbsPercentage != 0.0) {
@@ -128,17 +131,17 @@ fun MealInfo(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Carbs: ${totalCarbs}g",
+                    text = "Carbs: ${"%.1f".format(totalCarbs)}g",
                     color = Carbs,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "Fat: ${totalFat}g",
+                    text = "Fat: ${"%.1f".format(totalFat)}g",
                     color = Fat,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "Protein: ${totalProtein}g",
+                    text = "Protein: ${"%.1f".format(totalProtein)}g",
                     color = Protein,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -158,19 +161,49 @@ fun MealInfo(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 foodInfoList.forEach { foodInfo ->
-                    FoodInfo(
-                        food = foodInfo.food,
-                        quantity = foodInfo.quantity.toString(),
-                        carbsQty = foodInfo.carbsQty,
-                        fatQty = foodInfo.fatQty,
-                        protQty = foodInfo.protQty,
-                        kcal = foodInfo.kcal,
-                        modifier = Modifier.fillMaxWidth()
+                    val dismissState = rememberDismissState(
+                        confirmValueChange = {
+                            if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
+                                diaryActions.removeFoodInsideMeal(
+                                    FoodInsideMeal(
+                                        foodName = foodInfo.food,
+                                        date = date,
+                                        mealType = mealType,
+                                        quantity = foodInfo.quantity
+                                    )
+                                )
+                                true
+                            } else {
+                                false
+                            }
+                        }
+                    )
+                    SwipeToDismiss(
+                        state = dismissState,
+                        background = {Color.Transparent},
+                        dismissContent = {
+                            FoodInfo(
+                                food = foodInfo.food,
+                                quantity = foodInfo.quantity,
+                                carbsQty = foodInfo.carbsQty,
+                                fatQty = foodInfo.fatQty,
+                                protQty = foodInfo.protQty,
+                                kcal = foodInfo.kcal,
+                                unit = foodInfo.unit,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navController.navigate(
+                                            NavigationRoute.SelectFood.route + "?date=${date}&mealType=${mealType}&selFoodName=${foodInfo.food}&selQty=${foodInfo.quantity}"
+                                        )
+                                    }
+                            )
+                        }
                     )
                     Divider(color = MaterialTheme.colorScheme.surface, thickness = 1.dp)
                 }
                 Button(
-                    onClick = { navController.navigate(NavigationRoute.SelectFood.route) },
+                    onClick = { navController.navigate(NavigationRoute.SelectFood.route + "?date=${date}&mealType=${mealType}") },
                     modifier = Modifier
                         .width(180.dp)
                         .padding(top = 8.dp)
@@ -183,12 +216,12 @@ fun MealInfo(
         }
     }
 }
-
 data class FoodInfoData(
     val food: String,
     val quantity: Float,
     val carbsQty: Float,
     val fatQty: Float,
     val protQty: Float,
-    val kcal: Float
+    val kcal: Float,
+    val unit: String
 )
