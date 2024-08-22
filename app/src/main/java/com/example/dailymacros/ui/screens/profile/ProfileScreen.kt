@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.utilities.rememberCamera
 import com.example.dailymacros.utilities.rememberPermission
 import com.example.dailymacros.utilities.saveImageToStorage
@@ -79,17 +80,19 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                 .clickable {
                     showDialog = true
                 }
-                .border(2.dp, Color.Black, CircleShape)
+                .border(1.dp, Color.Black, CircleShape)
         ) {
             if (profileImage != null && profileImage.path != null) {
                 AsyncImage(
                     ImageRequest.Builder(context)
                         .data(profileImage)
+                        .crossfade(true)
                         .build(),
                     "Profile Image",
                     modifier = Modifier
                         .size(128.dp)
                         .clip(CircleShape)
+
                 )
             } else {
                 //Default profile pic
@@ -146,7 +149,7 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
 
             // Edit Profile Button
             Button(onClick = {
-                // Handle edit profile
+                navController.navigate(NavigationRoute.EditProfile.route)
             }) {
                 Text("Edit Profile")
             }
@@ -155,26 +158,40 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
-                title = { Text("Change Profile Picture") },
-                text = { Text("Choose an option") },
+                title = { Text("Change Profile Picture", textAlign = TextAlign.Center) },
+                text = { Text("Choose an option", textAlign = TextAlign.Center) },
                 confirmButton = {
-                    Column {
-                        Button(onClick = {
-                            showDialog = false
-                            galleryLauncher.launch("image/*")
-                        }) {
-                            Text("Select from Gallery")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            onClick = {
+                                showDialog = false
+                                galleryLauncher.launch("image/*")
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(60.dp)
+                        ) {
+                            Text("Select from Gallery", textAlign = TextAlign.Center)
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = {
-                            showDialog = false
-                            cameraLauncher.takePicture()
-                        }) {
-                            Text("Take a Photo")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(
+                            onClick = {
+                                showDialog = false
+                                cameraLauncher.takePicture()
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(60.dp)
+                        ) {
+                            Text("Take a Photo", textAlign = TextAlign.Center)
                         }
                     }
                 }
             )
+
         }
     }
 }

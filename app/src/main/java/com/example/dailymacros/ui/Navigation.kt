@@ -12,6 +12,8 @@ import com.example.dailymacros.ui.screens.addexercise.AddExerciseViewModel
 import com.example.dailymacros.ui.screens.diary.DiaryScreen
 import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.diet.Diet
+import com.example.dailymacros.ui.screens.editprofile.EditProfile
+import com.example.dailymacros.ui.screens.editprofile.EditProfileViewModel
 import com.example.dailymacros.ui.screens.login.Login
 import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.overview.Overview
@@ -57,6 +59,10 @@ fun NavGraph(
         composable(NavigationRoute.Profile.route) {
             val profileViewModel = koinViewModel<ProfileViewModel>()
             Profile(navController, profileViewModel)
+        }
+        composable(NavigationRoute.EditProfile.route) {
+            val editProfileViewModel = koinViewModel<EditProfileViewModel>()
+            EditProfile(navController, editProfileViewModel)
         }
         composable(NavigationRoute.Diet.route) {
             Diet(navController)
@@ -104,6 +110,7 @@ sealed class NavigationRoute(
     data object Diary : NavigationRoute("Diary")
     data object Search : NavigationRoute("Search")
     data object Profile : NavigationRoute("Profile")
+    data object EditProfile : NavigationRoute("EditProfile")
     data object Diet : NavigationRoute("Diet")
     data object Overview : NavigationRoute("Overview")
     data object Settings : NavigationRoute("Settings")
