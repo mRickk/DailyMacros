@@ -29,6 +29,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = AlmostBlack,
 
 
+
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -65,7 +66,7 @@ fun DailyMacrosTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.tertiary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

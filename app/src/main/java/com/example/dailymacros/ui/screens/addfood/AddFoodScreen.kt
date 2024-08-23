@@ -132,7 +132,7 @@ fun AddFoodScreen(
             // Dropdown for unit selection
             Column {
                 OutlinedTextField(
-                    value = unit.value.name,
+                    value = unit.value.string,
                     onValueChange = {},
                     label = { Text("Unit") },
                     modifier = Modifier.fillMaxWidth(),
