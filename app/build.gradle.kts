@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("androidx.wear.compose:compose-material:1.3.1")
 
     //room
     val roomVersion = "2.6.1"
