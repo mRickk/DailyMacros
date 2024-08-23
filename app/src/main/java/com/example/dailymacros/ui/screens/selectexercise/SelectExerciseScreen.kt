@@ -34,7 +34,7 @@ fun SelectExerciseScreen(
     viewModel: SelectExerciseViewModel,
     state: SelectExerciseState,
     date: String?,
-    exerciseName: String?,
+    selectedExerciseNameNull: String?,
     selectedDuration: Int?
 ) {
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
@@ -48,7 +48,7 @@ fun SelectExerciseScreen(
             (durationMinutes.toIntOrNull() ?: 0) * 60 + (durationSeconds.toIntOrNull() ?: 0) > 0
         }
     }
-    selectedExercise = state.exerciseList.firstOrNull { it.name == exerciseName }
+    selectedExercise = state.exerciseList.firstOrNull { it.name == selectedExerciseNameNull }
     Scaffold(
         topBar = { DMTopAppBar(navController, showBackArrow = true) },
         floatingActionButton = {
@@ -163,7 +163,7 @@ fun SelectExerciseScreen(
                             ),
                             enabled = isDurationValid && date != null
                         ) {
-                            Text("Insert exercise")
+                            Text(if (selectedExercise!!.name == selectedExerciseNameNull) "Update inserted duration" else "Insert exercise")
                         }
                     }
                 }

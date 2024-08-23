@@ -1,6 +1,7 @@
 package com.example.dailymacros.ui.screens.login
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +36,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.DialogHost
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import com.example.dailymacros.R
 import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 
@@ -82,6 +86,13 @@ fun Login(navController: NavHostController,
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
+            Image(
+                painter = rememberAsyncImagePainter(model = R.drawable.icon),
+                contentDescription = "App Icon",
+                modifier = Modifier.padding(16.dp),
+                alignment = Alignment.Center
+            )
+
             TextField(
                 value = email.value,
                 onValueChange = { email.value = it },

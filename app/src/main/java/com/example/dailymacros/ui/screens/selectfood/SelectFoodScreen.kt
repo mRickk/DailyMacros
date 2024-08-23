@@ -108,19 +108,21 @@ fun SelectFoodScreen(
                                     contentDescription = "Close"
                                 )
                             }
-                            IconButton(onClick = {
-                                navController.navigate(NavigationRoute.AddFood.route + "?foodName=${food.name}")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Modify Food"
-                                )
-                            }
-                            IconButton(onClick = { showDialog = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete Food"
-                                )
+                            Box {
+                                IconButton(onClick = {
+                                    navController.navigate(NavigationRoute.AddFood.route + "?foodName=${food.name}")
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Modify Food"
+                                    )
+                                }
+                                IconButton(onClick = { showDialog = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Food"
+                                    )
+                                }
                             }
                         }
 
@@ -162,7 +164,7 @@ fun SelectFoodScreen(
                             ),
                             enabled = isQuantityValid && date != null && mealType != null
                         ) {
-                            Text("Insert food")
+                            Text(if (selectedFood!!.name == selectedFoodNameNull) "Update inserted quantity" else "Insert food")
                         }
                     }
                 }
