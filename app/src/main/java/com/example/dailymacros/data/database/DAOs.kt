@@ -20,17 +20,8 @@ interface UserDAO {
     @Query("UPDATE User SET pictureUrl = :pictureUrl WHERE email = :email")
     suspend fun setProfilePicUrl(email: String, pictureUrl: String)
 
-    @Query("UPDATE User SET weight = :weight WHERE email = :email")
-    suspend fun updateWeight(email: String, weight: Float)
-
-    @Query("UPDATE User SET height = :height WHERE email = :email")
-    suspend fun updateHeight(email: String, height: Float)
-
-    @Query("UPDATE User SET age = :age WHERE email = :email")
-    suspend fun updateAge(email: String, age: Int)
-
-    @Query("UPDATE User SET gender = :gender WHERE email = :email")
-    suspend fun updatGender(email: String, gender: Gender)
+    @Upsert
+    suspend fun upsert(user: User)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(user: User)
