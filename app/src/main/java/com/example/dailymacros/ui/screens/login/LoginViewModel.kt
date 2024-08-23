@@ -22,6 +22,7 @@ data class UserState(val user: User?)
 interface LoginActions {
     fun setUser(user: User): Job
     fun login(email: String, password: String, onFinished: () -> Unit = {}): Job
+    fun setUser(): Job
 }
 
 class LoginViewModel(
@@ -41,6 +42,11 @@ class LoginViewModel(
         override fun login(email: String, password: String, onFinished: () -> Unit) = viewModelScope.launch {
             loggedUser = UserState(dailyMacrosRepository.login(email, password))
             onFinished()
+        }
+
+        override fun setUser() = viewModelScope.launch {
+            loggedUser = UserState(datastoreRepository.user.first())
+            Log.v("LoginViewModel", "Porcodio sono setUser: ${loggedUser.user}")
         }
     }
 
