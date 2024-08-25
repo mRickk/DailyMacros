@@ -60,6 +60,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("androidx.wear.compose:compose-material:1.3.1")
 
+
     //room
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")

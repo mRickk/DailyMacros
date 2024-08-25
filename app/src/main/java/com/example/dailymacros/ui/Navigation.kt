@@ -67,7 +67,7 @@ fun NavGraph(
             EditProfile(navController, editProfileViewModel)
         }
         composable(NavigationRoute.Diet.route) {
-            Diet(navController)
+            Diet(navController, 1400)
         }
         composable(NavigationRoute.Overview.route) {
             Overview(navController)
