@@ -104,7 +104,7 @@ fun Overview(
             val exercisesInsideAllDays = state.exercisesInsideAllDays
 
             val daysInRange = generateSequence(startOfDayMillis) { it - DateUtils.DAY_IN_MILLIS }
-                .takeWhile { it >= startOfDayMillis - selectedPeriod.periodInMillis }
+                .takeWhile { it >= startOfDayMillis - selectedPeriod.periodInMillis + 1 }
                 .toList()
 
             val mealsGroupedByDate = daysInRange.associateWith { day ->

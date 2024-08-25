@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import com.example.dailymacros.ui.theme.Carbs
 import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
 import java.util.SortedMap
+import kotlin.math.roundToInt
 
 
 data class StackedData(
@@ -35,7 +37,7 @@ fun StackedBarChart(groupedMeals: SortedMap<Long, List<FoodInsideMealWithFood>>)
     val maxCaloriesInOneDay = groupedMeals.values.maxOfOrNull { it.sumOf { i -> (i.food.kcalPerc * i.foodInsideMeal.quantity).toDouble() }.toFloat() } ?: 0f
     val inputs = groupedMeals.values.map {
         Pair(
-            it.sumOf { i -> (i.food.kcalPerc * i.foodInsideMeal.quantity).toDouble() }.toFloat() / maxCaloriesInOneDay,
+            it.sumOf { i -> (i.food.kcalPerc * i.foodInsideMeal.quantity).toDouble() }.toFloat(),
             StackedData(
                 listOf(
                     it.sumOf { i -> (i.food.carbsPerc * i.foodInsideMeal.quantity).toDouble() }.toFloat(),
@@ -75,17 +77,30 @@ fun StackedBarChart(groupedMeals: SortedMap<Long, List<FoodInsideMealWithFood>>)
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom
     ) {
-        inputs.forEach { (heightPerc ,item) ->
+        inputs.forEach { (kcal ,item) ->
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = if (groupedMeals.size <= 8) 4.dp else if(groupedMeals.size <= 31) 2.dp else 0.dp)
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom) {
+                if (groupedMeals.size <= 8) {
+                    Text(
+                        text = if (kcal < 1000.0) kcal.roundToInt().toString() else "%.1f".format(
+                            kcal / 1000
+                        ) + "k",
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize
+                    )
+                }
 
                 item.inputs.forEachIndexed { index, input ->
 
-                    val itemHeight = remember(input) { input * (heightPerc * maxHeight.value) / 100 }
+                    val itemHeight = remember(input) { input * (kcal/maxCaloriesInOneDay * maxHeight.value) / 100 }
 
                     Spacer(
                         modifier = Modifier
-                            .padding(horizontal = if (groupedMeals.size <= 7) 10.dp else if(groupedMeals.size <= 31) 3.dp else 0.dp)
                             .height(itemHeight.dp)
                             .fillMaxWidth()
                             .background(item.colors[index])
