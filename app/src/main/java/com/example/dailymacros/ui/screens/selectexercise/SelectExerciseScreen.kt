@@ -104,19 +104,21 @@ fun SelectExerciseScreen(
                                     contentDescription = "Close"
                                 )
                             }
-                            IconButton(onClick = {
-                                navController.navigate(NavigationRoute.AddExercise.route + "?exerciseName=${exercise.name}")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Modify Exercise"
-                                )
-                            }
-                            IconButton(onClick = { showDialog = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete Exercise"
-                                )
+                            Row (horizontalArrangement = Arrangement.SpaceBetween) {
+                                IconButton(onClick = {
+                                    navController.navigate(NavigationRoute.AddExercise.route + "?exerciseName=${exercise.name}")
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Modify Exercise"
+                                    )
+                                }
+                                IconButton(onClick = { showDialog = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Exercise"
+                                    )
+                                }
                             }
                         }
 

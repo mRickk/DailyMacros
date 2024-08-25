@@ -32,7 +32,7 @@ interface DiaryActions {
 class DiaryViewModel(
     private val dailyMacrosRepository: DailyMacrosRepository
 ) : ViewModel() {
-    // After
+
     val state = combine(
         dailyMacrosRepository.foodInsideAllMeals,
         dailyMacrosRepository.exercisesInsideAllDays

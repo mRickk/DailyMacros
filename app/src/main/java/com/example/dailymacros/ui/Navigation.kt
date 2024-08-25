@@ -20,6 +20,7 @@ import com.example.dailymacros.ui.screens.editprofile.EditProfileViewModel
 import com.example.dailymacros.ui.screens.login.Login
 import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.overview.Overview
+import com.example.dailymacros.ui.screens.overview.OverviewViewModel
 import com.example.dailymacros.ui.screens.profile.Profile
 import com.example.dailymacros.ui.screens.profile.ProfileViewModel
 import com.example.dailymacros.ui.screens.selectexercise.SelectExerciseScreen
@@ -54,9 +55,10 @@ fun NavGraph(
             Signup(navController, signupViewModel, signupViewModel.userState, signupViewModel.actions)
         }
         composable(NavigationRoute.Diary.route) {
+            val diaryViewModel = koinViewModel<DiaryViewModel>()
             DiaryScreen(navController,
-                koinViewModel<DiaryViewModel>().actions,
-                koinViewModel<DiaryViewModel>().state.collectAsStateWithLifecycle().value)
+                diaryViewModel.actions,
+                diaryViewModel.state.collectAsStateWithLifecycle().value)
         }
         composable(NavigationRoute.Profile.route) {
             val profileViewModel = koinViewModel<ProfileViewModel>()
@@ -70,7 +72,7 @@ fun NavGraph(
             Diet(navController, 1400)
         }
         composable(NavigationRoute.Overview.route) {
-            Overview(navController)
+            Overview(navController, koinViewModel<OverviewViewModel>().state.collectAsStateWithLifecycle().value)
         }
         composable(NavigationRoute.Settings.route) {
             val themeState by settingsViewModel.state.collectAsStateWithLifecycle()

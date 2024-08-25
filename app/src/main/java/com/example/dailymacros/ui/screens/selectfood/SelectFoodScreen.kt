@@ -108,7 +108,7 @@ fun SelectFoodScreen(
                                     contentDescription = "Close"
                                 )
                             }
-                            Box {
+                            Row (horizontalArrangement = Arrangement.SpaceBetween) {
                                 IconButton(onClick = {
                                     navController.navigate(NavigationRoute.AddFood.route + "?foodName=${food.name}")
                                 }) {
