@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -28,9 +29,10 @@ fun FoodInfo(
     protQty: Float,
     kcal: Float,
     unit: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+
 ) {
-    return Column(modifier = modifier.padding(8.dp)) {
+    return Column(modifier = modifier.padding(4.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -75,4 +77,5 @@ fun FoodInfo(
             )
         }
     }
+
 }

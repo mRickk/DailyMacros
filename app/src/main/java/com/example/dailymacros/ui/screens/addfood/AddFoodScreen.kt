@@ -169,7 +169,8 @@ fun AddFoodScreen(
                                 carbsPerc = carbs.value.toFloat() / qty.value.toFloat(),
                                 fatPerc = fat.value.toFloat() / qty.value.toFloat(),
                                 proteinPerc = prot.value.toFloat() / qty.value.toFloat(),
-                                unit = unit.value
+                                unit = unit.value,
+                                isFavourite = false
                             )
                         )
                         navController.popBackStack()

@@ -28,7 +28,8 @@ data class Food(
     val carbsPerc: Float,
     val fatPerc: Float,
     val proteinPerc: Float,
-    val unit: FoodUnit
+    val unit: FoodUnit,
+    var isFavourite: Boolean
 )
 
 @Entity(primaryKeys = ["foodName", "date", "mealType"])
@@ -43,7 +44,8 @@ data class FoodInsideMeal(
 data class Exercise(
     @PrimaryKey val name: String,
     val description: String?,
-    val kcalBurnedSec: Float
+    val kcalBurnedSec: Float,
+    var isFavourite: Boolean
 )
 
 @Entity(primaryKeys = ["exerciseName", "date"])

@@ -155,7 +155,8 @@ fun createEmptyFoodInsideMealWithFood(date: Long): FoodInsideMealWithFood {
             carbsPerc = 0f,
             fatPerc = 0f,
             proteinPerc = 0f,
-            unit = FoodUnit.GRAMS
+            unit = FoodUnit.GRAMS,
+            isFavourite = false
         )
     )
 }
@@ -170,7 +171,8 @@ fun createEmptyExerciseInsideDay(date: Long): ExerciseInsideDayWithExercise {
         exercise = Exercise(
             name = "",
             kcalBurnedSec = 0f,
-            description = null
+            description = null,
+            isFavourite = false
         )
     )
 }
