@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -44,10 +45,17 @@ import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 @Composable
 fun Login(navController: NavHostController,
           loginViewModel: LoginViewModel) {
+
+    loginViewModel.actions.setUser()
     Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.user}")
-    if(loginViewModel.loggedUser.user != null) {
-        loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
-        navController.navigate(NavigationRoute.Diary.route)
+
+    val user = loginViewModel.loggedUser.user
+
+    LaunchedEffect(user) {
+        if (user != null) {
+            loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
+            navController.navigate(NavigationRoute.Diary.route)
+        }
     }
 
     val content = LocalContext.current

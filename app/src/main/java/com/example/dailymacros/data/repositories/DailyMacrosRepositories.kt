@@ -29,10 +29,7 @@ class DailyMacrosRepository(
     /* User */
     suspend fun insertUser(user: User) = userDAO.insert(user)
     suspend fun setProfilePicUrl(email: String, pictureUrl: String) = userDAO.setProfilePicUrl(email, pictureUrl)
-    suspend fun updateWeight(email: String, weight: Float) = userDAO.updateWeight(email, weight)
-    suspend fun updateHeight(email: String, height: Float) = userDAO.updateHeight(email, height)
-    suspend fun updateAge(email: String, age: Int) = userDAO.updateAge(email, age)
-    suspend fun updateGender(email: String, gender: Gender) = userDAO.updatGender(email, gender)
+    suspend fun updateUser(user: User) = userDAO.upsert(user)
     suspend fun login(email: String, password: String) = userDAO.login(email, password)
 
     /* Food */
