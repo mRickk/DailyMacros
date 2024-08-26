@@ -59,7 +59,9 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("androidx.wear.compose:compose-material:1.3.1")
-
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    // Android Maps Compose composables for the Maps SDK for Android
+    implementation("com.google.maps.android:maps-compose:6.1.0")
 
     //room
     val roomVersion = "2.6.1"
