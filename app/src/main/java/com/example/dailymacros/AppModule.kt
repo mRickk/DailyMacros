@@ -10,6 +10,7 @@ import com.example.dailymacros.data.repositories.ThemeRepository
 import com.example.dailymacros.ui.screens.addexercise.AddExerciseViewModel
 import com.example.dailymacros.ui.screens.addfood.AddFoodViewModel
 import com.example.dailymacros.ui.screens.diary.DiaryViewModel
+import com.example.dailymacros.ui.screens.diet.DietViewModel
 import com.example.dailymacros.ui.screens.editprofile.EditProfileViewModel
 import com.example.dailymacros.ui.screens.login.LoginViewModel
 import com.example.dailymacros.ui.screens.overview.OverviewViewModel
@@ -55,4 +56,5 @@ val appModule = module {
     viewModel { SelectFoodViewModel(get()) }
     viewModel { AddFoodViewModel(get()) }
     viewModel {OverviewViewModel(get())}
+    viewModel {DietViewModel(get(), get())}
 }
