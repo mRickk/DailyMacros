@@ -26,24 +26,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.core.view.get
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.dailymacros.MainActivity
 import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import com.example.dailymacros.utilities.LocationService
 import com.example.dailymacros.utilities.rememberCamera
 import com.example.dailymacros.utilities.rememberPermission
 import com.example.dailymacros.utilities.saveImageToStorage
 import kotlin.math.log
+import com.utsman.osmandcompose.rememberMapViewWithLifecycle
+import org.osmdroid.util.GeoPoint
 
+@SuppressLint("ClickableViewAccessibility")
 @Composable
-fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel) {
+fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel, locationService: LocationService) {
     Log.v("ProfileScreen", "ProfileImage: ${profileViewModel.loggedUser.user}")
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val mapView = rememberMapViewWithLifecycle()
 
     //Camera launcher
     val cameraLauncher = rememberCamera {
@@ -149,10 +158,45 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                     UserInfoRow(title = "Activity Level", value = user.activity.string)
                     Divider()
                     UserInfoRow(title = "Goal", value = user.goal.string)
+                    Divider()
                 }
+                if (locationService.coordinates != null) {
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Box(Modifier.height(100.dp).clickable(onClick = {}, enabled = false)) {
+                        AndroidView(
+                            factory = { mapView },
+                            update = { view ->
+                                // Update your MapView here
+                                view.setMultiTouchControls(false)
+                                view.isClickable = false
+                                view.setOnTouchListener { _, _ -> true } // Disable all touch events
+                                view.controller.setZoom(15.0)
+                                view.controller.setCenter(
+                                    GeoPoint(
+                                        locationService.coordinates?.latitude ?: 44.14807981060653,
+                                        locationService.coordinates?.longitude ?: 12.235592781952542
+                                    )
+                                )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
+                                if (locationService.coordinates == null) {
+                                    // Apply grayscale filter
+                                    view.overlayManager.tilesOverlay.setColorFilter(android.graphics.ColorMatrixColorFilter(
+                                        android.graphics.ColorMatrix().apply { setSaturation(0f) }
+                                    ))
+                                } else {
+                                    // Remove grayscale filter
+                                    view.overlayManager.tilesOverlay.setColorFilter(null)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Transparent)
+                                .pointerInput(Unit) {} // Disable click events
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(60.dp))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
                 // Edit Profile Button
                 Button(onClick = {
                     // Handle edit profile

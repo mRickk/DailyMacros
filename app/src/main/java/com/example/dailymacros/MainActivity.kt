@@ -44,7 +44,7 @@ import org.koin.androidx.compose.koinViewModel
 
 
 class MainActivity : ComponentActivity() {
-    private lateinit var locationService: LocationService
+    lateinit var locationService: LocationService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -110,7 +110,10 @@ class MainActivity : ComponentActivity() {
                     }
 
                     Scaffold {contentPadding ->
-                        NavGraph(navController = navController, Modifier.padding(contentPadding), settingsViewModel)
+                        NavGraph(navController = navController,
+                            Modifier.padding(contentPadding),
+                            settingsViewModel,
+                            locationService)
                         if (showLocationDisabledAlert) {
                             AlertDialog(
                                 title = { Text("Location disabled") },

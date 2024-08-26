@@ -32,6 +32,7 @@ import com.example.dailymacros.ui.screens.settings.Settings
 import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 import com.example.dailymacros.ui.screens.signup.Signup
 import com.example.dailymacros.ui.screens.signup.SignupViewModel
+import com.example.dailymacros.utilities.LocationService
 import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
 
@@ -39,7 +40,8 @@ import org.koin.androidx.compose.koinViewModel
 fun NavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    locationService: LocationService
 ) {
     NavHost(
         navController = navController,
@@ -63,7 +65,7 @@ fun NavGraph(
         }
         composable(NavigationRoute.Profile.route) {
             val profileViewModel = koinViewModel<ProfileViewModel>()
-            Profile(navController, profileViewModel)
+            Profile(navController, profileViewModel, locationService)
         }
         composable(NavigationRoute.EditProfile.route) {
             val editProfileViewModel = koinViewModel<EditProfileViewModel>()

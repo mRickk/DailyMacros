@@ -60,8 +60,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("androidx.wear.compose:compose-material:1.3.1")
     implementation("com.google.android.gms:play-services-location:21.3.0")
-    // Android Maps Compose composables for the Maps SDK for Android
-    implementation("com.google.maps.android:maps-compose:6.1.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.16")
+    implementation("tech.utsmankece:osm-android-compose:0.0.5")
 
     //room
     val roomVersion = "2.6.1"
