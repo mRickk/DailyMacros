@@ -15,6 +15,7 @@ import com.example.dailymacros.ui.screens.addfood.AddFoodViewModel
 import com.example.dailymacros.ui.screens.diary.DiaryScreen
 import com.example.dailymacros.ui.screens.diary.DiaryViewModel
 import com.example.dailymacros.ui.screens.diet.Diet
+import com.example.dailymacros.ui.screens.diet.DietViewModel
 import com.example.dailymacros.ui.screens.editprofile.EditProfile
 import com.example.dailymacros.ui.screens.editprofile.EditProfileViewModel
 import com.example.dailymacros.ui.screens.login.Login
@@ -69,7 +70,8 @@ fun NavGraph(
             EditProfile(navController, editProfileViewModel)
         }
         composable(NavigationRoute.Diet.route) {
-            Diet(navController, 1400)
+            val dietViewModel = koinViewModel<DietViewModel>()
+            Diet(navController,dietViewModel)
         }
         composable(NavigationRoute.Overview.route) {
             Overview(navController, koinViewModel<OverviewViewModel>().state.collectAsStateWithLifecycle().value)

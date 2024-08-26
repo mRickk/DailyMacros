@@ -23,7 +23,13 @@ import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
 
 @Composable
-fun Diet(navController: NavHostController, dailyCalories: Int) {
+fun Diet(navController: NavHostController, dietScreenViewModel: DietViewModel) {
+
+    val user = dietScreenViewModel.loggedUser.user
+
+
+
+
     Scaffold(
         topBar = { DMTopAppBar(navController) },
         bottomBar = { NavBar(navController, selectedIndex = 1) }
@@ -52,7 +58,7 @@ fun Diet(navController: NavHostController, dailyCalories: Int) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "$dailyCalories kcal",
+                        text = "${user?.dailyKcal} kcal",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -116,6 +122,10 @@ fun Diet(navController: NavHostController, dailyCalories: Int) {
                     inputValues = chartValues,
                     textColor = MaterialTheme.colorScheme.onSurface
                 )
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
+                )
             }
             item {
                 // Section: Additional Options
@@ -165,7 +175,7 @@ fun Diet(navController: NavHostController, dailyCalories: Int) {
                         ) {
                             Text(text = "Activity level")
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "Value 2")
+                                Text(text = "${user?.activity?.string}")
                                 Icon(imageVector = Icons.Default.ArrowForwardIos, contentDescription = null)
                             }
                         }
@@ -185,7 +195,7 @@ fun Diet(navController: NavHostController, dailyCalories: Int) {
                         ) {
                             Text(text = "Objective")
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "Value 3")
+                                Text(text = "${user?.goal?.string}")
                                 Icon(imageVector = Icons.Default.ArrowForwardIos, contentDescription = null)
                             }
                         }
