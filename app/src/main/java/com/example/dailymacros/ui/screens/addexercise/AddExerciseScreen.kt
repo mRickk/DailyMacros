@@ -79,7 +79,8 @@ fun AddExerciseScreen(
                             Exercise(
                                 name = exerciseName.value,
                                 description = exerciseDescription.value.takeIf { it.isNotBlank() },
-                                kcalBurnedSec = kcalBurnedPerHour.value.toFloat() / 3600
+                                kcalBurnedSec = kcalBurnedPerHour.value.toFloat() / 3600,
+                                isFavourite = false
                             )
                         )
                         navController.popBackStack()

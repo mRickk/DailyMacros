@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.composables
 
+import android.graphics.drawable.Icon
 import android.text.format.DateUtils
 import android.util.Log
 import androidx.compose.foundation.background
@@ -11,6 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -18,6 +23,7 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
@@ -75,11 +81,7 @@ fun datePickerWithDialog(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = MaterialTheme.colorScheme.onTertiary
                 )
-            ) {
-                Text("<",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineMedium)
-            }
+            ) { Icon(Icons.Default.ArrowBackIos, contentDescription = "Day before") }
             Text(
                 text = selectedDateMillis?.let { dateFormat.format(Date(it)) } ?: dateFormat.format(Date()),
                 color = MaterialTheme.colorScheme.onTertiary,
@@ -87,7 +89,7 @@ fun datePickerWithDialog(
                     .clickable(onClick = {
                         showDialog = true
                     })
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 4.dp),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium
             )
@@ -101,9 +103,7 @@ fun datePickerWithDialog(
                     contentColor = MaterialTheme.colorScheme.onTertiary
                 )
             ) {
-                Text(">",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineMedium)
+                Icon(Icons.Default.ArrowForwardIos, contentDescription = "Day after")
             }
         }
         if (showDialog) {

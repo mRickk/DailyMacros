@@ -21,6 +21,7 @@ data class SelectFoodState(val foodList: List<Food>)
 interface SelectFoodActions {
     fun insertFoodInsideMeal(food : Food, date : String, mealType: MealType, quantity: Float): Job
     fun deleteFood(food: Food): Job
+    fun toggleFavourite(food: Food): Job
 }
 
 class SelectFoodViewModel(
@@ -39,6 +40,10 @@ class SelectFoodViewModel(
         }
         override fun deleteFood(food: Food) = viewModelScope.launch {
             dailyMacrosRepository.deleteFood(food.name)
+        }
+
+        override fun toggleFavourite(food: Food) = viewModelScope.launch {
+            dailyMacrosRepository.upsertFood(food)
         }
     }
 }

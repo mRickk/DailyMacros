@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [User::class, Food::class, FoodInsideMeal::class, Exercise::class, ExerciseInsideDay::class], version = 6)
+@Database(entities = [User::class, Food::class, FoodInsideMeal::class, Exercise::class, ExerciseInsideDay::class], version = 7)
 abstract class DailyMacrosDatabase : RoomDatabase() {
     abstract fun userDAO(): UserDAO
     abstract fun foodDAO(): FoodDAO

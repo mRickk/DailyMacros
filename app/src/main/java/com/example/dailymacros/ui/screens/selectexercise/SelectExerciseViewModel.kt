@@ -20,6 +20,7 @@ data class SelectExerciseState(val exerciseList: List<Exercise>)
 interface SelectExerciseActions {
     fun insertExerciseInsideDay(id: Long?, exercise: Exercise, date:String, duration: Int): Job
     fun deleteExercise(exercise: Exercise): Job
+    fun toggleFavourite(exercise: Exercise): Job
 }
 
 class SelectExerciseViewModel(
@@ -37,6 +38,9 @@ class SelectExerciseViewModel(
         }
         override fun deleteExercise(exercise: Exercise) = viewModelScope.launch {
             dailyMacrosRepository.deleteExercise(exercise.name)
+        }
+        override fun toggleFavourite(exercise: Exercise) = viewModelScope.launch {
+            dailyMacrosRepository.upsertExercise(exercise)
         }
     }
 }
