@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.dailymacros.data.database.ActivityType
+import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.Gender
 import com.example.dailymacros.data.database.GoalType
 import com.example.dailymacros.data.database.User
@@ -27,6 +28,7 @@ class DatastoreRepository (
         private val GOAL_KEY = stringPreferencesKey("goal")
         private val BMR_KEY = stringPreferencesKey("bmr")
         private val DAILY_KCAL_KEY = stringPreferencesKey("dailyKcal")
+        private val DIET_TYPE_KEY = stringPreferencesKey("diet")
     }
 
     val user = dataStore.data.map {
@@ -45,7 +47,8 @@ class DatastoreRepository (
                     activity = ActivityType.valueOf(preferences[ACTIVITY_KEY] ?: "Sedentary"),
                     goal = GoalType.valueOf(preferences[GOAL_KEY] ?: "Maintain Weight"),
                     bmr = preferences[BMR_KEY]?.toInt() ?: 0,
-                    dailyKcal = preferences[DAILY_KCAL_KEY]?.toInt() ?: 0
+                    dailyKcal = preferences[DAILY_KCAL_KEY]?.toInt() ?: 0,
+                    diet = DietType.valueOf(preferences[DIET_TYPE_KEY] ?: "Standard")
                 )
             } else {
                 null
@@ -71,6 +74,7 @@ class DatastoreRepository (
             it[GOAL_KEY] = user.goal.name
             it[BMR_KEY] = user.bmr.toString()
             it[DAILY_KCAL_KEY] = user.dailyKcal.toString()
+            it[DIET_TYPE_KEY] = user.diet.name
         }
 
     suspend fun removeUser() =
@@ -87,7 +91,7 @@ class DatastoreRepository (
             it.remove(GOAL_KEY)
             it.remove(BMR_KEY)
             it.remove(DAILY_KCAL_KEY)
+            it.remove(DIET_TYPE_KEY)
         }
 
 }
-
