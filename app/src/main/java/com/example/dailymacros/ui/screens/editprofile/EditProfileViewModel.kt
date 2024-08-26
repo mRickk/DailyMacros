@@ -46,7 +46,8 @@ class EditProfileViewModel(
                         activity = loggedUser.user!!.activity,
                         goal = loggedUser.user!!.goal,
                         bmr = loggedUser.user!!.bmr,
-                        dailyKcal = loggedUser.user!!.dailyKcal
+                        dailyKcal = loggedUser.user!!.dailyKcal,
+                        diet = loggedUser.user!!.diet
                     )
                     dailyMacrosRepository.updateUser(userCopy)
                     datastoreRepository.saveUser(userCopy)

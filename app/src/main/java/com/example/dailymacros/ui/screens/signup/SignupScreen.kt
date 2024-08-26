@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.platform.LocalContext
 import androidx.room.PrimaryKey
 import com.example.dailymacros.data.database.ActivityType
+import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.Gender
 import com.example.dailymacros.data.database.GoalType
 import com.example.dailymacros.data.database.User
@@ -272,7 +273,8 @@ fun Signup(navController: NavHostController,
                                     activity = ActivityType.valueOf(activity.value.uppercase().replace(" ", "_")),
                                     goal = GoalType.valueOf(goal.value.uppercase().replace(" ", "_")),
                                     bmr = 0, //TODO: Calculate BMR
-                                    dailyKcal = 0 //TODO: Calculate daily kcal
+                                    dailyKcal = 0, //TODO: Calculate daily kcal
+                                    diet = DietType.STANDARD
                                 )
                                 actions.signupUser(newUser) {
                                     if(signupViewModel.loggedUser.value != null) {
