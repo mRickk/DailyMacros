@@ -8,11 +8,15 @@ import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -131,15 +135,16 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
 
-                // Profile Picture
+                Spacer(modifier = Modifier.height(5.dp))
+
                 ProfileImage(profileImage = profileViewModel.loggedUser.user?.pictureUrl?.toUri())
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // User Information
                 profileViewModel.loggedUser.user?.let { user ->
@@ -162,7 +167,11 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                 }
                 if (locationService.coordinates != null) {
                     Spacer(modifier = Modifier.height(50.dp))
-                    Box(Modifier.height(100.dp).clickable(onClick = {}, enabled = false)) {
+                    Box(
+                        Modifier
+                            .height(75.dp)
+                            .clickable(onClick = {}, enabled = false)
+                    ) {
                         AndroidView(
                             factory = { mapView },
                             update = { view ->
@@ -173,15 +182,18 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                                 view.controller.setZoom(15.0)
                                 view.controller.setCenter(
                                     GeoPoint(
-                                        locationService.coordinates?.latitude ?: 44.14807981060653,
-                                        locationService.coordinates?.longitude ?: 12.235592781952542
+                                        locationService.coordinates?.latitude
+                                            ?: 44.14807981060653,
+                                        locationService.coordinates?.longitude
+                                            ?: 12.235592781952542
                                     )
                                 )
 
                                 if (locationService.coordinates == null) {
                                     // Apply grayscale filter
                                     view.overlayManager.tilesOverlay.setColorFilter(android.graphics.ColorMatrixColorFilter(
-                                        android.graphics.ColorMatrix().apply { setSaturation(0f) }
+                                        android.graphics.ColorMatrix()
+                                            .apply { setSaturation(0f) }
                                     ))
                                 } else {
                                     // Remove grayscale filter
@@ -194,19 +206,27 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                                 .pointerInput(Unit) {} // Disable click events
                         )
                     }
-                    Spacer(modifier = Modifier.height(60.dp))
+                    Spacer(modifier = Modifier.height(65.dp))
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                // Edit Profile Button
-                Button(onClick = {
-                    // Handle edit profile
-                    navController.navigate(NavigationRoute.EditProfile.route)
-                }) {
-                    Text("Edit Profile")
+                // Edit and logout Profile Button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(onClick = {
+                        profileViewModel.actions.logout()
+                        navController.navigate(NavigationRoute.Login.route)
+                    }, border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
+                        Text("Logout", color = MaterialTheme.colorScheme.error)
+                    }
+                    Button(onClick = { navController.navigate(NavigationRoute.EditProfile.route) }) {
+                        Text("Edit Profile")
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+
+            }
         }
 
         if (showDialog) {
