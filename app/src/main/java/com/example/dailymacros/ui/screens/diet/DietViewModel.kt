@@ -19,7 +19,7 @@ interface EditProfileActions {
 }
 
 
-class DietScreenViewModel (
+class DietViewModel (
     private val dailyMacrosRepository: DailyMacrosRepository,
     private val datastoreRepository: DatastoreRepository
 ): ViewModel() {
