@@ -17,7 +17,8 @@ data class User(
     val activity: ActivityType,
     val goal: GoalType,
     val bmr: Int,
-    val dailyKcal: Int
+    val dailyKcal: Int,
+    val diet: DietType
 )
 
 @Entity
@@ -93,4 +94,12 @@ enum class GoalType(val string: String) {
 enum class FoodUnit(val string: String) {
     GRAMS("g"),
     MILLILITERS("ml")
+}
+
+enum class DietType(val string: String) {
+    STANDARD("Standard"),
+    BALANCED("Balanced"),
+    LOW_FAT("Low Fat"),
+    HIGH_PROTEIN("High Protein"),
+    KETOGENIC("Ketogenic")
 }
