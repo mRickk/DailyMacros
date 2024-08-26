@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -69,7 +70,10 @@ fun Overview(
     ){paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
 
-            Box(modifier = Modifier.fillMaxWidth().padding(4.dp).align(Alignment.CenterHorizontally)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+                .align(Alignment.CenterHorizontally)) {
                 OutlinedTextField(
                     value = selectedPeriod.string,
                     onValueChange = {},
@@ -80,12 +84,16 @@ fun Overview(
                             Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().align(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
                 )
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth().align(Alignment.Center)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
                 ) {
                     OverviewPeriods.entries.forEach { period ->
                         DropdownMenuItem(
@@ -118,18 +126,20 @@ fun Overview(
             }.toSortedMap()
 
             Text(
-                text = "Macros and calories",
+                text = "Calories and macros you ate",
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                 fontWeight = MaterialTheme.typography.headlineSmall.fontWeight,
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(8.dp)
             )
             StackedBarChart(groupedMeals = mealsGroupedByDate)
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             Text(
-                text = "Calories burned",
+                text = "Calories you burned",
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                 fontWeight = MaterialTheme.typography.headlineSmall.fontWeight,
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(8.dp)
             )
             BarChart(
                 values = exercisesGroupedByDate.values.map {it.sumOf { i -> (i.exercise.kcalBurnedSec * i.exerciseInsideDay.duration).toDouble() }.toFloat() },
