@@ -89,8 +89,8 @@ fun Login(navController: NavHostController,
             Image(
                 painter = rememberAsyncImagePainter(model = R.drawable.icon),
                 contentDescription = "App Icon",
-                modifier = Modifier.padding(16.dp),
-                alignment = Alignment.Center
+                modifier = Modifier.padding(horizontal = 70.dp, vertical = 50.dp),
+                alignment = Alignment.TopCenter
             )
 
             TextField(

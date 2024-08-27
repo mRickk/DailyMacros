@@ -83,12 +83,12 @@ enum class Gender(val string: String, val k: Int) {
     OTHER("Other", -78)
 }
 
-enum class ActivityType(val string: String, val k: Float) {
-    SEDENTARY("Sedentary (little to no exercise)", 1.2f),
-    LIGHTLY_ACTIVE("Lightly Active (1-3 days per week)", 1.375f),
-    MODERATELY_ACTIVE("Moderately Active (3-5 days per week)", 1.55f),
-    VERY_ACTIVE("Very Active (6-7 days per week)", 1.725f),
-    SUPER_ACTIVE("Super Active (twice per day, extra heavy workouts)", 2f)
+enum class ActivityType(val string: String, val description: String, val k: Float) {
+    SEDENTARY("Sedentary", "(little to no exercise)", 1.2f),
+    LIGHTLY_ACTIVE("Lightly Active", "(1-3 days per week)", 1.375f),
+    MODERATELY_ACTIVE("Moderately Active", "(3-5 days per week)", 1.55f),
+    VERY_ACTIVE("Very Active", "(6-7 days per week)", 1.725f),
+    SUPER_ACTIVE("Super Active", "(twice per day, extra heavy workouts)", 2f)
 }
 
 enum class GoalType(val string: String, val     k: Float) {

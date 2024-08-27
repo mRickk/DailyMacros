@@ -307,7 +307,12 @@ fun Signup(navController: NavHostController,
                                 activity.value = a
                                 expandedActivity = false
                             },
-                            text = { Text(text = a.string) }
+                            text = {
+                                Column(horizontalAlignment = Alignment.Start) {
+                                    Text(text = a.string)
+                                    Text(text = a.description, style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
                         )
                     }
                 }

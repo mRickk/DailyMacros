@@ -29,8 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.ExerciseInfo
@@ -93,8 +95,11 @@ fun DiaryScreen(
                 val countKcal = countCarbsKcal + countFatKcal + countProteinKcal - countExerciseKcal
 
                 val totKcal = remember { mutableIntStateOf(0) }
+                val diet = remember {mutableStateOf(DietType.BALANCED)}
 
                 totKcal.intValue = (diaryViewModel.loggedUser.user?.dailyKcal ?: 2000)
+                diet.value = (diaryViewModel.loggedUser.user?.diet ?: DietType.BALANCED)
+
 
                 LazyColumn(
                         modifier = Modifier.fillMaxSize() // Fills the available space
@@ -115,19 +120,19 @@ fun DiaryScreen(
                                 MacrosBar(
                                     label = "Carbs",
                                     count = countCarbs.toFloat(),
-                                    total = 300f, //TODO: get from user
+                                    total = totKcal.intValue * diet.value.carbsPerc / MacrosKcal.CARBS.kcal,
                                     color = Carbs
                                 )
                                 MacrosBar(
                                     label = "Fat",
                                     count = countFat.toFloat(),
-                                    total = 100f, //TODO: get from user
+                                    total = totKcal.intValue * diet.value.fatPerc / MacrosKcal.FAT.kcal,
                                     color = Fat
                                 )
                                 MacrosBar(
                                     label = "Protein",
                                     count = countProtein.toFloat(),
-                                    total = 150f, //TODO: get from user
+                                    total = totKcal.intValue * diet.value.proteinPerc / MacrosKcal.PROTEIN.kcal,
                                     color = Protein
                                 )
                             }
@@ -199,11 +204,20 @@ fun MacrosBar(label: String, count: Float, total: Float, color: Color, modifier:
             .padding(horizontal = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "$label: ${count.roundToInt()}/${total.roundToInt()} g",
-            color = color,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Row{
+            Text(
+                text = "$label: ",
+                color = color,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "${count.roundToInt()}/${total.roundToInt()} g",
+                color = color,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         Box(
             modifier = Modifier
                 .width(barWidth)
@@ -231,11 +245,20 @@ fun CaloriesBar(countCal: Double, totCal: Float, modifier: Modifier = Modifier) 
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Text(
-            text = "Calories: ${countCal.roundToInt()}/${totCal.roundToInt()}kcal",
-            color = Cal,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Row {
+            Text(
+                text = "Calories: ",
+                color = Cal,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "${countCal.roundToInt()}/${totCal.roundToInt()}kcal",
+                color = Cal,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
