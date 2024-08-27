@@ -384,6 +384,7 @@ fun Signup(navController: NavHostController,
                             email = email.value,
                             password = password.value,
                             username = username.value,
+
                             pictureUrl = null,
                             height = height.value.toFloat(),
                             weight = weight.value.toFloat(),

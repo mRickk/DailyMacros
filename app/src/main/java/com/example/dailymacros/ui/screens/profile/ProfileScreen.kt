@@ -76,8 +76,7 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
     )
 
     //Camera permissions
-    val cameraPermission = rememberPermission(android.Manifest.permission.CAMERA) {
-            status ->
+    val cameraPermission = rememberPermission(android.Manifest.permission.CAMERA) { status ->
         if (status.isGranted) {
             cameraLauncher.takePicture()
         }
@@ -85,6 +84,15 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
             Toast.makeText(context, "Camera permission denied", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun launchCamera() =
+        if(cameraPermission.status.isGranted) {
+            cameraLauncher.takePicture()
+        } else {
+
+            cameraPermission.launchPermissionRequest()
+        }
+
 
     @Composable
     fun ProfileImage(profileImage: Uri?) {
@@ -95,7 +103,7 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                 .clickable {
                     showDialog = true
                 }
-                .border(1.dp, Color.Black, CircleShape)
+                .border(1.dp, MaterialTheme.colorScheme.onBackground, CircleShape)
         ) {
             if (profileImage != null && profileImage.path != null) {
                 AsyncImage(
@@ -253,7 +261,7 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                         Button(
                             onClick = {
                                 showDialog = false
-                                cameraLauncher.takePicture()
+                                launchCamera()
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -265,30 +273,7 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                 }
             )
 
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDialog = false },
-                    title = { Text("Change Profile Picture") },
-                    text = { Text("Choose an option") },
-                    confirmButton = {
-                        Column {
-                            Button(onClick = {
-                                showDialog = false
-                                galleryLauncher.launch("image/*")
-                            }) {
-                                Text("Select from Gallery")
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = {
-                                showDialog = false
-                                cameraLauncher.takePicture()
-                            }) {
-                                Text("Take a Photo")
-                            }
-                        }
-                    }
-                )
-            }
+
         }
     }
 }
