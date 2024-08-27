@@ -89,7 +89,7 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
         if(cameraPermission.status.isGranted) {
             cameraLauncher.takePicture()
         } else {
-
+            Log.v("ProfileScreen", "Requesting camera permission ${cameraPermission.status}")
             cameraPermission.launchPermissionRequest()
         }
 
