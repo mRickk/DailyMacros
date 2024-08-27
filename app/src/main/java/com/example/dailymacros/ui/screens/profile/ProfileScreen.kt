@@ -8,11 +8,15 @@ import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,24 +30,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import androidx.core.view.get
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.dailymacros.MainActivity
 import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.DMTopAppBar
+import com.example.dailymacros.utilities.LocationService
 import com.example.dailymacros.utilities.rememberCamera
 import com.example.dailymacros.utilities.rememberPermission
 import com.example.dailymacros.utilities.saveImageToStorage
 import kotlin.math.log
+import com.utsman.osmandcompose.rememberMapViewWithLifecycle
+import org.osmdroid.util.GeoPoint
 
+@SuppressLint("ClickableViewAccessibility")
 @Composable
-fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel) {
+fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel, locationService: LocationService) {
     Log.v("ProfileScreen", "ProfileImage: ${profileViewModel.loggedUser.user}")
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val mapView = rememberMapViewWithLifecycle()
 
     //Camera launcher
     val cameraLauncher = rememberCamera {
@@ -122,15 +135,16 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
 
-                // Profile Picture
+                Spacer(modifier = Modifier.height(5.dp))
+
                 ProfileImage(profileImage = profileViewModel.loggedUser.user?.pictureUrl?.toUri())
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // User Information
                 profileViewModel.loggedUser.user?.let { user ->
@@ -149,20 +163,70 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                     UserInfoRow(title = "Activity Level", value = user.activity.string)
                     Divider()
                     UserInfoRow(title = "Goal", value = user.goal.string)
+                    Divider()
+                }
+                if (locationService.coordinates != null) {
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Box(
+                        Modifier
+                            .height(75.dp)
+                            .clickable(onClick = {}, enabled = false)
+                    ) {
+                        AndroidView(
+                            factory = { mapView },
+                            update = { view ->
+                                // Update your MapView here
+                                view.setMultiTouchControls(false)
+                                view.isClickable = false
+                                view.setOnTouchListener { _, _ -> true } // Disable all touch events
+                                view.controller.setZoom(15.0)
+                                view.controller.setCenter(
+                                    GeoPoint(
+                                        locationService.coordinates?.latitude
+                                            ?: 44.14807981060653,
+                                        locationService.coordinates?.longitude
+                                            ?: 12.235592781952542
+                                    )
+                                )
+
+                                if (locationService.coordinates == null) {
+                                    // Apply grayscale filter
+                                    view.overlayManager.tilesOverlay.setColorFilter(android.graphics.ColorMatrixColorFilter(
+                                        android.graphics.ColorMatrix()
+                                            .apply { setSaturation(0f) }
+                                    ))
+                                } else {
+                                    // Remove grayscale filter
+                                    view.overlayManager.tilesOverlay.setColorFilter(null)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Transparent)
+                                .pointerInput(Unit) {} // Disable click events
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(65.dp))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                // Edit and logout Profile Button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(onClick = {
+                        profileViewModel.actions.logout()
+                        navController.navigate(NavigationRoute.Login.route)
+                    }, border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
+                        Text("Logout", color = MaterialTheme.colorScheme.error)
+                    }
+                    Button(onClick = { navController.navigate(NavigationRoute.EditProfile.route) }) {
+                        Text("Edit Profile")
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
 
-                // Edit Profile Button
-                Button(onClick = {
-                    // Handle edit profile
-                    navController.navigate(NavigationRoute.EditProfile.route)
-                }) {
-                    Text("Edit Profile")
-                }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
         }
 
         if (showDialog) {

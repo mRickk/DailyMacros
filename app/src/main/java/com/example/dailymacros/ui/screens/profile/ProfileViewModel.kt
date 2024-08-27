@@ -22,6 +22,7 @@ data class UserState(val user: User?)
 
 interface ProfileActions {
     fun setProfilePicUrl(email: String, profilePicUrl: String): Job
+    fun logout(): Job
 }
 
 class ProfileViewModel(
@@ -54,6 +55,10 @@ class ProfileViewModel(
                     loggedUser = UserState(userCopy)
                 }
             }
+        override fun logout() = viewModelScope.launch {
+            datastoreRepository.removeUser()
+            loggedUser = UserState(null)
+        }
     }
     init {
         viewModelScope.launch {

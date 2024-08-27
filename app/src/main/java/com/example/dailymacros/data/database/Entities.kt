@@ -73,24 +73,26 @@ enum class MealType(val string: String) {
     SNACK("Snack")
 }
 
-enum class Gender(val string: String) {
-    MALE("Male"),
-    FEMALE("Female"),
-    OTHER("Other")
+enum class Gender(val string: String, val k: Int) {
+    MALE("Male", 5),
+    FEMALE("Female", -161),
+    OTHER("Other", -78)
 }
 
-enum class ActivityType(val string: String) {
-    SEDENTARY("Sedentary"),
-    LIGHTLY_ACTIVE("Lightly Active"),
-    MODERATELY_ACTIVE("Moderately Active"),
-    VERY_ACTIVE("Very Active"),
-    SUPER_ACTIVE("Super Active")
+enum class ActivityType(val string: String, val k: Float) {
+    SEDENTARY("Sedentary (little to no exercise)", 1.2f),
+    LIGHTLY_ACTIVE("Lightly Active (1-3 days per week)", 1.375f),
+    MODERATELY_ACTIVE("Moderately Active (3-5 days per week)", 1.55f),
+    VERY_ACTIVE("Very Active (6-7 days per week)", 1.725f),
+    SUPER_ACTIVE("Super Active (twice per day, extra heavy workouts)", 2f)
 }
 
-enum class GoalType(val string: String) {
-    LOSE_WEIGHT("Lose Weight"),
-    MAINTAIN_WEIGHT("Maintain Weight"),
-    GAIN_WEIGHT("Gain Weight")
+enum class GoalType(val string: String, val     k: Float) {
+    LOSE_WEIGHT("Lose Weight", 0.8f),
+    LOSE_WEIGHT_SLOWLY("Lose Weight Slowly", 0.9f),
+    MAINTAIN_WEIGHT("Maintain Weight", 1f),
+    GAIN_WEIGHT_SLOWLY("Gain Weight Slowly", 1.1f),
+    GAIN_WEIGHT("Gain Weight", 1.2f)
 }
 
 enum class FoodUnit(val string: String) {

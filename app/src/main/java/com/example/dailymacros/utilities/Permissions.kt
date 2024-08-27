@@ -12,52 +12,49 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 
 enum class PermissionStatus {
-    NOT_REQUESTED,
-    GRANTED,
-    DENIED,
-    DENIED_FOREVER;
+    Unknown,
+    Granted,
+    Denied,
+    PermanentlyDenied;
 
-    val isGranted: Boolean
-        get() = this == GRANTED
-    val isDenied: Boolean
-        get() = this == DENIED || this == DENIED_FOREVER
+    val isGranted get() = this == Granted
+    val isDenied get() = this == Denied || this == PermanentlyDenied
 }
 
-interface Permissions {
-    val permissionStatus: PermissionStatus
-    fun requestPermission()
+interface PermissionHandler {
+    val permission: String
+    val status: PermissionStatus
+    fun launchPermissionRequest()
 }
 
 @Composable
-fun rememberPermission(permission: String,
-                       onResult: (status: PermissionStatus) -> Unit = {}
-): Permissions {
+fun rememberPermission(
+    permission: String,
+    onResult: (status: PermissionStatus) -> Unit = {}
+): PermissionHandler {
+    var status by remember { mutableStateOf(PermissionStatus.Unknown) }
 
-    var status by remember { mutableStateOf(PermissionStatus.NOT_REQUESTED) }
     val activity = (LocalContext.current as ComponentActivity)
 
-    var permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        status = if (isGranted) {
-            PermissionStatus.GRANTED
-        } else {
-            if (activity.shouldShowRequestPermissionRationale(permission)) {
-                PermissionStatus.DENIED
-            } else {
-                PermissionStatus.DENIED_FOREVER
-            }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        status = when {
+            isGranted -> PermissionStatus.Granted
+            activity.shouldShowRequestPermissionRationale(permission) -> PermissionStatus.Denied
+            else -> PermissionStatus.PermanentlyDenied
         }
         onResult(status)
     }
 
     val permissionHandler by remember {
         derivedStateOf {
-            object : Permissions {
-                override val permissionStatus = status
-                override fun requestPermission() = permissionLauncher.launch(permission)
+            object : PermissionHandler {
+                override val permission = permission
+                override val status = status
+                override fun launchPermissionRequest() = permissionLauncher.launch(permission)
             }
         }
     }
     return permissionHandler
-
-
 }

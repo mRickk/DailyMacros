@@ -16,13 +16,16 @@ import androidx.navigation.NavHostController
 import com.example.dailymacros.ui.NavigationRoute
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.platform.LocalContext
-import androidx.room.PrimaryKey
 import com.example.dailymacros.data.database.ActivityType
 import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.Gender
 import com.example.dailymacros.data.database.GoalType
 import com.example.dailymacros.data.database.User
+import com.example.dailymacros.utilities.calculateBMR
+import com.example.dailymacros.utilities.calculateDailyKcal
 
 @Composable
 fun Signup(navController: NavHostController,
@@ -45,7 +48,7 @@ fun Signup(navController: NavHostController,
     val confirmPassword = remember { mutableStateOf("") }
     val confirmPasswordError = remember { mutableStateOf(false) }
 
-    val gender = remember { mutableStateOf("Male") }
+    val gender = remember { mutableStateOf(Gender.MALE) }
 
     val age = remember { mutableStateOf("") }
     val ageError = remember { mutableStateOf(false) }
@@ -56,9 +59,18 @@ fun Signup(navController: NavHostController,
     val height = remember { mutableStateOf("") }
     val heightError = remember { mutableStateOf(false) }
 
-    val activity = remember { mutableStateOf("Low") }
+    val activity = remember { mutableStateOf(ActivityType.LIGHTLY_ACTIVE) }
 
-    val goal = remember { mutableStateOf("Lose Weight") }
+    val goal = remember { mutableStateOf(GoalType.MAINTAIN_WEIGHT) }
+
+    var expandedActivity by remember { mutableStateOf(false) }
+    var expandedGoal by remember { mutableStateOf(false) }
+    var expandedGender by remember { mutableStateOf(false) }
+
+    fun validateEmail(email: String): Boolean {
+        val regex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\$")
+        return regex.matches(email)
+    }
 
     fun validatePassword(pswd: String): Boolean {
         return pswd.length >= 8
@@ -82,7 +94,6 @@ fun Signup(navController: NavHostController,
                 .fillMaxWidth()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
-                .padding(top = 200.dp) // Adjust this value to start from the middle
         ) {
             TextField(
                 value = email.value,
@@ -125,7 +136,7 @@ fun Signup(navController: NavHostController,
             TextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Password") },
+                label = { Text("Password (min. 8 characters)") },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(8.dp),
@@ -162,17 +173,49 @@ fun Signup(navController: NavHostController,
                     modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                 )
             }
-            Text("Gender", style = MaterialTheme.typography.bodyMedium)
-            RadioButtonGroup(
-                options = listOf("Male", "Female", "Other"),
-                selectedOption = gender.value,
-                onOptionSelected = { gender.value = it }
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                OutlinedTextField(
+                    value = gender.value.string,
+                    onValueChange = {},
+                    label = { Text("Gender") },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { expandedGender = true }) {
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                )
+                DropdownMenu(
+                    expanded = expandedGender,
+                    onDismissRequest = { expandedGender = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                ) {
+                    Gender.entries.forEach { g ->
+                        DropdownMenuItem(
+                            onClick = {
+                                gender.value = g
+                                expandedGender = false
+                            },
+                            text = { Text(text = g.string) }
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
                 value = age.value,
                 onValueChange = { age.value = it },
-                label = { Text("Age") },
+                label = { Text("Age (years)") },
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -192,7 +235,7 @@ fun Signup(navController: NavHostController,
             TextField(
                 value = weight.value,
                 onValueChange = { weight.value = it },
-                label = { Text("Weight") },
+                label = { Text("Weight (kg)") },
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -212,7 +255,7 @@ fun Signup(navController: NavHostController,
             TextField(
                 value = height.value,
                 onValueChange = { height.value = it },
-                label = { Text("Height") },
+                label = { Text("Height (cm)") },
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -229,63 +272,138 @@ fun Signup(navController: NavHostController,
                     modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                 )
             }
-            Text("Activity Level", style = MaterialTheme.typography.bodyMedium)
-            RadioButtonGroup(
-                options = listOf("Sedentary", "Lightly Active", "Moderately Active", "Very Active", "Super Active"),
-                selectedOption = activity.value,
-                onOptionSelected = { activity.value = it }
-            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                OutlinedTextField(
+                    value = activity.value.string,
+                    onValueChange = {},
+                    label = { Text("Activity Level") },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { expandedActivity = true }) {
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                )
+                DropdownMenu(
+                    expanded = expandedActivity,
+                    onDismissRequest = { expandedActivity = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                ) {
+                    ActivityType.entries.forEach { a ->
+                        DropdownMenuItem(
+                            onClick = {
+                                activity.value = a
+                                expandedActivity = false
+                            },
+                            text = { Text(text = a.string) }
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Goal", style = MaterialTheme.typography.bodyMedium)
-            RadioButtonGroup(
-                options = listOf("Lose Weight", "Maintain Weight", "Gain Weight"),
-                selectedOption = goal.value,
-                onOptionSelected = { goal.value = it }
-            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                OutlinedTextField(
+                    value = goal.value.string,
+                    onValueChange = {},
+                    label = { Text("Goal") },
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { expandedGoal = true }) {
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                )
+                DropdownMenu(
+                    expanded = expandedGoal,
+                    onDismissRequest = { expandedGoal = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                ) {
+                    GoalType.entries.forEach { g ->
+                        DropdownMenuItem(
+                            onClick = {
+                                goal.value = g
+                                expandedGoal = false
+                            },
+                            text = { Text(text = g.string) }
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                          //Signup logic
-                            if (email.value.isEmpty()) {
-                                emailError.value = true
-                            } else if (username.value.isEmpty()) {
-                                usernameError.value = true
-                            } else if (password.value.isEmpty() || !validatePassword(password.value)) {
-                                passwordError.value = true
-                            } else if (confirmPassword.value.isEmpty() || !isPasswordMatching(password.value, confirmPassword.value)) {
-                                confirmPasswordError.value = true
-                            } else if (age.value.isEmpty() || validateNumber(age.value)) {
-                                ageError.value = true
-                            } else if (weight.value.isEmpty() || validateNumber(weight.value)) {
-                                weightError.value = true
-                            } else if (height.value.isEmpty() || validateNumber(height.value)) {
-                                heightError.value = true
-                            } else {
-                                val newUser = User(
-                                    email = email.value,
-                                    password = password.value,
-                                    username = username.value,
-                                    pictureUrl = null,
-                                    height = height.value.toFloat(),
-                                    weight = weight.value.toFloat(),
-                                    gender = Gender.valueOf(gender.value.uppercase()),
-                                    age = age.value.toInt(),
-                                    activity = ActivityType.valueOf(activity.value.uppercase().replace(" ", "_")),
-                                    goal = GoalType.valueOf(goal.value.uppercase().replace(" ", "_")),
-                                    bmr = 0, //TODO: Calculate BMR
-                                    dailyKcal = 0, //TODO: Calculate daily kcal
-                                    diet = DietType.STANDARD
-                                )
-                                actions.signupUser(newUser) {
-                                    if(signupViewModel.loggedUser.value != null) {
-                                        signupViewModel.actions.setUser(signupViewModel.loggedUser.value!!)
-                                        navController.navigate(NavigationRoute.Diary.route)
-                                    }
-
-                                }
-
+                    emailError.value = false
+                    usernameError.value = false
+                    passwordError.value = false
+                    confirmPasswordError.value = false
+                    ageError.value = false
+                    weightError.value = false
+                    heightError.value = false
+                    //Signup logic
+                    if (email.value.isEmpty() || !validateEmail(email.value)) {
+                        emailError.value = true
+                    } else if (username.value.isEmpty()) {
+                        usernameError.value = true
+                    } else if (password.value.isEmpty() || !validatePassword(password.value)) {
+                        passwordError.value = true
+                    } else if (confirmPassword.value.isEmpty() || !isPasswordMatching(password.value, confirmPassword.value)) {
+                        confirmPasswordError.value = true
+                    } else if (age.value.isEmpty() || validateNumber(age.value)) {
+                        ageError.value = true
+                    } else if (weight.value.isEmpty() || validateNumber(weight.value)) {
+                        weightError.value = true
+                    } else if (height.value.isEmpty() || validateNumber(height.value)) {
+                        heightError.value = true
+                    } else {
+                        val bmr = calculateBMR(height.value.toFloat(), weight.value.toFloat(), age.value.toInt(), gender.value.k)
+                        val newUser = User(
+                            email = email.value,
+                            password = password.value,
+                            username = username.value,
+                            pictureUrl = null,
+                            height = height.value.toFloat(),
+                            weight = weight.value.toFloat(),
+                            gender = gender.value,
+                            age = age.value.toInt(),
+                            activity = activity.value,
+                            goal = goal.value,
+                            bmr = bmr,
+                            dailyKcal = calculateDailyKcal(bmr, activity.value.k, goal.value.k),
+                            diet = DietType.STANDARD
+                        )
+                        actions.signupUser(newUser) {
+                            if(signupViewModel.loggedUser.value != null) {
+                                signupViewModel.actions.setUser(signupViewModel.loggedUser.value!!)
+                                navController.navigate(NavigationRoute.Diary.route)
                             }
-                          },
+
+                        }
+
+                    }
+                  },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 32.dp) // Add bottom padding
