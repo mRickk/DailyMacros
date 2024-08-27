@@ -6,23 +6,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.PrimaryKey
-import com.example.dailymacros.data.database.ActivityType
-import com.example.dailymacros.data.database.Gender
-import com.example.dailymacros.data.database.GoalType
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.DatastoreRepository
+import com.example.dailymacros.ui.NavigationRoute
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 data class UserState(val user: User?)
 
 interface ProfileActions {
     fun setProfilePicUrl(email: String, profilePicUrl: String): Job
-    fun logout(): Job
+    fun logout(navController: NavHostController): Job
 }
 
 class ProfileViewModel(
@@ -55,15 +53,18 @@ class ProfileViewModel(
                     loggedUser = UserState(userCopy)
                 }
             }
-        override fun logout() = viewModelScope.launch {
-            datastoreRepository.removeUser()
-            loggedUser = UserState(null)
+
+        override fun logout(navController: NavHostController): Job = viewModelScope.launch {
+            viewModelScope.launch {
+                datastoreRepository.removeUser()
+                loggedUser = UserState(null)
+            }.join()
+            navController.navigate(NavigationRoute.Login.route)
         }
     }
     init {
         viewModelScope.launch {
             loggedUser = UserState(datastoreRepository.user.first())
-            Log.v("profileViewModel", "Sono init: ${loggedUser.user}")
         }
     }
 }

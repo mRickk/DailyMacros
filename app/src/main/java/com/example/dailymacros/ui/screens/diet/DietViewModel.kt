@@ -29,7 +29,6 @@ class DietViewModel (
     init {
         viewModelScope.launch {
             loggedUser = UserState(datastoreRepository.user.first())
-            Log.v("DietScreen", "Sono init: ${loggedUser.user}")
         }
     }
 

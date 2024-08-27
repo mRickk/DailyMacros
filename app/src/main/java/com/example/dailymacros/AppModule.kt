@@ -48,13 +48,13 @@ val appModule = module {
     viewModel { SettingsViewModel(get()) }
     viewModel { LoginViewModel(get(), get()) }
     viewModel { SignupViewModel(get(), get()) }
-    viewModel { DiaryViewModel(get()) }
-    viewModel { SelectExerciseViewModel(get()) }
-    viewModel { AddExerciseViewModel(get()) }
+    viewModel { DiaryViewModel(get(), get()) }
+    viewModel { SelectExerciseViewModel(get(), get()) }
+    viewModel { AddExerciseViewModel(get(), get()) }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { EditProfileViewModel(get(), get()) }
-    viewModel { SelectFoodViewModel(get()) }
-    viewModel { AddFoodViewModel(get()) }
-    viewModel {OverviewViewModel(get())}
+    viewModel { SelectFoodViewModel(get(), get()) }
+    viewModel { AddFoodViewModel(get(), get()) }
+    viewModel {OverviewViewModel(get(), get())}
     viewModel {DietViewModel(get(), get())}
 }

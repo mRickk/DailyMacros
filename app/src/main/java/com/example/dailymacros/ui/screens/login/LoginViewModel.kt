@@ -34,7 +34,6 @@ class LoginViewModel(
 
     val actions = object : LoginActions {
         override fun setUser(user: User) = viewModelScope.launch {
-            Log.v("LoginViewModel", "Setting user: $user")
             datastoreRepository.saveUser(user)
 
         }
@@ -46,14 +45,12 @@ class LoginViewModel(
 
         override fun setUser() = viewModelScope.launch {
             loggedUser = UserState(datastoreRepository.user.first())
-            Log.v("LoginViewModel", "Porcodio sono setUser: ${loggedUser.user}")
         }
     }
 
     init {
         viewModelScope.launch {
             loggedUser = UserState(datastoreRepository.user.first())
-            Log.v("LoginViewModel", "Porcodio sono init: ${loggedUser.user}")
         }
     }
 }

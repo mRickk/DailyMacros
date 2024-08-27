@@ -21,9 +21,10 @@ data class User(
     val diet: DietType
 )
 
-@Entity
+@Entity(primaryKeys = ["name", "email"])
 data class Food(
-    @PrimaryKey val name: String,
+    val email: String,
+    val name: String,
     val description: String?,
     val kcalPerc: Float,
     val carbsPerc: Float,
@@ -33,24 +34,27 @@ data class Food(
     var isFavourite: Boolean
 )
 
-@Entity(primaryKeys = ["foodName", "date", "mealType"])
+@Entity(primaryKeys = ["emailFIM", "foodName", "date", "mealType"])
 data class FoodInsideMeal(
+    val emailFIM: String,
     val foodName: String,
     val date: String,
     val mealType: MealType,
     val quantity: Float
 )
 
-@Entity
+@Entity(primaryKeys = ["email", "name"])
 data class Exercise(
-    @PrimaryKey val name: String,
+    val email: String,
+    val name: String,
     val description: String?,
     val kcalBurnedSec: Float,
     var isFavourite: Boolean
 )
 
-@Entity(primaryKeys = ["exerciseName", "date"])
+@Entity(primaryKeys = ["emailEID","exerciseName", "date"])
 data class ExerciseInsideDay(
+    val emailEID: String,
     val exerciseName: String,
     val date: String,
     val duration: Int

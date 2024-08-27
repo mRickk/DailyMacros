@@ -36,11 +36,11 @@ interface FoodDAO {
     @Upsert
     suspend fun upsert(food: Food)
 
-    @Query("SELECT * FROM Food WHERE name = :name")
-    suspend fun getFood(name: String): Food
+    @Query("SELECT * FROM Food WHERE name = :name AND email = :email")
+    suspend fun getFood(name: String, email: String): Food
 
-    @Query("DELETE FROM Food WHERE name = :name")
-    suspend fun deleteFood(name: String)
+    @Query("DELETE FROM Food WHERE name = :name AND email = :email")
+    suspend fun deleteFood(name: String, email: String)
 }
 
 @Dao
@@ -54,11 +54,11 @@ interface FoodInsideMealDAO {
     @Upsert
     suspend fun upsert(foodInsideMeal: FoodInsideMeal)
 
-    @Query("DELETE FROM FoodInsideMeal WHERE date = :date AND mealType = :mealType AND foodName = :foodName")
-    suspend fun removeFoodInsideMeal(date: String, mealType: MealType, foodName: String)
+    @Query("DELETE FROM FoodInsideMeal WHERE date = :date AND mealType = :mealType AND foodName = :foodName AND emailFIM = :email")
+    suspend fun removeFoodInsideMeal(date: String, mealType: MealType, foodName: String, email: String)
 
-    @Query("DELETE FROM FoodInsideMeal WHERE foodName = :foodName")
-    suspend fun removeFoodInsideAllMeals(foodName: String)
+    @Query("DELETE FROM FoodInsideMeal WHERE foodName = :foodName AND emailFIM = :email")
+    suspend fun removeFoodInsideAllMeals(foodName: String, email: String)
 }
 
 @Dao
@@ -70,11 +70,11 @@ interface ExerciseDAO {
         @Upsert
         suspend fun upsert(exercise: Exercise)
 
-        @Query("SELECT * FROM Exercise WHERE name = :name")
-        suspend fun getExercise(name: String): Exercise
+        @Query("SELECT * FROM Exercise WHERE name = :name AND email = :email")
+        suspend fun getExercise(name: String, email: String): Exercise
 
-        @Query("DELETE FROM Exercise WHERE name = :name")
-        suspend fun deleteExercise(name: String)
+        @Query("DELETE FROM Exercise WHERE name = :name AND email = :email")
+        suspend fun deleteExercise(name: String, email: String)
 }
 
 @Dao
@@ -89,9 +89,9 @@ interface ExerciseInsideDayDAO {
         @Upsert
         suspend fun upsert(exerciseInsideDay: ExerciseInsideDay)
 
-        @Query("DELETE FROM ExerciseInsideDay WHERE exerciseName = :exerciseName AND date = :date")
-        suspend fun removeExerciseInsideDay(exerciseName: String, date: String)
+        @Query("DELETE FROM ExerciseInsideDay WHERE exerciseName = :exerciseName AND date = :date AND emailEID = :email")
+        suspend fun removeExerciseInsideDay(exerciseName: String, date: String, email: String)
 
-        @Query("DELETE FROM ExerciseInsideDay WHERE exerciseName = :exerciseName")
-        suspend fun removeExerciseInsideAllDays(exerciseName: String)
+        @Query("DELETE FROM ExerciseInsideDay WHERE exerciseName = :exerciseName AND emailEID = :email")
+        suspend fun removeExerciseInsideAllDays(exerciseName: String, email: String)
 }

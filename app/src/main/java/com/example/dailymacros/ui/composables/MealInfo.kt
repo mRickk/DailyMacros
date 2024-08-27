@@ -165,12 +165,9 @@ fun MealInfo(
                         confirmValueChange = {
                             if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
                                 diaryActions.removeFoodInsideMeal(
-                                    FoodInsideMeal(
-                                        foodName = foodInfo.food,
-                                        date = date,
-                                        mealType = mealType,
-                                        quantity = foodInfo.quantity
-                                    )
+                                    foodName = foodInfo.food,
+                                    date = date,
+                                    mealType = mealType
                                 )
                                 true
                             } else {
@@ -217,6 +214,7 @@ fun MealInfo(
     }
 }
 data class FoodInfoData(
+    val email: String,
     val food: String,
     val quantity: Float,
     val carbsQty: Float,
