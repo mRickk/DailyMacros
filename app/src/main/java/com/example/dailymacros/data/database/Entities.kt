@@ -104,10 +104,10 @@ enum class FoodUnit(val string: String) {
     MILLILITERS("ml")
 }
 
-enum class DietType(val string: String) {
-    STANDARD("Standard"),
-    BALANCED("Balanced"),
-    LOW_FAT("Low Fat"),
-    HIGH_PROTEIN("High Protein"),
-    KETOGENIC("Ketogenic")
+enum class DietType(val string: String, val carbsPerc: Float, val proteinPerc: Float, val fatPerc: Float) {
+    STANDARD("Standard", 0.50f, 0.20f, 0.30f),
+    BALANCED("Balanced", 0.50f, 0.25f, 0.25f),
+    LOW_FAT("Low Fat", 0.60f, 0.25f, 0.15f),
+    HIGH_PROTEIN("High Protein", 0.25f, 0.40f, 0.35f),
+    KETOGENIC("Ketogenic", 0.5f, 0.30f, 0.65f)
 }
