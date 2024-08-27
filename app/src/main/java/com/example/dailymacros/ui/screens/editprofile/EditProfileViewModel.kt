@@ -13,6 +13,8 @@ import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.DatastoreRepository
 import com.example.dailymacros.ui.screens.login.LoginActions
 import com.example.dailymacros.ui.screens.profile.UserState
+import com.example.dailymacros.utilities.calculateBMR
+import com.example.dailymacros.utilities.calculateDailyKcal
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -34,6 +36,7 @@ class EditProfileViewModel(
         override fun updateProfile(username: String ,weight: Float, height: Float, age: Int, gender: Gender) =
             viewModelScope.launch {
                 if (loggedUser.user != null) {
+                    val tempBMR = calculateBMR(height, weight, age, gender.k)
                     val userCopy = User(
                         email = loggedUser.user!!.email,
                         password = loggedUser.user!!.password,
@@ -45,8 +48,8 @@ class EditProfileViewModel(
                         age = age,
                         activity = loggedUser.user!!.activity,
                         goal = loggedUser.user!!.goal,
-                        bmr = loggedUser.user!!.bmr,
-                        dailyKcal = loggedUser.user!!.dailyKcal,
+                        bmr = tempBMR,
+                        dailyKcal = calculateDailyKcal(tempBMR, loggedUser.user!!.activity.k, loggedUser.user!!.goal.k),
                         diet = loggedUser.user!!.diet
                     )
                     dailyMacrosRepository.updateUser(userCopy)
