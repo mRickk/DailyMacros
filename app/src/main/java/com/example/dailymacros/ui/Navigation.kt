@@ -61,7 +61,8 @@ fun NavGraph(
             val diaryViewModel = koinViewModel<DiaryViewModel>()
             DiaryScreen(navController,
                 diaryViewModel.actions,
-                diaryViewModel.state.collectAsStateWithLifecycle().value)
+                diaryViewModel.state.collectAsStateWithLifecycle().value,
+                diaryViewModel)
         }
         composable(NavigationRoute.Profile.route) {
             val profileViewModel = koinViewModel<ProfileViewModel>()

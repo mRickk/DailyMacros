@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,7 +51,8 @@ import kotlin.math.roundToInt
 fun DiaryScreen(
     navController: NavHostController,
     actions: DiaryActions,
-    state: DiaryState
+    state: DiaryState,
+    diaryViewModel: DiaryViewModel
 ) {
     val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
     Scaffold(
@@ -89,6 +92,10 @@ fun DiaryScreen(
                 val countExerciseKcal = if (exercisesInsideDate.isNotEmpty()) exercisesInsideDate.sumOf { it.exercise.kcalBurnedSec * it.exerciseInsideDay.duration.toDouble() } else 0.0
                 val countKcal = countCarbsKcal + countFatKcal + countProteinKcal - countExerciseKcal
 
+                val totKcal = remember { mutableIntStateOf(0) }
+
+                totKcal.intValue = (diaryViewModel.loggedUser.user?.dailyKcal ?: 2000)
+
                 LazyColumn(
                         modifier = Modifier.fillMaxSize() // Fills the available space
                 ) {
@@ -97,30 +104,32 @@ fun DiaryScreen(
                         Column(
                             modifier = Modifier.padding(8.dp) // Add padding to your content
                         ) {
-                            CaloriesBar(countCal = countKcal, totCal = 2000f) // Example values
+                            CaloriesBar(countCal = countKcal, totCal = totKcal.intValue.toFloat())
 
                             Row(
                                 horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
                             ) {
                                 MacrosBar(
                                     label = "Carbs",
                                     count = countCarbs.toFloat(),
                                     total = 300f, //TODO: get from user
                                     color = Carbs
-                                ) // Example values
+                                )
                                 MacrosBar(
                                     label = "Fat",
                                     count = countFat.toFloat(),
                                     total = 100f, //TODO: get from user
                                     color = Fat
-                                ) // Example values
+                                )
                                 MacrosBar(
                                     label = "Protein",
                                     count = countProtein.toFloat(),
                                     total = 150f, //TODO: get from user
                                     color = Protein
-                                ) // Example values
+                                )
                             }
                         }
                     }
