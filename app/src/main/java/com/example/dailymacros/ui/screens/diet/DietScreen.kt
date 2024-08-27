@@ -26,6 +26,8 @@ import com.example.dailymacros.ui.composables.PieChart
 import com.example.dailymacros.ui.theme.Carbs
 import com.example.dailymacros.ui.theme.Fat
 import com.example.dailymacros.ui.theme.Protein
+import com.example.dailymacros.utilities.MacrosKcal
+import kotlin.math.roundToInt
 
 @Composable
 fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
@@ -34,11 +36,13 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
     var diet by remember { mutableStateOf(DietType.STANDARD) }
     var goal by remember { mutableStateOf(GoalType.MAINTAIN_WEIGHT) }
     var activity by remember { mutableStateOf(ActivityType.SEDENTARY) }
+    var dailyKcal by remember { mutableStateOf(0) }
 
     fun updateValues() {
         diet = user!!.diet
         goal = user!!.goal
         activity = user!!.activity
+        dailyKcal = user!!.dailyKcal
     }
 
     LaunchedEffect(user) {
@@ -75,7 +79,7 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "${user?.dailyKcal ?: "N/A"} kcal",
+                        text = "${dailyKcal ?: "N/A"} kcal",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -103,24 +107,24 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "Carbohydrates", color = Carbs)
-                        Text(text = "200g", fontWeight = FontWeight.Bold, color = Carbs)
-                        Text(text = "800 kcal", color = Carbs)
+                        Text(text = "%.1f".format(dailyKcal * diet.carbsPerc / MacrosKcal.CARBS.kcal) + "g", fontWeight = FontWeight.Bold, color = Carbs)
+                        Text(text = "${(dailyKcal * diet.carbsPerc).roundToInt()} kcal", color = Carbs)
                     }
                     // Fats Column
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "Fats", color = Fat)
-                        Text(text = "70g", fontWeight = FontWeight.Bold, color = Fat)
-                        Text(text = "630 kcal", color = Fat)
+                        Text(text = "%.1f".format(dailyKcal * diet.fatPerc / MacrosKcal.FAT.kcal) + "g", fontWeight = FontWeight.Bold, color = Fat)
+                        Text(text = "${(dailyKcal * diet.fatPerc).roundToInt()} kcal", color = Fat)
                     }
                     // Proteins Column
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = "Proteins", color = Protein)
-                        Text(text = "100g", fontWeight = FontWeight.Bold, color = Protein)
-                        Text(text = "400 kcal", color = Protein)
+                        Text(text = "%.1f".format(dailyKcal * diet.proteinPerc / MacrosKcal.PROTEIN.kcal) + "g", fontWeight = FontWeight.Bold, color = Protein)
+                        Text(text = "${(dailyKcal * diet.proteinPerc).roundToInt()} kcal", color = Protein)
                     }
                 }
             }
@@ -131,7 +135,7 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                     Protein
                 )
 
-                val chartValues = listOf(60f, 110f, 20f)
+                val chartValues = listOf(diet.carbsPerc, diet.fatPerc, diet.proteinPerc)
 
                 PieChart(
                     modifier = Modifier.padding(20.dp),
@@ -175,7 +179,7 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "Diet")
+                            Text(text = "Diet", color = MaterialTheme.colorScheme.onSecondary)
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(text = diet.string ?: "N/A")
                                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
@@ -215,7 +219,7 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "Activity level")
+                            Text(text = "Activity level", color = MaterialTheme.colorScheme.onSecondary)
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(text = activity.string ?: "N/A")
                                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
@@ -241,7 +245,7 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                         }
                     }
 
-                    // Objective Dropdown
+                    // Goal Dropdown
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -249,13 +253,14 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                             .clickable { expandedGoal = true }
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
+
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "Goal")
+                            Text(text = "Goal", color = MaterialTheme.colorScheme.onSecondary)
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(text = goal.string ?: "N/A")
                                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)

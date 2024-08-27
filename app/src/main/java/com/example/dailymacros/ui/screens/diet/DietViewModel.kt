@@ -12,6 +12,7 @@ import com.example.dailymacros.data.database.GoalType
 import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.DatastoreRepository
+import com.example.dailymacros.utilities.calculateDailyKcal
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -51,7 +52,7 @@ class DietViewModel (
                     activity = activityType,
                     goal = goalType,
                     bmr = loggedUser.user!!.bmr,
-                    dailyKcal = loggedUser.user!!.dailyKcal,
+                    dailyKcal = calculateDailyKcal(loggedUser.user!!.bmr, activityType.k, goalType.k),
                     diet = dietType
                 )
                 dailyMacrosRepository.updateUser(userCopy)
