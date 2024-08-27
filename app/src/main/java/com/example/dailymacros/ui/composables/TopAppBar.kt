@@ -3,6 +3,7 @@ package com.example.dailymacros.ui.composables
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BrightnessMedium
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +62,7 @@ fun DMTopAppBar(
             } else {
                 IconButton(onClick = { navController.navigate(NavigationRoute.Settings.route) }) {
                     Icon(
-                        imageVector = Icons.Filled.Settings,
+                        imageVector = Icons.Filled.BrightnessMedium,
                         contentDescription = "Settings button",
                         tint = MaterialTheme.colorScheme.onTertiary
                     )

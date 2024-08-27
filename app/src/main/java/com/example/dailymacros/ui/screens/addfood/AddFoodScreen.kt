@@ -162,16 +162,13 @@ fun AddFoodScreen(
                 onClick = {
                     if (isFormValid.value) {
                         addFoodVM.actions.upsertFood(
-                            Food(
-                                name = foodName.value,
-                                description = foodDescription.value.takeIf { it.isNotBlank() },
-                                kcalPerc = kcal / qty.value.toFloat(),
-                                carbsPerc = carbs.value.toFloat() / qty.value.toFloat(),
-                                fatPerc = fat.value.toFloat() / qty.value.toFloat(),
-                                proteinPerc = prot.value.toFloat() / qty.value.toFloat(),
-                                unit = unit.value,
-                                isFavourite = false
-                            )
+                            name = foodName.value,
+                            description = foodDescription.value.takeIf { it.isNotBlank() },
+                            kcalPerc = kcal / qty.value.toFloat(),
+                            carbsPerc = carbs.value.toFloat() / qty.value.toFloat(),
+                            fatPerc = fat.value.toFloat() / qty.value.toFloat(),
+                            proteinPerc = prot.value.toFloat() / qty.value.toFloat(),
+                            unit = unit.value
                         )
                         navController.popBackStack()
                     }

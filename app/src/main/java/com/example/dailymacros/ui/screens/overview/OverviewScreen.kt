@@ -153,12 +153,14 @@ fun Overview(
 fun createEmptyFoodInsideMealWithFood(date: Long): FoodInsideMealWithFood {
     return FoodInsideMealWithFood(
         foodInsideMeal = FoodInsideMeal(
+            emailFIM = "",
             foodName = "",
             date = date.toString(),
             mealType = MealType.BREAKFAST,
             quantity = 0f
         ),
         food = Food(
+            email = "",
             name = "",
             description = null,
             kcalPerc = 0f,
@@ -174,11 +176,13 @@ fun createEmptyFoodInsideMealWithFood(date: Long): FoodInsideMealWithFood {
 fun createEmptyExerciseInsideDay(date: Long): ExerciseInsideDayWithExercise {
     return ExerciseInsideDayWithExercise(
         exerciseInsideDay = ExerciseInsideDay(
+            emailEID = "",
             date = date.toString(),
             duration = 0,
             exerciseName = ""
         ),
         exercise = Exercise(
+            email = "",
             name = "",
             kcalBurnedSec = 0f,
             description = null,

@@ -89,11 +89,9 @@ fun ExerciseInfo(
                         confirmValueChange = {
                             if (it == DismissValue.DismissedToEnd || it == DismissValue.DismissedToStart) {
                                 diaryActions.removeExerciseInsideDay(
-                                    ExerciseInsideDay(
-                                        exerciseName = exerciseInfo.exercise,
-                                        date = date,
-                                        duration = exerciseInfo.duration
-                                    )
+                                    exerciseName = exerciseInfo.exercise,
+                                    date = date,
+                                    duration = exerciseInfo.duration
                                 )
                                 true
                             } else {
@@ -140,6 +138,7 @@ fun ExerciseInfo(
     }
 }
 data class ExerciseInfoData(
+    val email: String,
     val exercise: String,
     val caloriesBurned: Float,
     val duration: Int

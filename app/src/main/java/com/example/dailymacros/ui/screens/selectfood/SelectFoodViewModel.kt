@@ -1,22 +1,27 @@
 package com.example.dailymacros.ui.screens.selectfood
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dailymacros.data.database.Exercise
-import com.example.dailymacros.data.database.ExerciseInsideDay
 import com.example.dailymacros.data.database.Food
 import com.example.dailymacros.data.database.FoodInsideMeal
 import com.example.dailymacros.data.database.MealType
+import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
+import com.example.dailymacros.data.repositories.DatastoreRepository
+import com.example.dailymacros.ui.screens.selectexercise.UserState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class SelectFoodState(val foodList: List<Food>)
+data class UserState(val user: User?)
 
 interface SelectFoodActions {
     fun insertFoodInsideMeal(food : Food, date : String, mealType: MealType, quantity: Float): Job
@@ -25,25 +30,36 @@ interface SelectFoodActions {
 }
 
 class SelectFoodViewModel(
-    private val dailyMacrosRepository: DailyMacrosRepository
+    private val dailyMacrosRepository: DailyMacrosRepository,
+    private val datastoreRepository: DatastoreRepository
 ) : ViewModel() {
-    val state = dailyMacrosRepository.foods.map { SelectFoodState(it) }.stateIn(
+    val state = dailyMacrosRepository.foods.map { SelectFoodState(it.filter {i ->
+        i.email == (loggedUser.user?.email ?: "")
+    }) }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = SelectFoodState(emptyList())
     )
+    var loggedUser by mutableStateOf(UserState(null))
+        private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val actions = object : SelectFoodActions {
         override fun insertFoodInsideMeal(food : Food, date : String, mealType: MealType, quantity: Float) = viewModelScope.launch {
-            dailyMacrosRepository.upsertFoodInsideMeal(FoodInsideMeal(food.name, date, mealType, quantity))
+            dailyMacrosRepository.upsertFoodInsideMeal(FoodInsideMeal(loggedUser.user?.email ?: "", food.name, date, mealType, quantity))
         }
         override fun deleteFood(food: Food) = viewModelScope.launch {
-            dailyMacrosRepository.deleteFood(food.name)
+            dailyMacrosRepository.deleteFood(food.name, loggedUser.user?.email ?: "")
         }
 
         override fun toggleFavourite(food: Food) = viewModelScope.launch {
             dailyMacrosRepository.upsertFood(food)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            loggedUser = UserState(datastoreRepository.user.first())
         }
     }
 }

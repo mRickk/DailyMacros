@@ -57,13 +57,11 @@ class EditProfileViewModel(
 
         override fun getUser() = viewModelScope.launch {
             loggedUser = UserState(datastoreRepository.user.first())
-            Log.v("EditProfileVM", "GETUSER: ${loggedUser.user}")
         }
 
         init {
             viewModelScope.launch {
                 loggedUser = UserState(datastoreRepository.user.first())
-                Log.v("EditProfileVM", "Sono init: ${loggedUser.user}")
             }
         }
     }

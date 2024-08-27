@@ -132,6 +132,7 @@ fun DiaryScreen(
                         MealInfo(
                             foodInfoList = p.map { (fim, f) ->
                                 FoodInfoData(
+                                    email = f.email,
                                     food = f.name,
                                     quantity = fim.quantity,
                                     carbsQty = f.carbsPerc * fim.quantity,
@@ -153,6 +154,7 @@ fun DiaryScreen(
                         ExerciseInfo(
                             exerciseInfoList = exercisesInsideDate.map { (eid, e) ->
                                 ExerciseInfoData(
+                                    email = e.email,
                                     exercise = e.name,
                                     caloriesBurned = e.kcalBurnedSec * eid.duration,
                                     duration = eid.duration

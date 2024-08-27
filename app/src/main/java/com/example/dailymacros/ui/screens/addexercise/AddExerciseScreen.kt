@@ -76,13 +76,11 @@ fun AddExerciseScreen(
                 onClick = {
                     if (isFormValid.value) {
                         addExerciseVM.actions.upsertExercise(
-                            Exercise(
-                                name = exerciseName.value,
-                                description = exerciseDescription.value.takeIf { it.isNotBlank() },
-                                kcalBurnedSec = kcalBurnedPerHour.value.toFloat() / 3600,
-                                isFavourite = false
-                            )
+                            name = exerciseName.value,
+                            description = exerciseDescription.value.takeIf { it.isNotBlank() },
+                            kcalBurnedSec = kcalBurnedPerHour.value.toFloat() / 3600
                         )
+
                         navController.popBackStack()
                     }
                 },

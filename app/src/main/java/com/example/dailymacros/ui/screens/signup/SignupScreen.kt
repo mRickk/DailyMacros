@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.signup
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -413,8 +414,10 @@ fun Signup(navController: NavHostController,
         }
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
+                .align(Alignment.BottomCenter),
             contentAlignment = Alignment.BottomCenter
         ) {
             val annotatedText = buildAnnotatedString {
