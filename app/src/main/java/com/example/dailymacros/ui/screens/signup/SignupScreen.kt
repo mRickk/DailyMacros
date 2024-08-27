@@ -414,9 +414,10 @@ fun Signup(navController: NavHostController,
         }
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f)),
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
+                .align(Alignment.BottomCenter),
             contentAlignment = Alignment.BottomCenter
         ) {
             val annotatedText = buildAnnotatedString {
