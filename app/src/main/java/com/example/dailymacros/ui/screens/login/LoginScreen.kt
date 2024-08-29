@@ -1,6 +1,11 @@
 package com.example.dailymacros.ui.screens.login
 
 import android.util.Log
+import android.widget.Toast
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,10 +35,13 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.DialogHost
 import coil.compose.rememberAsyncImagePainter
@@ -46,17 +54,8 @@ import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 fun Login(navController: NavHostController,
           loginViewModel: LoginViewModel) {
 
-    loginViewModel.actions.setUser()
+
     Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.user}")
-
-    val user = loginViewModel.loggedUser.user
-
-    LaunchedEffect(user) {
-        if (user != null) {
-            loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
-            navController.navigate(NavigationRoute.Diary.route)
-        }
-    }
 
     val content = LocalContext.current
     val email = remember { mutableStateOf("") }
@@ -75,6 +74,46 @@ fun Login(navController: NavHostController,
     }
 
     //TODO: Add Biometric authentication
+    // Biometric authentication setup
+    val contextBiometric = LocalContext.current
+    val biometricManager = remember { BiometricManager.from(contextBiometric) }
+    val isBiometricAvailable = remember {
+        biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+    }
+
+    val executor = remember { ContextCompat.getMainExecutor(contextBiometric) }
+    val biometricPrompt = remember {
+        BiometricPrompt(
+            contextBiometric as FragmentActivity,
+            executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    Toast.makeText(contextBiometric, "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    Log.v("LoginScreen", "Biometric authentication succeeded")
+                    Toast.makeText(contextBiometric, "Authentication succeeded!", Toast.LENGTH_SHORT).show()
+                    Log.v("LoginScreen", "Biometric authentication succeeded, user: ${loginViewModel.loggedUser.user}")
+                    loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
+                    navController.navigate(NavigationRoute.Diary.route)
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    Toast.makeText(contextBiometric, "Authentication failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
+
+    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        .setTitle("Biometric authentication")
+        .setSubtitle("Authenticate using your biometric data")
+        .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+        .build()
 
     Box(
         modifier = Modifier
@@ -143,11 +182,19 @@ fun Login(navController: NavHostController,
                         passwordError.value = true
                     }
                     else {
-                        Log.v("LoginScreen", "Email: ${email.value}, Password: ${password.value}, Sono dentro")
+                        Log.v("LoginScreen", "Email: ${email.value}, Password: ${password.value}, Sono dentro ")
                         loginViewModel.actions.login(email.value, password.value) {
                             if(loginViewModel.loggedUser.user != null) {
-                                loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
-                                navController.navigate(NavigationRoute.Diary.route)
+                                Log.v("LoginScreen", "Is Bio AV: ${isBiometricAvailable }")
+                                if(isBiometricAvailable == BiometricManager.BIOMETRIC_SUCCESS) {
+                                    biometricPrompt.authenticate(promptInfo)
+                                    Log.v("LoginScreen", "Biometric authentication")
+                                }
+                                else {
+                                    Log.v("LoginScreen", "Biometric authentication not available")
+                                    loginViewModel.actions.setUser(loginViewModel.loggedUser.user!!)
+                                    navController.navigate(NavigationRoute.Diary.route)
+                                }
                             } else {
                                 loginError.value = true
                             }
@@ -181,7 +228,7 @@ fun Login(navController: NavHostController,
                 withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
                     append("New to our app? ")
                 }
-                pushStringAnnotation(tag = "SIGNIN", annotation = "Sign in")
+                pushStringAnnotation(tag = "SIGNUP", annotation = "Sign up")
                 withStyle(style = SpanStyle(color = Color.Blue)) {
                     append("Sign up")
                 }
@@ -190,7 +237,7 @@ fun Login(navController: NavHostController,
             ClickableText(
                 text = annotatedText,
                 onClick = { offset ->
-                    annotatedText.getStringAnnotations(tag = "SIGNIN", start = offset, end = offset)
+                    annotatedText.getStringAnnotations(tag = "SIGNUP", start = offset, end = offset)
                         .firstOrNull()?.let {
                             navController.navigate(NavigationRoute.Signin.route)
                         }

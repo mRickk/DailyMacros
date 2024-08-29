@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -62,6 +63,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("org.osmdroid:osmdroid-android:6.1.16")
     implementation("tech.utsmankece:osm-android-compose:0.0.5")
+
+    //Biometrics
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 
     //room
     val roomVersion = "2.6.1"

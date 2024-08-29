@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.dailymacros.ui.theme.DailyMacrosTheme
@@ -43,7 +44,7 @@ import com.example.dailymacros.utilities.rememberPermission
 import org.koin.androidx.compose.koinViewModel
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     lateinit var locationService: LocationService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
