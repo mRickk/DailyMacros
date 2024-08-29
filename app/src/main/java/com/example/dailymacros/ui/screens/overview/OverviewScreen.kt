@@ -1,15 +1,26 @@
 package com.example.dailymacros.ui.screens.overview
 
+import androidx.compose.ui.graphics.ColorMatrix
 import android.text.format.DateUtils
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -18,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,12 +37,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrixColorFilter
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.dailymacros.R
 import com.example.dailymacros.data.database.Exercise
 import com.example.dailymacros.data.database.ExerciseInsideDay
 import com.example.dailymacros.data.database.ExerciseInsideDayWithExercise
@@ -55,7 +73,8 @@ import kotlin.math.roundToInt
 @Composable
 fun Overview(
     navController: NavHostController,
-    state: OverviewState
+    state: OverviewState,
+    overviewVM: OverviewViewModel
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedPeriod by remember { mutableStateOf(OverviewPeriods.WEEK) }
@@ -64,11 +83,21 @@ fun Overview(
         .toInstant()
         .toEpochMilli()
 
+    val badgeResNames = listOf(R.drawable.badge1, R.drawable.badge2, R.drawable.badge3,
+                                R.drawable.badge4, R.drawable.badge5, R.drawable.badge6)
+    val badgeBool = listOf(overviewVM.loggedUser.user?.b1, overviewVM.loggedUser.user?.b2, overviewVM.loggedUser.user?.b3,
+                            overviewVM.loggedUser.user?.b4, overviewVM.loggedUser.user?.b5, overviewVM.loggedUser.user?.b6)
+    val badgeDesc = listOf("Add your first food to your diary", "Add your first exercise to your diary", "1 Week streak",
+                            "2 Weeks streak","1 Month streak", "1 Year streak!")
+
     Scaffold (
         topBar = { DMTopAppBar(navController) },
         bottomBar = { NavBar(navController, selectedIndex = 2) }
     ){paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(modifier = Modifier
+            .padding(paddingValues)
+            .verticalScroll(rememberScrollState())
+        ) {
 
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -145,6 +174,61 @@ fun Overview(
                 values = exercisesGroupedByDate.values.map {it.sumOf { i -> (i.exercise.kcalBurnedSec * i.exerciseInsideDay.duration).toDouble() }.toFloat() },
                 modifier = Modifier.padding(10.dp)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Two rows of three images each
+            Column {
+                for (i in 0..2) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        for (j in 0..1) {
+                            val imageIndex = i * 2 + j
+                            val showPopup = remember { mutableStateOf(false) }
+
+                            Box(
+                                modifier = Modifier
+                                    .size(160.dp)
+                                    .clip(CircleShape)
+                                    .border(
+                                        2.dp,
+                                        MaterialTheme.colorScheme.onBackground,
+                                        CircleShape
+                                    )
+                                    .clickable { showPopup.value = true }
+                            ) {
+                                Image(
+                                    painter = painterResource(id = badgeResNames[imageIndex]),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                        colorFilter = ColorFilter.colorMatrix(
+                                            ColorMatrix().apply { setToSaturation(if(badgeBool[imageIndex] == true) 1f else 0f)}
+                                        )
+                                )
+                            }
+
+                            if (showPopup.value) {
+                                AlertDialog(
+                                    onDismissRequest = { showPopup.value = false },
+                                    title = { Text("Badge n.${imageIndex+1}") },
+                                    text = { Text(badgeDesc[imageIndex]) },
+                                    confirmButton = {
+                                        TextButton(onClick = { showPopup.value = false }) {
+                                            Text("OK")
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+
+
 
         }
     }

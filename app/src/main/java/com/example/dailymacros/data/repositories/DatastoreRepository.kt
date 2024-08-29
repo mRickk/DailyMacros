@@ -29,6 +29,13 @@ class DatastoreRepository (
         private val BMR_KEY = stringPreferencesKey("bmr")
         private val DAILY_KCAL_KEY = stringPreferencesKey("dailyKcal")
         private val DIET_TYPE_KEY = stringPreferencesKey("diet")
+        private val B1_KEY = stringPreferencesKey("b1")
+        private val B2_KEY = stringPreferencesKey("b2")
+        private val B3_KEY = stringPreferencesKey("b3")
+        private val B4_KEY = stringPreferencesKey("b4")
+        private val B5_KEY = stringPreferencesKey("b5")
+        private val B6_KEY = stringPreferencesKey("b6")
+        private val SELECTED_DATE_MILLIS_KEY = stringPreferencesKey("selectedDateMillis")
     }
 
     val user = dataStore.data.map {
@@ -48,7 +55,14 @@ class DatastoreRepository (
                     goal = GoalType.valueOf(preferences[GOAL_KEY] ?: "Maintain Weight"),
                     bmr = preferences[BMR_KEY]?.toInt() ?: 0,
                     dailyKcal = preferences[DAILY_KCAL_KEY]?.toInt() ?: 0,
-                    diet = DietType.valueOf(preferences[DIET_TYPE_KEY] ?: "Standard")
+                    diet = DietType.valueOf(preferences[DIET_TYPE_KEY] ?: "Standard"),
+                    b1 = preferences[B1_KEY]?.toBoolean() ?: false,
+                    b2 = preferences[B2_KEY]?.toBoolean() ?: false,
+                    b3 = preferences[B3_KEY]?.toBoolean() ?: false,
+                    b4 = preferences[B4_KEY]?.toBoolean() ?: false,
+                    b5 = preferences[B5_KEY]?.toBoolean() ?: false,
+                    b6 = preferences[B6_KEY]?.toBoolean() ?: false,
+                    selectedDateMillis = preferences[SELECTED_DATE_MILLIS_KEY]?.toLong() ?: 0
                 )
             } else {
                 null
@@ -75,6 +89,13 @@ class DatastoreRepository (
             it[BMR_KEY] = user.bmr.toString()
             it[DAILY_KCAL_KEY] = user.dailyKcal.toString()
             it[DIET_TYPE_KEY] = user.diet.name
+            it[B1_KEY] = user.b1.toString()
+            it[B2_KEY] = user.b2.toString()
+            it[B3_KEY] = user.b3.toString()
+            it[B4_KEY] = user.b4.toString()
+            it[B5_KEY] = user.b5.toString()
+            it[B6_KEY] = user.b6.toString()
+            it[SELECTED_DATE_MILLIS_KEY] = user.selectedDateMillis.toString()
         }
 
     suspend fun removeUser() =
@@ -92,6 +113,13 @@ class DatastoreRepository (
             it.remove(BMR_KEY)
             it.remove(DAILY_KCAL_KEY)
             it.remove(DIET_TYPE_KEY)
+            it.remove(B1_KEY)
+            it.remove(B2_KEY)
+            it.remove(B3_KEY)
+            it.remove(B4_KEY)
+            it.remove(B5_KEY)
+            it.remove(B6_KEY)
+            it.remove(SELECTED_DATE_MILLIS_KEY)
         }
 
 }

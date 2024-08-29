@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dailymacros.data.database.Food
 import com.example.dailymacros.data.database.FoodInsideMeal
+import com.example.dailymacros.data.database.Gender
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.data.database.User
 import com.example.dailymacros.data.repositories.DailyMacrosRepository
 import com.example.dailymacros.data.repositories.DatastoreRepository
 import com.example.dailymacros.ui.screens.selectexercise.UserState
+import com.example.dailymacros.utilities.calculateBMR
+import com.example.dailymacros.utilities.calculateDailyKcal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +30,7 @@ interface SelectFoodActions {
     fun insertFoodInsideMeal(food : Food, date : String, mealType: MealType, quantity: Float): Job
     fun deleteFood(food: Food): Job
     fun toggleFavourite(food: Food): Job
+    fun updateUser(user: User): Job
 }
 
 class SelectFoodViewModel(
@@ -54,6 +58,14 @@ class SelectFoodViewModel(
 
         override fun toggleFavourite(food: Food) = viewModelScope.launch {
             dailyMacrosRepository.upsertFood(food)
+        }
+        override fun updateUser(user: User) = viewModelScope.launch {
+            if (loggedUser.user != null) {
+                val userCopy = user.copy()
+                dailyMacrosRepository.updateUser(userCopy)
+                datastoreRepository.saveUser(userCopy)
+                loggedUser = UserState(userCopy)
+            }
         }
     }
 

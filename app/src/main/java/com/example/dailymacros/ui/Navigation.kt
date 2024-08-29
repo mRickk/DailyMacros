@@ -77,7 +77,11 @@ fun NavGraph(
             Diet(navController,dietViewModel)
         }
         composable(NavigationRoute.Overview.route) {
-            Overview(navController, koinViewModel<OverviewViewModel>().state.collectAsStateWithLifecycle().value)
+            val overviewViewModel = koinViewModel<OverviewViewModel>()
+            Overview(navController,
+                overviewViewModel.state.collectAsStateWithLifecycle().value,
+                overviewViewModel
+            )
         }
         composable(NavigationRoute.Settings.route) {
             val themeState by settingsViewModel.state.collectAsStateWithLifecycle()

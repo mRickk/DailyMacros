@@ -1,6 +1,8 @@
 package com.example.dailymacros.ui.screens.diary
 
+import android.text.format.DateUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -56,7 +59,8 @@ fun DiaryScreen(
     state: DiaryState,
     diaryViewModel: DiaryViewModel
 ) {
-    val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
+    val context = LocalContext.current
+
     Scaffold(
         topBar = { DMTopAppBar(navController) },
         bottomBar = { NavBar(navController, selectedIndex = 0) }
@@ -66,8 +70,10 @@ fun DiaryScreen(
             .fillMaxWidth()
             .fillMaxHeight()
         ) {
+            Log.v("DiaryScreen", "selectedDateMillis: ${diaryViewModel.loggedUser.user?.selectedDateMillis}")
+            val selectedDateMillis = remember { mutableStateOf(diaryViewModel.loggedUser.user?.selectedDateMillis) }
             Row() {
-                selectedDateMillis.value = datePickerWithDialog()
+                selectedDateMillis.value = datePickerWithDialog(viewModel = diaryViewModel)
             }
 
             if (selectedDateMillis.value == null) {
@@ -100,6 +106,29 @@ fun DiaryScreen(
                 totKcal.intValue = (diaryViewModel.loggedUser.user?.dailyKcal ?: 2000)
                 diet.value = (diaryViewModel.loggedUser.user?.diet ?: DietType.BALANCED)
 
+                val combinedDates = state.foodInsideAllMeals.map { it.foodInsideMeal.date.toLong() }.union(state.exercisesInsideAllDays.map { it.exerciseInsideDay.date.toLong() })
+                val consecutiveDays = countConsecutiveDays(combinedDates.toList())
+
+                if (diaryViewModel.loggedUser.user != null) {
+                    Log.v("DiaryScreen", "consecutiveDays: $consecutiveDays")
+                    if (!diaryViewModel.loggedUser.user!!.b3 && consecutiveDays >= 7) {
+                        diaryViewModel.loggedUser.user!!.b3 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.3 unlocked! You've reached 1 week streak!", Toast.LENGTH_LONG).show()
+                    } else if (!diaryViewModel.loggedUser.user!!.b4 && consecutiveDays >= 14) {
+                        diaryViewModel.loggedUser.user!!.b4 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.4 unlocked! You've reached 2 weeks streak!", Toast.LENGTH_LONG).show()
+                    } else if (!diaryViewModel.loggedUser.user!!.b5 && consecutiveDays >= 30) {
+                        diaryViewModel.loggedUser.user!!.b5 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.5 unlocked! You've reached 1 month streak!", Toast.LENGTH_LONG).show()
+                    } else if (!diaryViewModel.loggedUser.user!!.b6 && consecutiveDays >= 365) {
+                        diaryViewModel.loggedUser.user!!.b6 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.6 unlocked! You've reached 1 year streak!", Toast.LENGTH_LONG).show()
+                    }
+                }
 
                 LazyColumn(
                         modifier = Modifier.fillMaxSize() // Fills the available space
@@ -275,4 +304,20 @@ fun CaloriesBar(countCal: Double, totCal: Float, modifier: Modifier = Modifier) 
             )
         }
     }
+}
+
+fun countConsecutiveDays(dates: List<Long>): Int {
+    if (dates.isEmpty()) return 0
+
+    val sortedDates = dates.sortedDescending()
+    var count = 1
+
+    for (i in 1 until sortedDates.size) {
+        if (sortedDates[i] == sortedDates[i - 1] - DateUtils.DAY_IN_MILLIS) {
+            count++
+        } else {
+            break
+        }
+    }
+    return count
 }

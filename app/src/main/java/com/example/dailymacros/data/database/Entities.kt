@@ -18,7 +18,14 @@ data class User(
     val goal: GoalType,
     val bmr: Int,
     val dailyKcal: Int,
-    val diet: DietType
+    val diet: DietType,
+    var b1: Boolean = false,
+    var b2: Boolean = false,
+    var b3: Boolean = false,
+    var b4: Boolean = false,
+    var b5: Boolean = false,
+    var b6: Boolean = false,
+    var selectedDateMillis: Long? = null
 )
 
 @Entity(primaryKeys = ["name", "email"])
@@ -109,5 +116,5 @@ enum class DietType(val string: String, val carbsPerc: Float, val proteinPerc: F
     BALANCED("Balanced", 0.50f, 0.25f, 0.25f),
     LOW_FAT("Low Fat", 0.60f, 0.25f, 0.15f),
     HIGH_PROTEIN("High Protein", 0.25f, 0.40f, 0.35f),
-    KETOGENIC("Ketogenic", 0.5f, 0.30f, 0.65f)
+    KETOGENIC("Ketogenic", 0.05f, 0.30f, 0.65f)
 }
