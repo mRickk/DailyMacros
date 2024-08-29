@@ -1,6 +1,8 @@
 package com.example.dailymacros.ui.screens.diary
 
+import android.text.format.DateUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,8 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.MealType
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.ExerciseInfo
@@ -49,9 +56,11 @@ import kotlin.math.roundToInt
 fun DiaryScreen(
     navController: NavHostController,
     actions: DiaryActions,
-    state: DiaryState
+    state: DiaryState,
+    diaryViewModel: DiaryViewModel
 ) {
-    val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
+    val context = LocalContext.current
+
     Scaffold(
         topBar = { DMTopAppBar(navController) },
         bottomBar = { NavBar(navController, selectedIndex = 0) }
@@ -61,8 +70,10 @@ fun DiaryScreen(
             .fillMaxWidth()
             .fillMaxHeight()
         ) {
+            Log.v("DiaryScreen", "selectedDateMillis: ${diaryViewModel.loggedUser.user?.selectedDateMillis}")
+            val selectedDateMillis = remember { mutableStateOf(diaryViewModel.loggedUser.user?.selectedDateMillis) }
             Row() {
-                selectedDateMillis.value = datePickerWithDialog()
+                selectedDateMillis.value = datePickerWithDialog(viewModel = diaryViewModel)
             }
 
             if (selectedDateMillis.value == null) {
@@ -89,6 +100,36 @@ fun DiaryScreen(
                 val countExerciseKcal = if (exercisesInsideDate.isNotEmpty()) exercisesInsideDate.sumOf { it.exercise.kcalBurnedSec * it.exerciseInsideDay.duration.toDouble() } else 0.0
                 val countKcal = countCarbsKcal + countFatKcal + countProteinKcal - countExerciseKcal
 
+                val totKcal = remember { mutableIntStateOf(0) }
+                val diet = remember {mutableStateOf(DietType.BALANCED)}
+
+                totKcal.intValue = (diaryViewModel.loggedUser.user?.dailyKcal ?: 2000)
+                diet.value = (diaryViewModel.loggedUser.user?.diet ?: DietType.BALANCED)
+
+                val combinedDates = state.foodInsideAllMeals.map { it.foodInsideMeal.date.toLong() }.union(state.exercisesInsideAllDays.map { it.exerciseInsideDay.date.toLong() })
+                val consecutiveDays = countConsecutiveDays(combinedDates.toList())
+
+                if (diaryViewModel.loggedUser.user != null) {
+                    Log.v("DiaryScreen", "consecutiveDays: $consecutiveDays")
+                    if (!diaryViewModel.loggedUser.user!!.b3 && consecutiveDays >= 7) {
+                        diaryViewModel.loggedUser.user!!.b3 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.3 unlocked! You've reached 1 week streak!", Toast.LENGTH_LONG).show()
+                    } else if (!diaryViewModel.loggedUser.user!!.b4 && consecutiveDays >= 14) {
+                        diaryViewModel.loggedUser.user!!.b4 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.4 unlocked! You've reached 2 weeks streak!", Toast.LENGTH_LONG).show()
+                    } else if (!diaryViewModel.loggedUser.user!!.b5 && consecutiveDays >= 30) {
+                        diaryViewModel.loggedUser.user!!.b5 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.5 unlocked! You've reached 1 month streak!", Toast.LENGTH_LONG).show()
+                    } else if (!diaryViewModel.loggedUser.user!!.b6 && consecutiveDays >= 365) {
+                        diaryViewModel.loggedUser.user!!.b6 = true
+                        actions.updateUser(diaryViewModel.loggedUser.user!!)
+                        Toast.makeText(context, "Badge n.6 unlocked! You've reached 1 year streak!", Toast.LENGTH_LONG).show()
+                    }
+                }
+
                 LazyColumn(
                         modifier = Modifier.fillMaxSize() // Fills the available space
                 ) {
@@ -97,30 +138,32 @@ fun DiaryScreen(
                         Column(
                             modifier = Modifier.padding(8.dp) // Add padding to your content
                         ) {
-                            CaloriesBar(countCal = countKcal, totCal = 2000f) // Example values
+                            CaloriesBar(countCal = countKcal, totCal = totKcal.intValue.toFloat())
 
                             Row(
                                 horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
                             ) {
                                 MacrosBar(
                                     label = "Carbs",
                                     count = countCarbs.toFloat(),
-                                    total = 300f, //TODO: get from user
+                                    total = totKcal.intValue * diet.value.carbsPerc / MacrosKcal.CARBS.kcal,
                                     color = Carbs
-                                ) // Example values
+                                )
                                 MacrosBar(
                                     label = "Fat",
                                     count = countFat.toFloat(),
-                                    total = 100f, //TODO: get from user
+                                    total = totKcal.intValue * diet.value.fatPerc / MacrosKcal.FAT.kcal,
                                     color = Fat
-                                ) // Example values
+                                )
                                 MacrosBar(
                                     label = "Protein",
                                     count = countProtein.toFloat(),
-                                    total = 150f, //TODO: get from user
+                                    total = totKcal.intValue * diet.value.proteinPerc / MacrosKcal.PROTEIN.kcal,
                                     color = Protein
-                                ) // Example values
+                                )
                             }
                         }
                     }
@@ -190,11 +233,20 @@ fun MacrosBar(label: String, count: Float, total: Float, color: Color, modifier:
             .padding(horizontal = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "$label: ${count.roundToInt()}/${total.roundToInt()} g",
-            color = color,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Row{
+            Text(
+                text = "$label: ",
+                color = color,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "${count.roundToInt()}/${total.roundToInt()} g",
+                color = color,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         Box(
             modifier = Modifier
                 .width(barWidth)
@@ -222,11 +274,20 @@ fun CaloriesBar(countCal: Double, totCal: Float, modifier: Modifier = Modifier) 
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Text(
-            text = "Calories: ${countCal.roundToInt()}/${totCal.roundToInt()}kcal",
-            color = Cal,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Row {
+            Text(
+                text = "Calories: ",
+                color = Cal,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "${countCal.roundToInt()}/${totCal.roundToInt()}kcal",
+                color = Cal,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -243,4 +304,20 @@ fun CaloriesBar(countCal: Double, totCal: Float, modifier: Modifier = Modifier) 
             )
         }
     }
+}
+
+fun countConsecutiveDays(dates: List<Long>): Int {
+    if (dates.isEmpty()) return 0
+
+    val sortedDates = dates.sortedDescending()
+    var count = 1
+
+    for (i in 1 until sortedDates.size) {
+        if (sortedDates[i] == sortedDates[i - 1] - DateUtils.DAY_IN_MILLIS) {
+            count++
+        } else {
+            break
+        }
+    }
+    return count
 }

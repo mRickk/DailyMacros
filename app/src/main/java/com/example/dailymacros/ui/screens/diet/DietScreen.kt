@@ -96,7 +96,7 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(16.dp)) // Spacer between title and macronutrients
+                Spacer(modifier = Modifier.height(8.dp)) // Spacer between title and macronutrients
                 // Row for Macronutrients
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -138,24 +138,13 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                 val chartValues = listOf(diet.carbsPerc, diet.fatPerc, diet.proteinPerc)
 
                 PieChart(
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier.padding(horizontal = 85.dp, vertical = 20.dp),
                     colors = chartColors,
                     inputValues = chartValues,
                     textColor = MaterialTheme.colorScheme.onSurface
                 )
-                Divider(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
-                )
             }
             item {
-                // Section: Additional Options
-                Text(
-                    text = "Additional Options",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(16.dp)) // Spacer between title and boxes
                 // Column for dropdown menus
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -221,7 +210,12 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                         ) {
                             Text(text = "Activity level", color = MaterialTheme.colorScheme.onSecondary)
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = activity.string ?: "N/A")
+                                Column (horizontalAlignment = Alignment.End) {
+                                    Text(text = activity.string ?: "N/A")
+                                    Text(text = activity.description,
+                                        fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                                }
+
                                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
                             }
                         }

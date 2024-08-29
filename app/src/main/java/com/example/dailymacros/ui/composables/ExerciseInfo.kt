@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.ExerciseInsideDay
@@ -61,7 +62,8 @@ fun ExerciseInfo(
                 Text(
                     text = "-${totalCalories.roundToInt()} kcal",
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(

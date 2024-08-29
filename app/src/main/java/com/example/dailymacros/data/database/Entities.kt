@@ -18,7 +18,14 @@ data class User(
     val goal: GoalType,
     val bmr: Int,
     val dailyKcal: Int,
-    val diet: DietType
+    val diet: DietType,
+    var b1: Boolean = false,
+    var b2: Boolean = false,
+    var b3: Boolean = false,
+    var b4: Boolean = false,
+    var b5: Boolean = false,
+    var b6: Boolean = false,
+    var selectedDateMillis: Long? = null
 )
 
 @Entity(primaryKeys = ["name", "email"])
@@ -83,12 +90,12 @@ enum class Gender(val string: String, val k: Int) {
     OTHER("Other", -78)
 }
 
-enum class ActivityType(val string: String, val k: Float) {
-    SEDENTARY("Sedentary (little to no exercise)", 1.2f),
-    LIGHTLY_ACTIVE("Lightly Active (1-3 days per week)", 1.375f),
-    MODERATELY_ACTIVE("Moderately Active (3-5 days per week)", 1.55f),
-    VERY_ACTIVE("Very Active (6-7 days per week)", 1.725f),
-    SUPER_ACTIVE("Super Active (twice per day, extra heavy workouts)", 2f)
+enum class ActivityType(val string: String, val description: String, val k: Float) {
+    SEDENTARY("Sedentary", "(little to no exercise)", 1.2f),
+    LIGHTLY_ACTIVE("Lightly Active", "(1-3 days per week)", 1.375f),
+    MODERATELY_ACTIVE("Moderately Active", "(3-5 days per week)", 1.55f),
+    VERY_ACTIVE("Very Active", "(6-7 days per week)", 1.725f),
+    SUPER_ACTIVE("Super Active", "(twice per day, extra heavy workouts)", 2f)
 }
 
 enum class GoalType(val string: String, val     k: Float) {
@@ -109,5 +116,5 @@ enum class DietType(val string: String, val carbsPerc: Float, val proteinPerc: F
     BALANCED("Balanced", 0.50f, 0.25f, 0.25f),
     LOW_FAT("Low Fat", 0.60f, 0.25f, 0.15f),
     HIGH_PROTEIN("High Protein", 0.25f, 0.40f, 0.35f),
-    KETOGENIC("Ketogenic", 0.5f, 0.30f, 0.65f)
+    KETOGENIC("Ketogenic", 0.05f, 0.30f, 0.65f)
 }

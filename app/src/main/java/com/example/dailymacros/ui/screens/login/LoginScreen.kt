@@ -128,8 +128,8 @@ fun Login(navController: NavHostController,
             Image(
                 painter = rememberAsyncImagePainter(model = R.drawable.icon),
                 contentDescription = "App Icon",
-                modifier = Modifier.padding(16.dp),
-                alignment = Alignment.Center
+                modifier = Modifier.padding(horizontal = 70.dp, vertical = 50.dp),
+                alignment = Alignment.TopCenter
             )
 
             TextField(
@@ -175,6 +175,9 @@ fun Login(navController: NavHostController,
             }
             Button(
                 onClick = {
+                    emailError.value = false
+                    passwordError.value = false
+                    loginError.value = false
                     if(validateEmail(email.value) || email.value.isEmpty()) {
                         emailError.value = true
                     }
@@ -207,17 +210,18 @@ fun Login(navController: NavHostController,
             ) {
                 Text("Login")
             }
+            if(loginError.value) {
+                Text(
+                    text = "Invalid credentials",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .padding(start = 16.dp, bottom = 8.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
         }
-        if(loginError.value) {
-            Text(
-                text = "Invalid credentials",
-                color = Color.Red,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .padding(start = 16.dp, bottom = 8.dp)
-                    .align(Alignment.BottomStart)
-            )
-        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

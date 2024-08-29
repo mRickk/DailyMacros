@@ -37,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.dailymacros.ui.screens.diary.DiaryViewModel
+import com.example.dailymacros.ui.screens.overview.OverviewViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -47,13 +49,14 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun datePickerWithDialog(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: DiaryViewModel
 ): Long? {
     val startOfDayMillis = LocalDate.now()
         .atStartOfDay(ZoneOffset.UTC)
         .toInstant()
         .toEpochMilli()
-    var selectedDateMillis by remember { mutableStateOf<Long?>(startOfDayMillis) }
+    var selectedDateMillis by remember { mutableStateOf<Long?>(viewModel.loggedUser.user?.selectedDateMillis ?: startOfDayMillis) }
     val dateState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
     var showDialog by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -75,6 +78,8 @@ fun datePickerWithDialog(
             Button(
                 onClick = {
                     selectedDateMillis = selectedDateMillis!! - DateUtils.DAY_IN_MILLIS
+                    viewModel.loggedUser.user?.selectedDateMillis = selectedDateMillis
+                    viewModel.actions.updateUser(viewModel.loggedUser.user!!)
                 },
                 enabled = selectedDateMillis != null,
                 colors = ButtonDefaults.buttonColors(
@@ -96,6 +101,8 @@ fun datePickerWithDialog(
             Button(
                 onClick = {
                     selectedDateMillis = selectedDateMillis!! + DateUtils.DAY_IN_MILLIS
+                    viewModel.loggedUser.user?.selectedDateMillis = selectedDateMillis
+                    viewModel.actions.updateUser(viewModel.loggedUser.user!!)
                 },
                 enabled = selectedDateMillis != null,
                 colors = ButtonDefaults.buttonColors(
@@ -114,6 +121,8 @@ fun datePickerWithDialog(
                         onClick = {
                             selectedDateMillis = dateState.selectedDateMillis
                             showDialog = false
+                            viewModel.loggedUser.user?.selectedDateMillis = selectedDateMillis
+                            viewModel.actions.updateUser(viewModel.loggedUser.user!!)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondary,

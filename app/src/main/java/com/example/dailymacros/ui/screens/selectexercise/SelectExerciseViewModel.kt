@@ -25,6 +25,7 @@ interface SelectExerciseActions {
     fun insertExerciseInsideDay(id: Long?, exercise: Exercise, date:String, duration: Int): Job
     fun deleteExercise(exercise: Exercise): Job
     fun toggleFavourite(exercise: Exercise): Job
+    fun updateUser(user: User): Job
 }
 
 class SelectExerciseViewModel(
@@ -51,6 +52,14 @@ class SelectExerciseViewModel(
         }
         override fun toggleFavourite(exercise: Exercise) = viewModelScope.launch {
             dailyMacrosRepository.upsertExercise(exercise)
+        }
+        override fun updateUser(user: User) = viewModelScope.launch {
+            if (loggedUser.user != null) {
+                val userCopy = user.copy()
+                dailyMacrosRepository.updateUser(userCopy)
+                datastoreRepository.saveUser(userCopy)
+                loggedUser = UserState(userCopy)
+            }
         }
     }
 

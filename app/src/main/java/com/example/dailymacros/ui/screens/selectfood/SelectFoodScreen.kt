@@ -1,5 +1,6 @@
 package com.example.dailymacros.ui.screens.selectfood
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,7 @@ fun SelectFoodScreen(
     selectedFoodNameNull: String?,
     selectedQuantity: Float?
 ) {
+    val context = LocalContext.current
     val defaultQty = 100f
     var selectedFood by remember { mutableStateOf<Food?>(null) }
     var quantity by remember { mutableFloatStateOf(selectedQuantity ?: 100f) }
@@ -233,6 +236,11 @@ fun SelectFoodScreen(
 
                     Button(
                         onClick = {
+                            if (viewModel.loggedUser.user != null && !viewModel.loggedUser.user!!.b1) {
+                                viewModel.loggedUser.user!!.b1 = true
+                                viewModel.actions.updateUser(viewModel.loggedUser.user!!)
+                                Toast.makeText(context, "Badge n.1 unlocked! You inserted your first food inside the diary!", Toast.LENGTH_LONG).show() // Display toast message
+                            }
                             viewModel.actions.insertFoodInsideMeal(
                                 food = food,
                                 date = date!!,

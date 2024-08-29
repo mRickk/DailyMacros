@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.FoodInsideMeal
@@ -57,7 +58,7 @@ fun MealInfo(
     val fatPercentage = if (totalKcal > 0) (totalFatKcal.toFloat() / totalKcal) * 100 else 0.0
     val proteinPercentage = if (totalKcal > 0) (totalProteinKcal.toFloat() / totalKcal) * 100 else 0.0
 
-    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp).clip(RoundedCornerShape(12.dp))) {
+    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 15.dp).clip(RoundedCornerShape(12.dp))) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,7 +80,8 @@ fun MealInfo(
                 Text(
                     text = "${totalKcal.roundToInt()} kcal",
                     color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(

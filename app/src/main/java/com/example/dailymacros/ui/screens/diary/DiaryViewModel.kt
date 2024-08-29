@@ -33,6 +33,8 @@ interface DiaryActions {
     fun upsertExerciseInsideDay(eid: ExerciseInsideDay): Job
     fun removeExerciseInsideDay(exerciseName: String, date: String, duration: Int): Job
 
+    fun updateUser(user: User): Job
+
 }
 
 class DiaryViewModel(
@@ -69,6 +71,14 @@ class DiaryViewModel(
         }
         override fun removeExerciseInsideDay(exerciseName: String, date: String, duration: Int) = viewModelScope.launch {
             dailyMacrosRepository.deleteExerciseInsideDay(ExerciseInsideDay(loggedUser.user?.email ?: "", exerciseName, date, duration))
+        }
+        override fun updateUser(user: User) = viewModelScope.launch {
+            if (loggedUser.user != null) {
+                val userCopy = user.copy()
+                dailyMacrosRepository.updateUser(userCopy)
+                datastoreRepository.saveUser(userCopy)
+                loggedUser = UserState(userCopy)
+            }
         }
     }
 
