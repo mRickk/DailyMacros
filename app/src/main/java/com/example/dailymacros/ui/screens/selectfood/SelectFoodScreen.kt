@@ -48,6 +48,7 @@ fun SelectFoodScreen(
     val context = LocalContext.current
     val defaultQty = 100f
     var selectedFood by remember { mutableStateOf<Food?>(null) }
+    var toDeleteFood by remember { mutableStateOf<Food?>(null) }
     var quantity by remember { mutableFloatStateOf(selectedQuantity ?: 100f) }
     var showDialog by remember { mutableStateOf(false) }
     var hasFavouriteChanged by remember { mutableStateOf(false) }
@@ -197,7 +198,12 @@ fun SelectFoodScreen(
                                     contentDescription = "Modify Food"
                                 )
                             }
-                            IconButton(onClick = { showDialog = true }) {
+                            IconButton(onClick = {
+                                toDeleteFood = selectedFood
+                                if (toDeleteFood != null) {
+                                    showDialog = true
+                                }
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete Food"
@@ -268,7 +274,7 @@ fun SelectFoodScreen(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Delete ${selectedFood?.name}") },
+            title = { Text("Delete ${toDeleteFood?.name}") },
             text = {
                 Text(
                     "Are you sure to permanently delete this food?",
@@ -282,9 +288,10 @@ fun SelectFoodScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        viewModel.actions.deleteFood(selectedFood!!)
+                        viewModel.actions.deleteFood(toDeleteFood!!)
                         showDialog = false
                         selectedFood = null
+                        toDeleteFood = null
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,

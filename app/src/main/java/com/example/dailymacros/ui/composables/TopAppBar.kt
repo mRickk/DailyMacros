@@ -62,7 +62,7 @@ fun DMTopAppBar(
             } else {
                 IconButton(onClick = { navController.navigate(NavigationRoute.Settings.route) }) {
                     Icon(
-                        imageVector = Icons.Filled.BrightnessMedium,
+                        imageVector = Icons.Filled.Settings,
                         contentDescription = "Settings button",
                         tint = MaterialTheme.colorScheme.onTertiary
                     )
