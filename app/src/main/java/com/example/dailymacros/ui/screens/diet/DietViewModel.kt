@@ -53,7 +53,13 @@ class DietViewModel (
                     goal = goalType,
                     bmr = loggedUser.user!!.bmr,
                     dailyKcal = calculateDailyKcal(loggedUser.user!!.bmr, activityType.k, goalType.k),
-                    diet = dietType
+                    diet = dietType,
+                    b1 = loggedUser.user!!.b1,
+                    b2 = loggedUser.user!!.b2,
+                    b3 = loggedUser.user!!.b3,
+                    b4 = loggedUser.user!!.b4,
+                    b5 = loggedUser.user!!.b5,
+                    b6 = loggedUser.user!!.b6
                 )
                 dailyMacrosRepository.updateUser(userCopy)
                 datastoreRepository.saveUser(userCopy)

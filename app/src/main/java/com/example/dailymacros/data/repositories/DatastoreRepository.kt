@@ -62,7 +62,6 @@ class DatastoreRepository (
                     b4 = preferences[B4_KEY]?.toBoolean() ?: false,
                     b5 = preferences[B5_KEY]?.toBoolean() ?: false,
                     b6 = preferences[B6_KEY]?.toBoolean() ?: false,
-                    selectedDateMillis = preferences[SELECTED_DATE_MILLIS_KEY]?.toLong() ?: 0
                 )
             } else {
                 null
@@ -95,7 +94,6 @@ class DatastoreRepository (
             it[B4_KEY] = user.b4.toString()
             it[B5_KEY] = user.b5.toString()
             it[B6_KEY] = user.b6.toString()
-            it[SELECTED_DATE_MILLIS_KEY] = user.selectedDateMillis.toString()
         }
 
     suspend fun removeUser() =
@@ -119,7 +117,6 @@ class DatastoreRepository (
             it.remove(B4_KEY)
             it.remove(B5_KEY)
             it.remove(B6_KEY)
-            it.remove(SELECTED_DATE_MILLIS_KEY)
         }
 
 }

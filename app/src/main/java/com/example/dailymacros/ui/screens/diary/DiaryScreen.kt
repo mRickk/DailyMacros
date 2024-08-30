@@ -60,6 +60,7 @@ fun DiaryScreen(
     diaryViewModel: DiaryViewModel
 ) {
     val context = LocalContext.current
+    val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
 
     Scaffold(
         topBar = { DMTopAppBar(navController) },
@@ -70,10 +71,9 @@ fun DiaryScreen(
             .fillMaxWidth()
             .fillMaxHeight()
         ) {
-            Log.v("DiaryScreen", "selectedDateMillis: ${diaryViewModel.loggedUser.user?.selectedDateMillis}")
-            val selectedDateMillis = remember { mutableStateOf(diaryViewModel.loggedUser.user?.selectedDateMillis) }
+
             Row() {
-                selectedDateMillis.value = datePickerWithDialog(viewModel = diaryViewModel)
+                selectedDateMillis.value = datePickerWithDialog()
             }
 
             if (selectedDateMillis.value == null) {

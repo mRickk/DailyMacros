@@ -50,13 +50,12 @@ import java.util.Locale
 @Composable
 fun datePickerWithDialog(
     modifier: Modifier = Modifier,
-    viewModel: DiaryViewModel
 ): Long? {
     val startOfDayMillis = LocalDate.now()
         .atStartOfDay(ZoneOffset.UTC)
         .toInstant()
         .toEpochMilli()
-    var selectedDateMillis by remember { mutableStateOf<Long?>(viewModel.loggedUser.user?.selectedDateMillis ?: startOfDayMillis) }
+    var selectedDateMillis by remember { mutableStateOf<Long?>(startOfDayMillis) }
     val dateState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
     var showDialog by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -78,8 +77,6 @@ fun datePickerWithDialog(
             Button(
                 onClick = {
                     selectedDateMillis = selectedDateMillis!! - DateUtils.DAY_IN_MILLIS
-                    viewModel.loggedUser.user?.selectedDateMillis = selectedDateMillis
-                    viewModel.actions.updateUser(viewModel.loggedUser.user!!)
                 },
                 enabled = selectedDateMillis != null,
                 colors = ButtonDefaults.buttonColors(
@@ -101,8 +98,6 @@ fun datePickerWithDialog(
             Button(
                 onClick = {
                     selectedDateMillis = selectedDateMillis!! + DateUtils.DAY_IN_MILLIS
-                    viewModel.loggedUser.user?.selectedDateMillis = selectedDateMillis
-                    viewModel.actions.updateUser(viewModel.loggedUser.user!!)
                 },
                 enabled = selectedDateMillis != null,
                 colors = ButtonDefaults.buttonColors(
@@ -121,8 +116,6 @@ fun datePickerWithDialog(
                         onClick = {
                             selectedDateMillis = dateState.selectedDateMillis
                             showDialog = false
-                            viewModel.loggedUser.user?.selectedDateMillis = selectedDateMillis
-                            viewModel.actions.updateUser(viewModel.loggedUser.user!!)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondary,

@@ -24,8 +24,7 @@ data class User(
     var b3: Boolean = false,
     var b4: Boolean = false,
     var b5: Boolean = false,
-    var b6: Boolean = false,
-    var selectedDateMillis: Long? = null
+    var b6: Boolean = false
 )
 
 @Entity(primaryKeys = ["name", "email"])
