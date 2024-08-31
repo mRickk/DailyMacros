@@ -44,6 +44,7 @@ fun SelectExerciseScreen(
 ) {
     val context = LocalContext.current
     var selectedExercise by remember { mutableStateOf<Exercise?>(null) }
+    var toDeleteExercise by remember { mutableStateOf<Exercise?>(null) }
     var durationMinutes by remember { mutableStateOf(if (selectedDuration != null) (selectedDuration / 60).toString() else "") }
     var durationSeconds by remember { mutableStateOf(if (selectedDuration != null) (selectedDuration % 60).toString() else "") }
     var duration by remember { mutableIntStateOf(selectedDuration ?: 0) }
@@ -196,7 +197,10 @@ fun SelectExerciseScreen(
                                     contentDescription = "Modify Exercise"
                                 )
                             }
-                            IconButton(onClick = { showDialog = true }) {
+                            IconButton(onClick = {
+                                toDeleteExercise = selectedExercise
+                                showDialog = true
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete Exercise"
@@ -268,7 +272,7 @@ fun SelectExerciseScreen(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Delete ${selectedExercise?.name}") },
+            title = { Text("Delete ${toDeleteExercise?.name}") },
             text = {
                 Text(
                     "Are you sure to permanently delete this exercise?",
@@ -282,9 +286,10 @@ fun SelectExerciseScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        viewModel.actions.deleteExercise(selectedExercise!!)
+                        viewModel.actions.deleteExercise(toDeleteExercise!!)
                         showDialog = false
                         selectedExercise = null
+                        toDeleteExercise = null
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
