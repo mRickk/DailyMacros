@@ -85,7 +85,8 @@ fun NavGraph(
         }
         composable(NavigationRoute.Settings.route) {
             val themeState by settingsViewModel.state.collectAsStateWithLifecycle()
-            Settings(navController, themeState, settingsViewModel::changeTheme)
+            val settingsViewModel = koinViewModel<SettingsViewModel>()
+            Settings(navController, themeState, settingsViewModel, settingsViewModel::changeTheme)
         }
         composable(NavigationRoute.SelectExercise.route + "?date={date}&exerciseName={exerciseName}&selDur={selDur}") { backStackEntry ->
             val selectExerciseVM = koinViewModel<SelectExerciseViewModel>()
