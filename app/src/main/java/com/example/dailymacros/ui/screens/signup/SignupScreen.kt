@@ -105,7 +105,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (emailError.value) {
                 Text(
@@ -124,7 +124,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (usernameError.value) {
                 Text(
@@ -144,7 +144,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (passwordError.value) {
                 Text(
@@ -164,7 +164,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (confirmPasswordError.value) {
                 Text(
@@ -223,7 +223,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (ageError.value) {
                 Text(
@@ -243,7 +243,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (weightError.value) {
                 Text(
@@ -263,7 +263,7 @@ fun Signup(navController: NavHostController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                textStyle = TextStyle(color = Color.Black)
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground)
             )
             if (heightError.value) {
                 Text(

@@ -73,8 +73,6 @@ fun Login(navController: NavHostController,
         return password.length < 8
     }
 
-    //TODO: Add Biometric authentication
-    // Biometric authentication setup
     val contextBiometric = LocalContext.current
     val biometricManager = remember { BiometricManager.from(contextBiometric) }
     val isBiometricAvailable = remember {
@@ -140,7 +138,7 @@ fun Login(navController: NavHostController,
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             )
             if(emailError.value) {
@@ -162,7 +160,7 @@ fun Login(navController: NavHostController,
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 textStyle = TextStyle(
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             )
             if(passwordError.value) {
