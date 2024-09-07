@@ -53,9 +53,12 @@ import org.osmdroid.util.GeoPoint
 @Composable
 fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel, locationService: LocationService) {
     val compositionCount = remember { mutableStateOf(0) }
-    compositionCount.value++
+    LaunchedEffect(Unit) {
+        compositionCount.value++
+    }
     LaunchedEffect(compositionCount.value) {
-        if (profileViewModel.loggedUser.user == null && compositionCount.value == 2) {
+        Log.v("LoginScreen", "IT : ${compositionCount.value}")
+        if (profileViewModel.loggedUser.user == null && compositionCount.value == 1) {
             navController.navigate(NavigationRoute.Login.route)
         }
     }
