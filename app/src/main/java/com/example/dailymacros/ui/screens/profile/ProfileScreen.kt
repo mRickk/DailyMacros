@@ -52,6 +52,14 @@ import org.osmdroid.util.GeoPoint
 @SuppressLint("ClickableViewAccessibility")
 @Composable
 fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel, locationService: LocationService) {
+    val compositionCount = remember { mutableStateOf(0) }
+    compositionCount.value++
+    LaunchedEffect(compositionCount.value) {
+        if (profileViewModel.loggedUser.user == null && compositionCount.value == 2) {
+            navController.navigate(NavigationRoute.Login.route)
+        }
+    }
+
     Log.v("ProfileScreen", "ProfileImage: ${profileViewModel.loggedUser.user}")
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current

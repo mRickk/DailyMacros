@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.Food
 import com.example.dailymacros.data.database.FoodUnit
+import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.utilities.MacrosKcal
 import kotlin.math.roundToInt
@@ -39,6 +40,14 @@ fun AddFoodScreen(
     addFoodVM: AddFoodViewModel,
     foodNullName: String?
 ) {
+    val compositionCount = remember { mutableStateOf(0) }
+    compositionCount.value++
+    LaunchedEffect(compositionCount.value) {
+        if (addFoodVM.loggedUser.user == null && compositionCount.value == 2) {
+            navController.navigate(NavigationRoute.Diary.route)
+        }
+    }
+
     if (foodNullName != null) {
         addFoodVM.actions.getFood(foodNullName)
     }

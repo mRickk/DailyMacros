@@ -33,6 +33,14 @@ import kotlin.math.roundToInt
 @Composable
 fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
     dietViewModel.actions.getUser()
+    val compositionCount = remember { mutableStateOf(0) }
+    compositionCount.value++
+    LaunchedEffect(compositionCount.value) {
+        if (dietViewModel.loggedUser.user == null && compositionCount.value == 2) {
+            navController.navigate(NavigationRoute.Diary.route)
+        }
+    }
+
     var user = dietViewModel.loggedUser.user
     var diet by remember { mutableStateOf(DietType.STANDARD) }
     var goal by remember { mutableStateOf(GoalType.MAINTAIN_WEIGHT) }

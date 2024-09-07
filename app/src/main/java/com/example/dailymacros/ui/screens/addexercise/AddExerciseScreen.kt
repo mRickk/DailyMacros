@@ -12,6 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,14 @@ fun AddExerciseScreen(
     addExerciseVM: AddExerciseViewModel,
     exerciseNullName: String?
 ) {
+    val compositionCount = remember { mutableStateOf(0) }
+    compositionCount.value++
+    LaunchedEffect(compositionCount.value) {
+        if (addExerciseVM.loggedUser.user == null && compositionCount.value == 2) {
+            navController.navigate(NavigationRoute.Diary.route)
+        }
+    }
+
     if (exerciseNullName != null) {
         addExerciseVM.actions.getExercise(exerciseNullName)
     }

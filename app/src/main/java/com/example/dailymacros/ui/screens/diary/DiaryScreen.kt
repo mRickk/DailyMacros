@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.MealType
+import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.ExerciseInfo
 import com.example.dailymacros.ui.composables.ExerciseInfoData
@@ -59,6 +60,14 @@ fun DiaryScreen(
     state: DiaryState,
     diaryViewModel: DiaryViewModel
 ) {
+    val compositionCount = remember { mutableStateOf(0) }
+    compositionCount.value++
+    LaunchedEffect(compositionCount.value) {
+        if (diaryViewModel.loggedUser.user == null && compositionCount.value == 2) {
+            navController.navigate(NavigationRoute.Diary.route)
+        }
+    }
+
     val context = LocalContext.current
     val selectedDateMillis = remember { mutableStateOf<Long?>(null) }
 

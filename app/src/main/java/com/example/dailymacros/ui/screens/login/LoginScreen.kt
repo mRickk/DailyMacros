@@ -54,10 +54,12 @@ import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 fun Login(navController: NavHostController,
           loginViewModel: LoginViewModel) {
     val compositionCount = remember { mutableStateOf(0) }
-    compositionCount.value++
+    LaunchedEffect(Unit) {
+        compositionCount.value++
+    }
     LaunchedEffect(compositionCount.value) {
-        Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.user}")
-        if (loginViewModel.loggedUser.user != null && compositionCount.value == 2) {
+        Log.v("LoginScreen", "IT : ${compositionCount.value}")
+        if (loginViewModel.loggedUser.user != null && compositionCount.value == 1) {
             navController.navigate(NavigationRoute.Diary.route)
         }
     }
