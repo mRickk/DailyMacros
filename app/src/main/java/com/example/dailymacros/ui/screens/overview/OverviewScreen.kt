@@ -2,6 +2,7 @@ package com.example.dailymacros.ui.screens.overview
 
 import androidx.compose.ui.graphics.ColorMatrix
 import android.text.format.DateUtils
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,13 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrixColorFilter
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dailymacros.R
@@ -61,14 +56,11 @@ import com.example.dailymacros.ui.composables.BarChart
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.NavBar
 import com.example.dailymacros.ui.composables.StackedBarChart
-import com.example.dailymacros.ui.theme.Carbs
-import com.example.dailymacros.ui.theme.Fat
-import com.example.dailymacros.ui.theme.Protein
 import com.example.dailymacros.utilities.OverviewPeriods
 import java.time.LocalDate
 import java.time.ZoneOffset
-import java.util.SortedMap
-import kotlin.math.roundToInt
+import androidx.compose.ui.graphics.drawscope.Stroke
+import com.example.dailymacros.ui.theme.Theme
 
 @Composable
 fun Overview(
@@ -89,6 +81,7 @@ fun Overview(
                             overviewVM.loggedUser.user?.b4, overviewVM.loggedUser.user?.b5, overviewVM.loggedUser.user?.b6)
     val badgeDesc = listOf("Add your first food to your diary", "Add your first exercise to your diary", "1 Week streak",
                             "2 Weeks streak","1 Month streak", "1 Year streak!")
+
 
     Scaffold (
         topBar = { DMTopAppBar(navController) },
@@ -154,6 +147,18 @@ fun Overview(
                     .ifEmpty { listOf(createEmptyExerciseInsideDay(day)) }
             }.toSortedMap()
 
+            val combinedDates = foodInsideAllMeals.map { it.foodInsideMeal.date.toLong() }.union(exercisesInsideAllDays.map { it.exerciseInsideDay.date.toLong() })
+            val consecutiveDays = countConsecutiveDays(combinedDates.toList(), startOfDayMillis)
+
+            val badgePerc = listOf(
+                if (overviewVM.loggedUser.user?.b1 == true) 1f else 0f,
+                if (overviewVM.loggedUser.user?.b2 == true) 1f else 0f,
+                consecutiveDays.toFloat() / 7,
+                consecutiveDays.toFloat() / 14,
+                consecutiveDays.toFloat() / 30,
+                consecutiveDays.toFloat() / 365
+            )
+
             Text(
                 text = "Calories and macros you ate",
                 fontSize = MaterialTheme.typography.headlineSmall.fontSize,
@@ -208,6 +213,19 @@ fun Overview(
                                             ColorMatrix().apply { setToSaturation(if(badgeBool[imageIndex] == true) 1f else 0f)}
                                         )
                                 )
+                                Canvas(modifier = Modifier.fillMaxSize()) {
+                                    val strokeWidth = 8.dp.toPx()
+                                    val radius = size.minDimension / 2 - strokeWidth / 2
+                                    val angle = 360 * badgePerc[imageIndex].toFloat()
+
+                                    drawArc(
+                                        color = Theme,
+                                        startAngle = -90f,
+                                        sweepAngle = angle,
+                                        useCenter = false,
+                                        style = Stroke(width = strokeWidth)
+                                    )
+                                }
                             }
 
                             if (showPopup.value) {
@@ -273,4 +291,25 @@ fun createEmptyExerciseInsideDay(date: Long): ExerciseInsideDayWithExercise {
             isFavourite = false
         )
     )
+}
+
+fun countConsecutiveDays(dates: List<Long>, todayDate: Long): Int {
+    if (dates.isEmpty()) return 0
+    var count = 0
+    var sortedDates = dates.sortedDescending()
+
+    if (dates.contains(todayDate)) {
+        count = 1
+    } else {
+        sortedDates = sortedDates.plus(todayDate).sortedDescending()
+    }
+
+    for (i in 1 until sortedDates.size) {
+        if (sortedDates[i] == sortedDates[i - 1] - DateUtils.DAY_IN_MILLIS) {
+            count++
+        } else {
+            break
+        }
+    }
+    return count
 }
