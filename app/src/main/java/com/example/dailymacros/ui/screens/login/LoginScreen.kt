@@ -53,6 +53,14 @@ import com.example.dailymacros.ui.screens.settings.SettingsViewModel
 @Composable
 fun Login(navController: NavHostController,
           loginViewModel: LoginViewModel) {
+    val compositionCount = remember { mutableStateOf(0) }
+    compositionCount.value++
+    LaunchedEffect(compositionCount.value) {
+        Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.user}")
+        if (loginViewModel.loggedUser.user != null && compositionCount.value == 2) {
+            navController.navigate(NavigationRoute.Diary.route)
+        }
+    }
 
 
     Log.v("LoginScreen", "Logged user: ${loginViewModel.loggedUser.user}")

@@ -99,7 +99,7 @@ fun Settings(navController: NavHostController, state: ThemeState, settingsViewMo
             TextField(
                 value = newPassword.value,
                 onValueChange = { newPassword.value = it },
-                label = { Text("New Password") },
+                label = { Text("New Password(at least 8 characters)") },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
@@ -126,7 +126,9 @@ fun Settings(navController: NavHostController, state: ThemeState, settingsViewMo
             }
             Button(
                 onClick = {
-                    if (newPassword.value != confirmPassword.value) {
+                    if(newPassword.value.length < 8) {
+                        Toast.makeText(context, "Password must be at least 8 characters long!", Toast.LENGTH_SHORT).show()
+                    } else if (newPassword.value != confirmPassword.value) {
                         Toast.makeText(context, "New passwords do not match!", Toast.LENGTH_SHORT).show()
                     } else if (oldPassword.value != settingsViewModel.loggedUser.user!!.password) {
                         Toast.makeText(context, "Old password is incorrect!", Toast.LENGTH_SHORT).show()

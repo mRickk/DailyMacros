@@ -18,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import com.example.dailymacros.data.database.Exercise
+import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import kotlin.math.roundToInt
 

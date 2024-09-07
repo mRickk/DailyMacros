@@ -20,6 +20,7 @@ import androidx.wear.compose.material.ContentAlpha
 import com.example.dailymacros.data.database.ActivityType
 import com.example.dailymacros.data.database.DietType
 import com.example.dailymacros.data.database.GoalType
+import com.example.dailymacros.ui.NavigationRoute
 import com.example.dailymacros.ui.composables.DMTopAppBar
 import com.example.dailymacros.ui.composables.NavBar
 import com.example.dailymacros.ui.composables.PieChart
