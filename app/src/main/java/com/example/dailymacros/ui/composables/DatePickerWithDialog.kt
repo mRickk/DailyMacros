@@ -3,6 +3,7 @@ package com.example.dailymacros.ui.composables
 import android.graphics.drawable.Icon
 import android.text.format.DateUtils
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberDatePickerState
@@ -112,17 +114,14 @@ fun datePickerWithDialog(
             DatePickerDialog(
                 onDismissRequest = { showDialog = false },
                 confirmButton = {
-                    Button(
+                    OutlinedButton(
                         onClick = {
                             selectedDateMillis = dateState.selectedDateMillis
                             showDialog = false
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
-                            contentColor = MaterialTheme.colorScheme.onSecondary
-                        )
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSecondary),
                     ) {
-                        Text(text = "OK")
+                        Text(text = "OK", color=MaterialTheme.colorScheme.onSecondary)
                     }
                 },
                 dismissButton = {

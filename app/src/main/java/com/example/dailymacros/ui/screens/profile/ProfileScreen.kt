@@ -233,9 +233,9 @@ fun Profile(navController: NavHostController, profileViewModel: ProfileViewModel
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    OutlinedButton(onClick = {
-                        profileViewModel.actions.logout(navController)
-                    }, border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)) {
+                    OutlinedButton(
+                        onClick = {profileViewModel.actions.logout(navController)}, border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                    ) {
                         Text("Logout", color = MaterialTheme.colorScheme.error)
                     }
                     Button(onClick = { navController.navigate(NavigationRoute.EditProfile.route) }) {

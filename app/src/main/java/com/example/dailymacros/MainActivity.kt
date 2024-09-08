@@ -7,11 +7,14 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -28,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -120,7 +124,7 @@ class MainActivity : FragmentActivity() {
                                 title = { Text("Location disabled") },
                                 text = { Text("Location must be enabled to get your current location in the app.") },
                                 confirmButton = {
-                                    TextButton(onClick = {
+                                    Button(onClick = {
                                         locationService.openLocationSettings()
                                         showLocationDisabledAlert = false
                                     }) {
@@ -128,8 +132,11 @@ class MainActivity : FragmentActivity() {
                                     }
                                 },
                                 dismissButton = {
-                                    TextButton(onClick = { showLocationDisabledAlert = false }) {
-                                        Text("Dismiss")
+                                    OutlinedButton(
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiary),
+                                        onClick = { showLocationDisabledAlert = false }
+                                    ) {
+                                        Text("Dismiss", color=MaterialTheme.colorScheme.onTertiary)
                                     }
                                 },
                                 onDismissRequest = { showLocationDisabledAlert = false }
@@ -141,7 +148,7 @@ class MainActivity : FragmentActivity() {
                                 title = { Text("Location permission denied") },
                                 text = { Text("Location permission is required to get your current location in the app.") },
                                 confirmButton = {
-                                    TextButton(onClick = {
+                                    Button(onClick = {
                                         locationPermission.launchPermissionRequest()
                                         showPermissionDeniedAlert = false
                                     }) {
@@ -149,8 +156,11 @@ class MainActivity : FragmentActivity() {
                                     }
                                 },
                                 dismissButton = {
-                                    TextButton(onClick = { showPermissionDeniedAlert = false }) {
-                                        Text("Dismiss")
+                                    OutlinedButton(
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiary),
+                                        onClick = { showPermissionDeniedAlert = false }
+                                    ) {
+                                        Text("Dismiss", color=MaterialTheme.colorScheme.onTertiary)
                                     }
                                 },
                                 onDismissRequest = { showPermissionDeniedAlert = false }

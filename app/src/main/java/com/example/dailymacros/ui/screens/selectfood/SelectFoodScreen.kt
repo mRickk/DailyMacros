@@ -1,6 +1,7 @@
 package com.example.dailymacros.ui.screens.selectfood
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -302,7 +303,10 @@ fun SelectFoodScreen(
                 }
             },
             dismissButton = {
-                OutlinedButton(onClick = { showDialog = false }) {
+                OutlinedButton(
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                    onClick = { showDialog = false }
+                ) {
                     Text("Cancel", color = MaterialTheme.colorScheme.onBackground)
                 }
             }

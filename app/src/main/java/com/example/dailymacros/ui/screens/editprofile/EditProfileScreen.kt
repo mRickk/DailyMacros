@@ -1,6 +1,7 @@
 package com.example.dailymacros.ui.screens.editprofile
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -175,7 +176,10 @@ fun EditProfile(navController: NavHostController, editProfileViewModel: EditProf
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                OutlinedButton(onClick = { navController.popBackStack() }) {
+                OutlinedButton(
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                    onClick = { navController.popBackStack() }
+                ) {
                     Text("Cancel", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(onClick = {

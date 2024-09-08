@@ -222,7 +222,8 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                                 Column (horizontalAlignment = Alignment.End) {
                                     Text(text = activity.string ?: "N/A")
                                     Text(text = activity.description,
-                                        fontSize = MaterialTheme.typography.bodySmall.fontSize)
+                                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                        color = MaterialTheme.colorScheme.onSecondary)
                                 }
 
                                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
@@ -242,7 +243,12 @@ fun Diet(navController: NavHostController, dietViewModel: DietViewModel) {
                                         user = dietViewModel.loggedUser.user
                                         updateValues()
                                     },
-                                    text = { Text(text = option.string) }
+                                    text = { Column{
+                                        Text(text = option.string)
+                                        Text(text = option.description,
+                                            fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                            color = MaterialTheme.colorScheme.onSecondary)
+                                    } }
                                 )
                             }
                         }
